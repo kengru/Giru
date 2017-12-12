@@ -1,9 +1,0 @@
-httplib2==0.9.1
-MarkupSafe==0.23
-oauthlib==1.0.3
-pycurl==7.43.0
-pygame==1.9.3
-pyparsing==2.0.3
-urllib3==1.22
-virtualenv==15.1.0
-
