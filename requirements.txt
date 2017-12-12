@@ -4,8 +4,6 @@ oauthlib==1.0.3
 pycurl==7.43.0
 pygame==1.9.3
 pyparsing==2.0.3
-python-apt==1.1.0b1
-python-debian==0.1.27
 urllib3==1.22
 virtualenv==15.1.0
 
