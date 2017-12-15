@@ -2,7 +2,7 @@ from telegram.ext import BaseFilter
 from telegram import Message
 import re
 
-saved = 'src/saved.txt'
+saved = 'src/texts/saved.txt'
 
 class FilterMmg(BaseFilter):
     def filter(self, message):

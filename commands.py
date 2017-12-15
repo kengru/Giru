@@ -1,6 +1,7 @@
 import pickle
 import random
 import spotipy
+from emoji import emojize
 from spotipy.oauth2 import SpotifyClientCredentials
 from telegram import InputMediaPhoto
 
@@ -10,15 +11,15 @@ client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, \
      client_secret=SPOTIPY_CLIENT_SECRET)
 
 def Start(bot, update):
-    bot.sendMessage(chat_id=update.message.chat_id, text='KLK!!')
+    bot.sendMessage(chat_id=update.message.chat_id, text='SOY GIRU MANIN!! Dale "/ayuda".')
 
 def Caps(bot, update, args):
     text_caps = ' '.join(args).upper()
-    bot.sendMessage(chat_id=update.message.chat_id, text=text_caps)
+    bot.sendMessage(chat_id=update.message.chat_id, text=text_caps + '!')
 
 def Saved(bot, update):
     message = ''
-    with open('src/saved.txt', 'r') as file:
+    with open('src/texts/saved.txt', 'r') as file:
         for line in file:
             message += line
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
@@ -33,6 +34,30 @@ def Julien(bot, update):
 def Spotify(bot, update, args):
     query = ' '.join(args).lower()
     sp = spotipy.Spotify(client_credentials_manager=client_credentials)
-    results = sp.search(q='' + query, type='artist',limit=1)
-    link = results['artists']['items'][0]['external_urls']['spotify']
-    bot.sendMessage(chat_id=update.message.chat_id, text=link)
+    results = sp.search(q='' + query, type='track', limit=1)
+    print(results)
+    if results['tracks']['items']:
+        artist = results['tracks']['items'][0]['artists'][0]['name']
+        song = results['tracks']['items'][0]['name']
+        audio = results['tracks']['items'][0]['preview_url']
+        url = results['tracks']['items'][0]['external_urls']['spotify']
+        message = '*' + artist + '* - [' + song + '](' + url + ') ' + emojize(':notes:', use_aliases=True)
+        bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
+        if audio:
+            bot.sendAudio(chat_id=update.message.chat_id, audio=audio)
+        else:
+            bot.sendMessage(chat_id=update.message.chat_id, \
+            text=emojize(':x:', use_aliases=True) + ' No hay preview.', parse_mode='Markdown')
+    else:
+        bot.sendMessage(chat_id=update.message.chat_id, text='No encuentro la cancion bi.', parse_mode='Markdown')
+
+def Ayuda(bot, update):
+    with open('src/texts/commands.pickle', 'rb') as f:
+        commands = pickle.load(f)
+    message = 'Hola, soy Giru.\n*Comandos:* \n\n'
+    for k in sorted(commands):
+        message += '%s: ' % k
+        for k2, i in commands[k].items():
+            message += '%s\nEjemplo: _%s_\n' % (k2, i)
+    print(commands)
+    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')

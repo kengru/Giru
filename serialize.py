@@ -17,5 +17,23 @@ julien = [
     'https://video-images.vice.com/articles/57a20706078424ded0752f90/lede/1484861775120-JulienBaker_2.jpeg'
 ]
 
+commands = {
+    '/vociao': {
+        'Devuelve el mensaje en mayusculas.': '/vociao [mensaje]',
+    },
+    '/saved': {
+        'Muestra los mensajes guardados.': '/saved y ya.'
+    },
+    '/spotify': {
+        'Trae el link de spotify de la cancion indicada y un preview de 30 segundos (si existe).': '/spotify [cancion]'
+    },
+    '/ayuda': {
+        'Muestra los comandos y mensajes que se pueden utilizar.': '/ayuda y ya.'
+    }
+}
+
 with open('src/images/julien.pickle', 'wb') as f:
     pickle.dump(julien, f, pickle.HIGHEST_PROTOCOL)
+
+with open('src/texts/commands.pickle', 'wb') as f:
+    pickle.dump(commands, f, pickle.HIGHEST_PROTOCOL)
