@@ -1,6 +1,6 @@
 import logging
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
-from commands import Start, Caps, Saved, Julien, Spotify, Ayuda
+from commands import Start, Caps, Saved, Julien, Spotify, PaDondeHoy, Ayuda
 from repliers import FilterMmg, FilterReply, FilterSalut, respondM, sdm, salute
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -21,6 +21,7 @@ dispatcher.add_handler(CommandHandler('vociao', Caps, pass_args=True))
 dispatcher.add_handler(CommandHandler('saved', Saved))
 dispatcher.add_handler(CommandHandler('julien', Julien))
 dispatcher.add_handler(CommandHandler('spotify', Spotify, pass_args=True))
+dispatcher.add_handler(CommandHandler('padondehoy', PaDondeHoy))
 dispatcher.add_handler(CommandHandler('ayuda', Ayuda))
 dispatcher.add_handler(MessageHandler(filter_salut, salute))
 dispatcher.add_handler(MessageHandler(filter_mmg, respondM))

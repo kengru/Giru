@@ -1,6 +1,7 @@
+import re
 from telegram.ext import BaseFilter
 from telegram import Message
-import re
+
 
 saved = 'src/texts/saved.txt'
 
@@ -19,7 +20,7 @@ class FilterReply(BaseFilter):
         reply = message.reply_to_message
         if message.reply_to_message and message.text == '-save':
             with open(saved, 'a') as file:
-                file.write(reply.text + ' - [' + reply.from_user.first_name + '](tg://user?id=' \
+                file.write('*' + reply.text + '* - [' + reply.from_user.first_name + '](tg://user?id=' \
                 + str(reply.from_user.id) + ')\n')
 
 def sdm(bot, update):

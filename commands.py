@@ -1,6 +1,7 @@
 import pickle
 import random
 import spotipy
+import datetime
 from emoji import emojize
 from spotipy.oauth2 import SpotifyClientCredentials
 from telegram import InputMediaPhoto
@@ -35,13 +36,12 @@ def Spotify(bot, update, args):
     query = ' '.join(args).lower()
     sp = spotipy.Spotify(client_credentials_manager=client_credentials)
     results = sp.search(q='' + query, type='track', limit=1)
-    print(results)
     if results['tracks']['items']:
         artist = results['tracks']['items'][0]['artists'][0]['name']
         song = results['tracks']['items'][0]['name']
         audio = results['tracks']['items'][0]['preview_url']
         url = results['tracks']['items'][0]['external_urls']['spotify']
-        message = '*' + artist + '* - [' + song + '](' + url + ') ' + emojize(':notes:', use_aliases=True)
+        message = emojize('*' + artist + '* - [' + song + '](' + url + ') ' + ':notes:', use_aliases=True)
         bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
         if audio:
             bot.sendAudio(chat_id=update.message.chat_id, audio=audio)
@@ -51,13 +51,15 @@ def Spotify(bot, update, args):
     else:
         bot.sendMessage(chat_id=update.message.chat_id, text='No encuentro la cancion bi.', parse_mode='Markdown')
 
+def PaDondeHoy(bot, update):
+    print(datetime.date.today().weekday())
+
 def Ayuda(bot, update):
     with open('src/texts/commands.pickle', 'rb') as f:
         commands = pickle.load(f)
-    message = 'Hola, soy Giru.\n*Comandos:* \n\n'
+    message = 'Hola, soy Giru.\n\n*Comandos:* \n'
     for k in sorted(commands):
         message += '%s: ' % k
         for k2, i in commands[k].items():
-            message += '%s\nEjemplo: _%s_\n' % (k2, i)
-    print(commands)
+            message += '%s\n\t- _Ejemplo: %s_\n' % (k2, i)
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
