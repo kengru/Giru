@@ -52,7 +52,7 @@ def Spotify(bot, update, args):
         bot.sendMessage(chat_id=update.message.chat_id, text='No encuentro la cancion bi.', parse_mode='Markdown')
 
 def PaDondeHoy(bot, update):
-    print(datetime.date.today().weekday())
+    day = datetime.date.today().weekday()
 
 def Ayuda(bot, update):
     with open('src/texts/commands.pickle', 'rb') as f:

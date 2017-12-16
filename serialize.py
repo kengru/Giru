@@ -32,9 +32,7 @@ commands = {
     }
 }
 
-days = [
-    '0': "Es lunes mi loco, vete pa' tu casa"
-]
+
 
 with open('src/images/julien.pickle', 'wb') as f:
     pickle.dump(julien, f, pickle.HIGHEST_PROTOCOL)
