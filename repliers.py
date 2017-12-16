@@ -2,12 +2,11 @@ import re
 from telegram.ext import BaseFilter
 from telegram import Message
 
-
 saved = 'src/texts/saved.txt'
 
 class FilterMmg(BaseFilter):
     def filter(self, message):
-        found = re.search("(mmg)|(mamaguebo)", message.text, re.IGNORECASE)
+        found = re.search("(mmg)|(mamague(b|v))", message.text, re.IGNORECASE)
         # print(message)
         return found
 
@@ -33,7 +32,7 @@ class FilterSalut(BaseFilter):
             return True
 
 def salute(bot, update):
-    if 'hola' in update.message.text.lower():
+    if 'hola' or 'holi' in update.message.text.lower():
         bot.sendMessage(chat_id=update.message.chat_id, text='Hola!')
     elif 'klk' in update.message.text.lower():
         bot.sendMessage(chat_id=update.message.chat_id, text='Dime buen barrial.')

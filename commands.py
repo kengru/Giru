@@ -53,6 +53,10 @@ def Spotify(bot, update, args):
 
 def PaDondeHoy(bot, update):
     day = datetime.date.today().weekday()
+    with open('src/texts/days.pickle', 'rb') as f:
+        days = pickle.load(f)
+    print(days)
+    bot.sendMessage(chat_id=update.message.chat_id, text=days[day])
 
 def Ayuda(bot, update):
     with open('src/texts/commands.pickle', 'rb') as f:
