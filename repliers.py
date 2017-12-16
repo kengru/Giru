@@ -1,4 +1,5 @@
 import re
+import random
 from telegram.ext import BaseFilter
 from telegram import Message
 
@@ -7,7 +8,6 @@ saved = 'src/texts/saved.txt'
 class FilterMmg(BaseFilter):
     def filter(self, message):
         found = re.search("(mmg)|(mamague(b|v))", message.text, re.IGNORECASE)
-        # print(message)
         return found
 
 def respondM(bot, update):
@@ -32,9 +32,21 @@ class FilterSalut(BaseFilter):
             return True
 
 def salute(bot, update):
-    if 'hola' or 'holi' in update.message.text.lower():
+    message = update.message.text.lower()
+    if 'hola' in message or 'holi' in message:
         bot.sendMessage(chat_id=update.message.chat_id, text='Hola!')
-    elif 'klk' in update.message.text.lower():
+    elif 'klk' in message:
         bot.sendMessage(chat_id=update.message.chat_id, text='Dime buen barrial.')
     else:
         bot.sendMessage(chat_id=update.message.chat_id, text='Dimelo.')
+
+class FilterRecon(BaseFilter):
+    def filter(self, message):
+        if message.reply_to_message.photo and message.text == '-recon':
+            return True
+
+def recon(bot, update):
+    text = '*Reconocimiento empezado!*\nCargando respuesta.....'
+    bot.sendMessage(chat_id=update.message.chat_id,text=text, parse_mode='Markdown')
+    text = 'He encontrado un ' + str(random.randint(60,100)) + '% de que en la imagen hay un mamaguebo.'
+    bot.sendMessage(chat_id=update.message.chat_id,text=text.format())
