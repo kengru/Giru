@@ -58,11 +58,11 @@ def PaDondeHoy(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text=days[day])
 
 def Ayuda(bot, update):
-    with open('src/texts/commands.pickle', 'rb') as f:
-        commands = pickle.load(f)
+    with open('src/texts/ayuda.pickle', 'rb') as f:
+        ayuda = pickle.load(f)
     message = 'Hola, soy Giru.\n\n*Comandos:* \n'
-    for k in sorted(commands):
+    for k in sorted(ayuda):
         message += '%s: ' % k
-        for k2, i in commands[k].items():
+        for k2, i in ayuda[k].items():
             message += '%s\n\t- _Ejemplo: %s_\n' % (k2, i)
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')

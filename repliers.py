@@ -12,7 +12,8 @@ class FilterMmg(BaseFilter):
 
 def respondM(bot, update):
     """ Respond to a pattern in FilterMmg. """
-    bot.sendMessage(chat_id=update.message.chat_id, text='MMG UTE!')
+    # bot.sendMessage(chat_id=update.message.chat_id, text='MMG UTE!')
+    bot.sendDocument(chat_id=update.message.chat_id, document='http://a.memegen.com/zn4ros.gif')
 
 class FilterReply(BaseFilter):
     def filter(self, message):
@@ -42,11 +43,16 @@ def salute(bot, update):
 
 class FilterRecon(BaseFilter):
     def filter(self, message):
-        if message.reply_to_message.photo and message.text == '-recon':
+        reply = message.reply_to_message
+        if reply and reply.photo and message.text == '-recon':
             return True
 
 def recon(bot, update):
     text = '*Reconocimiento empezado!*\nCargando respuesta.....'
     bot.sendMessage(chat_id=update.message.chat_id,text=text, parse_mode='Markdown')
-    text = 'He encontrado un ' + str(random.randint(60,100)) + '% de que en la imagen hay un mamaguebo.'
-    bot.sendMessage(chat_id=update.message.chat_id,text=text.format())
+    text = 'He encontrado un *' + str(random.randint(60,100)) + '%* de que en la imagen hay un *mamaguebo*.'
+    bot.sendMessage(chat_id=update.message.chat_id,text=text.format(), parse_mode='Markdown')
+
+# class FilterPalomo(BaseFilter):
+#     def filter(self, message):
+        

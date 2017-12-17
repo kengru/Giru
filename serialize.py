@@ -14,10 +14,21 @@ julien = [
     'http://thefader-res.cloudinary.com/private_images/w_760,c_limit,f_auto,q_auto:eco/170816_JulienBaker_3821_WEB_zmieth/julien-baker-turn-out-the-lights-sprained-ankle-interview.jpg',
     'http://img2-ak.lst.fm/i/u/arO/9874c6ba6183ca27e9fcd56a6586c812',
     'http://diymag.com/media/img/Artists/J/Julien-Baker/05-06-17-Bush-Hall/_1500xAUTO_crop_center-center_75/20170605213357-Julien-Baker-Ph-CFaruolo.jpg',
-    'https://video-images.vice.com/articles/57a20706078424ded0752f90/lede/1484861775120-JulienBaker_2.jpeg'
+    'https://video-images.vice.com/articles/57a20706078424ded0752f90/lede/1484861775120-JulienBaker_2.jpeg',
+    'https://static01.nyt.com/images/2017/10/23/arts/23BAKER2/23BAKER2-master1050.jpg',
+    'https://media.timeout.com/images/104096730/image.jpg',
+    'http://78.media.tumblr.com/fdc4c379d25706484d969fe8c071325e/tumblr_p0e062V4hD1wx5fb8o3_1280.jpg',
+    'http://thumbnails.cbsig.net/CBS_Production_News_VMS/810/43/SATMO_JulienBaker_Televangelist.jpg',
+    'http://www.brooklynvegan.com/files/2016/09/julien-baker-mhow-51.jpg',
+    'https://i.ytimg.com/vi/Ys44K0_jZDI/maxresdefault.jpg',
+    'https://indiespot.es/wp-content/uploads/2017/01/Julien-Baker.jpg',
+    'http://www.trbimg.com/img-5a32d858/turbine/la-et-ms-julien-baker-20171213',
+    'http://images.equipboard.com/uploads/source/image/32838/10848528_428997167253207_1312835545940667173_o.jpg?v=1458927234',
+    'http://thebaybridged.com/wp-content/uploads/2017/02/Julien-Baker-at-GAMH-for-Noise-Pop-25-by-Ian-Young-02.jpg',
+    'http://78.media.tumblr.com/119f3138c6bfe5e79e294eb287d4d0d3/tumblr_obokdgCXcP1r7o2e7o5_1280.jpg'
 ]
 
-commands = {
+ayuda = {
     '/vociao': {
         'Devuelve el mensaje en mayusculas.': '/vociao [mensaje]',
     },
@@ -29,6 +40,9 @@ commands = {
     },
     '/ayuda': {
         'Muestra los comandos y mensajes que se pueden utilizar.': '/ayuda y ya.'
+    },
+    '/padondehoy': {
+        'Te dice lo que vamos a hacer hoy.': '/padondehoy y ya.'
     }
 }
 
@@ -45,8 +59,8 @@ days = [
 with open('src/images/julien.pickle', 'wb') as f:
     pickle.dump(julien, f, pickle.HIGHEST_PROTOCOL)
 
-with open('src/texts/commands.pickle', 'wb') as f:
-    pickle.dump(commands, f, pickle.HIGHEST_PROTOCOL)
+with open('src/texts/ayuda.pickle', 'wb') as f:
+    pickle.dump(ayuda, f, pickle.HIGHEST_PROTOCOL)
 
 with open('src/texts/days.pickle', 'wb') as f:
     pickle.dump(days, f, pickle.HIGHEST_PROTOCOL)

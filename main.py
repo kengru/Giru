@@ -10,25 +10,30 @@ filter_reply = FilterReply()
 filter_salut = FilterSalut()
 filter_recon = FilterRecon()
 
-dispatcher = updater.dispatcher
+dp = updater.dispatcher
 
 def unknown(bot, update):
     """ What to do when the command is not recognizable. """
     bot.sendMessage(chat_id=update.message.chat_id, text='No le llego mi loco.')
 
 # Creating and adding handlers.
-dispatcher.add_handler(CommandHandler('start', Start))
-dispatcher.add_handler(CommandHandler('vociao', Caps, pass_args=True))
-dispatcher.add_handler(CommandHandler('saved', Saved))
-dispatcher.add_handler(CommandHandler('julien', Julien))
-dispatcher.add_handler(CommandHandler('spotify', Spotify, pass_args=True))
-dispatcher.add_handler(CommandHandler('padondehoy', PaDondeHoy))
-dispatcher.add_handler(CommandHandler('ayuda', Ayuda))
-dispatcher.add_handler(MessageHandler(filter_mmg, respondM))
-dispatcher.add_handler(MessageHandler(filter_salut, salute))
-dispatcher.add_handler(MessageHandler(filter_reply, sdm))
-dispatcher.add_handler(MessageHandler(filter_recon, recon))
-dispatcher.add_handler(MessageHandler(Filters.command, unknown))
+commandsl = [
+    CommandHandler('start', Start),
+    CommandHandler('vociao', Caps, pass_args=True),
+    CommandHandler('saved', Saved),
+    CommandHandler('julien', Julien),
+    CommandHandler('spotify', Spotify, pass_args=True),
+    CommandHandler('padondehoy', PaDondeHoy),
+    CommandHandler('ayuda', Ayuda)
+] 
+for cmd in commandsl:
+    dp.add_handler(cmd)
+
+dp.add_handler(MessageHandler(filter_mmg, respondM))
+dp.add_handler(MessageHandler(filter_salut, salute))
+dp.add_handler(MessageHandler(filter_reply, sdm))
+dp.add_handler(MessageHandler(filter_recon, recon))
+dp.add_handler(MessageHandler(Filters.command, unknown))
 
 # Initiate interactions.
 updater.start_polling()
