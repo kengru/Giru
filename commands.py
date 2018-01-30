@@ -15,7 +15,7 @@ def Start(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text='SOY GIRU MANIN!! Dale "/ayuda".')
 
 def Caps(bot, update, args):
-    text_caps = ' '.join(args).upper()
+    text = ' '.join(args).upper()
     bot.sendMessage(chat_id=update.message.chat_id, text=text_caps + '!')
 
 def Saved(bot, update):
