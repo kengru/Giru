@@ -54,6 +54,15 @@ def recon(bot, update):
     text = 'He encontrado un *' + str(random.randint(60,100)) + '%* de que en la imagen hay un *mamaguebo*.'
     bot.sendMessage(chat_id=update.message.chat_id,text=text.format(), parse_mode='Markdown')
 
+class FilterWtf(BaseFilter):
+    def filter(self, message):
+        found = re.search("(wtf)|(what the fuck)|(dafuq)", message.text, re.IGNORECASE)
+        if found:
+            return True
+
+def sendWTF(bot, update):
+    bot.sendDocument(chat_id=update.message.chat_id, document='https://gph.is/1ppshye')
+
 # class FilterPalomo(BaseFilter):
 #     def filter(self, message):
 #         reply = message.reply_to_message

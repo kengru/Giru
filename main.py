@@ -1,7 +1,7 @@
 import logging
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 from commands import Start, Caps, Saved, Julien, Spotify, PaDondeHoy, Ayuda
-from repliers import FilterMmg, FilterReply, FilterSalut, FilterRecon, respondM, sdm, salute, recon
+from repliers import FilterMmg, FilterReply, FilterSalut, FilterRecon, FilterWtf, respondM, sdm, salute, recon, sendWTF
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 updater = Updater(token='487860520:AAEgLKKYShLi9iut4v0Zl5HLnrUf8sNF418')
@@ -9,6 +9,7 @@ filter_mmg = FilterMmg()
 filter_reply = FilterReply()
 filter_salut = FilterSalut()
 filter_recon = FilterRecon()
+filter_wtf = FilterWtf()
 
 dp = updater.dispatcher
 
@@ -30,6 +31,7 @@ for cmd in commandsl:
     dp.add_handler(cmd)
 
 dp.add_handler(MessageHandler(filter_mmg, respondM))
+dp.add_handler(MessageHandler(filter_wtf, sendWTF))
 dp.add_handler(MessageHandler(filter_salut, salute))
 dp.add_handler(MessageHandler(filter_reply, sdm))
 dp.add_handler(MessageHandler(filter_recon, recon))
