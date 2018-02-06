@@ -63,6 +63,15 @@ class FilterWtf(BaseFilter):
 def sendWTF(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id, document='https://gph.is/1ppshye')
 
+class FilterMentira(BaseFilter):
+    def filter(self, message):
+        found = re.search("(liar)|(jablador)|(mentiroso)|(mentira)|(lies)", message.text, re.IGNORECASE)
+        if found:
+            return True
+
+def sendMentira(bot, update):
+    bot.sendDocument(chat_id=update.message.chat_id, document='http://78.media.tumblr.com/tumblr_m3zgenZn7S1r3tlbto1_400.gif')
+
 # class FilterPalomo(BaseFilter):
 #     def filter(self, message):
 #         reply = message.reply_to_message

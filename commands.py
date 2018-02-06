@@ -16,7 +16,7 @@ def Start(bot, update):
 
 def Caps(bot, update, args):
     text = ' '.join(args).upper()
-    bot.sendMessage(chat_id=update.message.chat_id, text=text_caps + '!')
+    bot.sendMessage(chat_id=update.message.chat_id, text=text + '!')
 
 def Saved(bot, update):
     message = ''
