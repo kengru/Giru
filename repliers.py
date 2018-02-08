@@ -72,6 +72,76 @@ class FilterMentira(BaseFilter):
 def sendMentira(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id, document='http://78.media.tumblr.com/tumblr_m3zgenZn7S1r3tlbto1_400.gif')
 
+# Voicenotes Repliers
+
+class FilterVN1(BaseFilter):
+    def filter(self, message):
+        found = re.search("(y esa basura)|(y esa mielda)|(diablo arsenio)", message.text, re.IGNORECASE)
+        if found:
+            return True
+
+def sendVN1(bot, update):
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/basura.ogg', 'rb'))
+
+class FilterVN2(BaseFilter):
+    def filter(self, message):
+        found = re.search("(carmate)|(calmate)|(ay)", message.text, re.IGNORECASE)
+        if found:
+            return True
+
+def sendVN2(bot, update):
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/carmate.ogg', 'rb'))
+
+class FilterVN3(BaseFilter):
+    def filter(self, message):
+        found = re.search("(ok felicidades)", message.text, re.IGNORECASE)
+        if found:
+            return True
+
+def sendVN3(bot, update):
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/felicidades.ogg', 'rb'))
+
+class FilterVN4(BaseFilter):
+    def filter(self, message):
+        found = re.search("(haterz)", message.text, re.IGNORECASE)
+        if found:
+            return True
+
+def sendVN4(bot, update):
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/llegaronloshaterz.ogg', 'rb'))
+
+class FilterVN5(BaseFilter):
+    def filter(self, message):
+        found = re.search("(okgracia)|(ok gracia)", message.text, re.IGNORECASE)
+        if found:
+            return True
+
+def sendVN5(bot, update):
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/okgracias.ogg', 'rb'))
+
+class FilterVN6(BaseFilter):
+    def filter(self, message):
+        found = re.search("(todobie)|(todo bie)",message.text, re.IGNORECASE)
+        if found:
+            return True
+
+def sendVN6(bot, update):
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/todobien.ogg', 'rb'))
+
+class FilterVN7(BaseFilter):
+    def filter(self, message):
+        found = re.search("(lave el carro)", message.text, re.IGNORECASE)
+        if found:
+            return True
+
+def sendVN7(bot, update):
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/laveelcarro.ogg', 'rb'))
+
+# Stickers
+
+#class FilterSck1(BaseFilter):
+
+
 # class FilterPalomo(BaseFilter):
 #     def filter(self, message):
 #         reply = message.reply_to_message

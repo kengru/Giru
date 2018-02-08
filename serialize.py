@@ -52,7 +52,7 @@ days = [
     "Miercoles de cerveza, pero en tu casa tranquilo.",
     "Lo jueve nama hay lio en la calle.",
     "Es viernes, hoy toca jumo en la zona :D",
-    "Pal' diablo, que se yo.",
+    "Pal' diablo, que se yo man.",
     "Hoy hay iglesia, maldito impio."
 ]
 
