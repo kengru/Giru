@@ -33,16 +33,16 @@ ayuda = {
         'Devuelve el mensaje en mayusculas.': '/vociao [mensaje]',
     },
     '/saved': {
-        'Muestra los mensajes guardados.': '/saved y ya.'
+        'Muestra los mensajes guardados.': '/saved'
     },
     '/spotify': {
         'Trae el link de spotify de la cancion indicada y un preview de 30 segundos (si existe).': '/spotify [cancion]'
     },
     '/ayuda': {
-        'Muestra los comandos y mensajes que se pueden utilizar.': '/ayuda y ya.'
+        'Muestra los comandos y mensajes que se pueden utilizar.': '/ayuda'
     },
     '/padondehoy': {
-        'Te dice lo que vamos a hacer hoy.': '/padondehoy y ya.'
+        'Te dice lo que vamos a hacer hoy.': '/padondehoy'
     }
 }
 
@@ -52,7 +52,7 @@ days = [
     "Miercoles de cerveza, pero en tu casa tranquilo.",
     "Lo jueve nama hay lio en la calle.",
     "Es viernes, hoy toca jumo en la zona :D",
-    "Lo sabado son de preparacion para el dia del señor.",
+    "Pal' diablo, que se yo.",
     "Hoy hay iglesia, maldito impio."
 ]
 
