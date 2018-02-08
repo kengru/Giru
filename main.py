@@ -48,6 +48,7 @@ for cmd in commandsl:
 dp.add_handler(MessageHandler(filter_mmg, respondM))
 dp.add_handler(MessageHandler(filter_wtf, sendWTF))
 dp.add_handler(MessageHandler(filter_mentira, sendMentira))
+dp.add_handler(MessageHandler(filter_sk1, sendSK1))
 dp.add_handler(MessageHandler(filter_salut, salute))
 dp.add_handler(MessageHandler(filter_reply, sdm))
 dp.add_handler(MessageHandler(filter_recon, recon))
@@ -59,8 +60,6 @@ dp.add_handler(MessageHandler(filter_vn4, sendVN4))
 dp.add_handler(MessageHandler(filter_vn5, sendVN5))
 dp.add_handler(MessageHandler(filter_vn6, sendVN6))
 dp.add_handler(MessageHandler(filter_vn7, sendVN7))
-
-dp.add_handler(MessageHandler(filter_sk1, sendSK1))
 
 dp.add_handler(MessageHandler(Filters.command, unknown))
 
