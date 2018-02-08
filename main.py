@@ -2,9 +2,9 @@ import logging
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 from commands import Start, Caps, Saved, Julien, Spotify, PaDondeHoy, Ayuda
 from repliers import FilterMmg, FilterReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira
-from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7
+from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
 from repliers import respondM, sdm, salute, recon, sendWTF, sendMentira
-from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7
+from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 updater = Updater(token='487860520:AAEgLKKYShLi9iut4v0Zl5HLnrUf8sNF418')
@@ -23,6 +23,8 @@ filter_vn4 = FilterVN4()
 filter_vn5 = FilterVN5()
 filter_vn6 = FilterVN6()
 filter_vn7 = FilterVN7()
+
+filter_sk1 = FilterSK1()
 
 dp = updater.dispatcher
 
@@ -57,6 +59,8 @@ dp.add_handler(MessageHandler(filter_vn4, sendVN4))
 dp.add_handler(MessageHandler(filter_vn5, sendVN5))
 dp.add_handler(MessageHandler(filter_vn6, sendVN6))
 dp.add_handler(MessageHandler(filter_vn7, sendVN7))
+
+dp.add_handler(MessageHandler(filter_sk1, sendSK1))
 
 dp.add_handler(MessageHandler(Filters.command, unknown))
 

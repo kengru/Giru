@@ -139,8 +139,14 @@ def sendVN7(bot, update):
 
 # Stickers
 
-#class FilterSck1(BaseFilter):
+class FilterSK1(BaseFilter):
+    def filter(self, message):
+        if ('menor' or 'menol') in message.text:
+            return True
 
+def sendSK1(bot, update):
+    bot.sendMessage(chat_id=update.message.chat_id, text='Quien dijo menor? :D')
+    bot.sendSticker(chat_id=update.message.chat_id, sticker='CAADAQADFwADGp7vCBkeqa14LgcnAg')
 
 # class FilterPalomo(BaseFilter):
 #     def filter(self, message):
