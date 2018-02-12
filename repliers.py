@@ -61,7 +61,7 @@ class FilterWtf(BaseFilter):
             return True
 
 def sendWTF(bot, update):
-    bot.sendDocument(chat_id=update.message.chat_id, document='https://gph.is/1ppshye')
+    bot.sendDocument(chat_id=update.message.chat_id, document='https://media.giphy.com/media/aZ3LDBs1ExsE8/giphy.gif')
 
 class FilterMentira(BaseFilter):
     def filter(self, message):
@@ -85,7 +85,7 @@ def sendVN1(bot, update):
 
 class FilterVN2(BaseFilter):
     def filter(self, message):
-        found = re.search("(carmate)|(calmate)|(ay)", message.text, re.IGNORECASE)
+        found = re.search("(carmate)|(calmate)", message.text, re.IGNORECASE)
         if found:
             return True
 
@@ -141,7 +141,7 @@ def sendVN7(bot, update):
 
 class FilterSK1(BaseFilter):
     def filter(self, message):
-        if ('menor' or 'menol') in message.text:
+        if ('menor' or 'menol') in message.text.lower():
             return True
 
 def sendSK1(bot, update):
