@@ -48,7 +48,7 @@ ayuda = {
 
 days = [
     "Es lunes mi loco, vete pa' tu casa.",
-    "Los martes hay 2x1 en pizza hut.",
+    "Los martes hay 2x1 en pizza hut, aprovecha.",
     "Miercoles de cerveza, pero en tu casa tranquilo.",
     "Lo jueve nama hay lio en la calle.",
     "Es viernes, hoy toca jumo en la zona :D",
@@ -64,3 +64,5 @@ with open('src/texts/ayuda.pickle', 'wb') as f:
 
 with open('src/texts/days.pickle', 'wb') as f:
     pickle.dump(days, f, pickle.HIGHEST_PROTOCOL)
+
+print('Serialized.')
