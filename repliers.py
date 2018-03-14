@@ -72,6 +72,15 @@ class FilterMentira(BaseFilter):
 def sendMentira(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id, document='http://78.media.tumblr.com/tumblr_m3zgenZn7S1r3tlbto1_400.gif')
 
+class FilterFelicidades(BaseFilter):
+    def filter(self, message):
+        found = re.search("(feliz cumpleaños)|(feliz cumpleanos)|(happy birthday)|(hbd)", message.text, re.IGNORECASE)
+        if found:
+            return True
+    
+def sendHBD(bot, update):
+    bot.sendDocument(chat_id=update.message.chat_id, document='https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif')
+
 # Voicenotes Repliers
 
 class FilterVN1(BaseFilter):
