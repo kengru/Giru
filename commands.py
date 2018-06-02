@@ -1,6 +1,7 @@
 import datetime
-import pickle
+from data import julien, days, ayuda
 import random
+from functools import lru_cache
 
 import spotipy
 from emoji import emojize
@@ -8,7 +9,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 SPOTIPY_CLIENT_ID = '0f9f9324ddd54895848e32fe5cea0d47'
 SPOTIPY_CLIENT_SECRET = 'e6a9ce6a89ed4196a83e3fc65709ccc0'
-client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, \
+client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
                                               client_secret=SPOTIPY_CLIENT_SECRET)
 
 
@@ -30,8 +31,6 @@ def Saved(bot, update):
 
 
 def Julien(bot, update):
-    with open('src/images/julien.pickle', 'rb') as f:
-        julien = pickle.load(f)
     sel = random.choice(julien)
     # cal = InputMediaPhoto(sel, 'Julien')
     bot.sendPhoto(chat_id=update.message.chat_id, photo=sel)
@@ -51,22 +50,24 @@ def Spotify(bot, update, args):
         if audio:
             bot.sendAudio(chat_id=update.message.chat_id, audio=audio)
         else:
-            bot.sendMessage(chat_id=update.message.chat_id, \
+            bot.sendMessage(chat_id=update.message.chat_id,
                             text=emojize(':x:', use_aliases=True) + ' No hay preview.', parse_mode='Markdown')
     else:
         bot.sendMessage(chat_id=update.message.chat_id, text='No encuentro la cancion bi.', parse_mode='Markdown')
 
 
+@lru_cache()
+def cached_padondehoy_response(day_of_week, chat):
+    return random.choice(days[day_of_week])
+
+
 def PaDondeHoy(bot, update):
     day = datetime.date.today().weekday()
-    with open('src/texts/days.pickle', 'rb') as f:
-        days = pickle.load(f)
-    bot.sendMessage(chat_id=update.message.chat_id, text=days[day])
+    response = cached_padondehoy_response(day, update.message.chat_id)
+    bot.sendMessage(chat_id=update.message.chat_id, text=response)
 
 
 def Ayuda(bot, update):
-    with open('src/texts/ayuda.pickle', 'rb') as f:
-        ayuda = pickle.load(f)
     message = 'Hola, soy Giru.\n\n*Comandos:* \n'
     for k in sorted(ayuda):
         message += '%s: ' % k
