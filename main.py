@@ -1,5 +1,7 @@
 import logging
+
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
+
 from commands import Start, Caps, Saved, Julien, Spotify, PaDondeHoy, Ayuda
 from repliers import FilterMmg, FilterReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira, FilterFelicidades
 from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
@@ -29,9 +31,11 @@ filter_sk1 = FilterSK1()
 
 dp = updater.dispatcher
 
+
 def unknown(bot, update):
     """ What to do when the command is not recognizable. """
     bot.sendMessage(chat_id=update.message.chat_id, text='No le llego mi loco.')
+
 
 # Creating and adding handlers.
 commandsl = [
@@ -42,7 +46,7 @@ commandsl = [
     CommandHandler('spotify', Spotify, pass_args=True),
     CommandHandler('padondehoy', PaDondeHoy),
     CommandHandler('ayuda', Ayuda)
-] 
+]
 for cmd in commandsl:
     dp.add_handler(cmd)
 

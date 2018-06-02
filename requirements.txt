@@ -34,3 +34,5 @@ sessioninstaller==0.0.0
 system-service==0.3
 urllib3==1.22
 virtualenv==15.1.0
+spotipy==2.4.4
+emoji==0.5.0
