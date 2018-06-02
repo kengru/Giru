@@ -1,5 +1,4 @@
 """ Using this file to serialize things with pickle. """
-import pickle
 
 julien = [
     'https://media.wmagazine.com/photos/59f1031ad473f932b6e964c5/4:3/w_1536/JULIEN_WMAG_37342.jpg',
@@ -47,22 +46,37 @@ ayuda = {
 }
 
 days = [
-    "Es lunes mi loco, vete pa' tu casa.",
-    "Los martes hay 2x1 en pizza hut, aprovecha.",
-    "Miercoles de cerveza, pero en tu casa tranquilo.",
-    "Lo jueve nama hay lio en la calle.",
-    "Es viernes, hoy toca jumo en la zona :D",
-    "Pal' diablo, que se yo man.",
-    "Hoy hay iglesia, maldito impio."
+    # Lunes
+    ["Es lunes mi loco, vete pa' tu casa.",
+     "Duermete manin"],
+    # Martes
+    ["Los martes hay 2x1 en pizza hut, aprovecha.",
+     "Orgia en casa del que hable"],
+    # Miercoles
+    ["Miercoles de cerveza, pero en tu casa tranquilo."],
+    # Jueves
+    ["Lo jueve nama hay lio en la calle.",
+     "2x1 en el cine manin"],
+    # Viernes
+    ["Es viernes, hoy toca jumo en la zona :D",
+     "algo?"],
+    # Sabado
+    ["Pal' diablo, que se yo man.",
+     "Sabado de pilita",
+     "Cueros en el jacuzzi"],
+    # Domingo
+    ["Hoy hay iglesia, maldito impio.", "IGLESIIIIAAA"]
 ]
 
-with open('src/images/julien.pickle', 'wb') as f:
-    pickle.dump(julien, f, pickle.HIGHEST_PROTOCOL)
+# with open('src/images/julien.pickle', 'wb') as f:
+#     pickle.dump(julien, f, pickle.HIGHEST_PROTOCOL)
+#
+# with open('src/texts/ayuda.pickle', 'wb') as f:
+#     pickle.dump(ayuda, f, pickle.HIGHEST_PROTOCOL)
+#
+# with open('src/texts/days.pickle', 'wb') as f:
+#     pickle.dump(days, f, pickle.HIGHEST_PROTOCOL)
+#
+# print('Serialized.')
 
-with open('src/texts/ayuda.pickle', 'wb') as f:
-    pickle.dump(ayuda, f, pickle.HIGHEST_PROTOCOL)
-
-with open('src/texts/days.pickle', 'wb') as f:
-    pickle.dump(days, f, pickle.HIGHEST_PROTOCOL)
-
-print('Serialized.')
+print("No need to serialize.")
