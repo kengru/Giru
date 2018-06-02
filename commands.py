@@ -1,11 +1,12 @@
 import datetime
-from data import julien, days, ayuda
 import random
 from functools import lru_cache
 
 import spotipy
 from emoji import emojize
 from spotipy.oauth2 import SpotifyClientCredentials
+
+from data import julien, days, ayuda
 
 SPOTIPY_CLIENT_ID = '0f9f9324ddd54895848e32fe5cea0d47'
 SPOTIPY_CLIENT_SECRET = 'e6a9ce6a89ed4196a83e3fc65709ccc0'
@@ -57,13 +58,14 @@ def Spotify(bot, update, args):
 
 
 @lru_cache()
-def cached_padondehoy_response(day_of_week, chat):
+def cached_padondehoy_response(date, chat):
+    day_of_week = date.weekday()
     return random.choice(days[day_of_week])
 
 
 def PaDondeHoy(bot, update):
-    day = datetime.date.today().weekday()
-    response = cached_padondehoy_response(day, update.message.chat_id)
+    date = datetime.date.today()
+    response = cached_padondehoy_response(date, update.message.chat_id)
     bot.sendMessage(chat_id=update.message.chat_id, text=response)
 
 
