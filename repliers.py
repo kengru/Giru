@@ -1,5 +1,6 @@
 import random
 import re
+import os
 
 from telegram.ext import BaseFilter
 
@@ -19,13 +20,42 @@ def respondM(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id, document='http://a.memegen.com/zn4ros.gif')
 
 
+class BaseReplyStorageProvider:
+    def save(self, message):
+        raise NotImplementedError
+
+
+class InMemoryReplyStorageProvider(BaseReplyStorageProvider):
+    def __init__(self):
+        self.saved_replies = []
+
+    def save(self, message):
+        self.saved_replies.append(message)
+
+
+class FileSystemReplyStorageProvider(BaseReplyStorageProvider):
+    def __init__(self, file_path):
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        default_file_path = os.path.realpath(os.path.join(dir_path, '..', 'src/texts/saved.txt'))
+
+        self.file_path = file_path or default_file_path
+
+    def save(self, message):
+        text = message.reply_to_message.text
+        user = message.reply_to_message.from_user
+        serialized = '* {} * - [{}](tg://user?id={}\n'.format(text, user.first_name, user.id)
+
+        with open(self.file_path, 'a') as file:
+            file.write(serialized)
+
+
 class FilterSaveReply(BaseFilter):
+    def __init__(self, storage_provider=None):
+        self.storage_provider = storage_provider or InMemoryReplyStorageProvider()
+
     def filter(self, message):
-        reply = message.reply_to_message
         if message.reply_to_message and message.text == '-save':
-            with open(saved, 'a') as file:
-                file.write('*' + reply.text + '* - [' + reply.from_user.first_name + '](tg://user?id=' \
-                           + str(reply.from_user.id) + ')\n')
+            self.storage_provider.save(message)
 
 
 def sdm(bot, update):
