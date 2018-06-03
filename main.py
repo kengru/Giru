@@ -3,7 +3,7 @@ import logging
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 
 from commands import Start, Caps, Saved, Julien, Spotify, PaDondeHoy, Ayuda
-from repliers import FilterMmg, FilterReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira, FilterFelicidades
+from repliers import FilterMmg, FilterSaveReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira, FilterFelicidades
 from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
 from repliers import respondM, sdm, salute, recon, sendWTF, sendMentira, sendHBD
 from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
@@ -12,7 +12,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 updater = Updater(token='487860520:AAEgLKKYShLi9iut4v0Zl5HLnrUf8sNF418')
 
 filter_mmg = FilterMmg()
-filter_reply = FilterReply()
+filter_save_reply = FilterSaveReply()
 filter_salut = FilterSalut()
 filter_recon = FilterRecon()
 filter_wtf = FilterWtf()
@@ -56,7 +56,7 @@ dp.add_handler(MessageHandler(filter_mentira, sendMentira))
 dp.add_handler(MessageHandler(filter_sk1, sendSK1))
 dp.add_handler(MessageHandler(filter_felicidades, sendHBD))
 dp.add_handler(MessageHandler(filter_salut, salute))
-dp.add_handler(MessageHandler(filter_reply, sdm))
+dp.add_handler(MessageHandler(filter_save_reply, sdm))
 dp.add_handler(MessageHandler(filter_recon, recon))
 
 dp.add_handler(MessageHandler(filter_vn1, sendVN1))

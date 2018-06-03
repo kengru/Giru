@@ -19,7 +19,7 @@ def respondM(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id, document='http://a.memegen.com/zn4ros.gif')
 
 
-class FilterReply(BaseFilter):
+class FilterSaveReply(BaseFilter):
     def filter(self, message):
         reply = message.reply_to_message
         if message.reply_to_message and message.text == '-save':
