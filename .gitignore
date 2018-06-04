@@ -102,3 +102,6 @@ ENV/
 
 #pycharm dir
 .idea/*
+
+# firebase
+firebase.json
