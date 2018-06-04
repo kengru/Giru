@@ -86,8 +86,8 @@ class FirebaseReplyStorageProvider(BaseReplyStorageProvider):
             .set(message.to_dict())
 
     def get_all_replies(self):
-        return [convert_reply_dict_to_message(reply_dict) for (_, reply_dict) in
-                self.db_reference.child('replies').get().items()]
+        replies_dict = self.db_reference.child('replies').get() or {}
+        return [convert_reply_dict_to_message(reply_dict) for (_, reply_dict) in replies_dict.items()]
 
 
 class FilterSaveReply(BaseFilter):
