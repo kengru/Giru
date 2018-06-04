@@ -29,26 +29,21 @@ def Caps(bot, update, args):
     bot.sendMessage(chat_id=update.message.chat_id, text=text + '!')
 
 
-# TODO: please update this so it can be injected from caller (a higher order func, could work)
-load_dotenv()
-cert_file_path = os.path.realpath(os.getenv('FIREBASE_ACCOUNT_KEY_FILE_PATH'))
-firebase_admin.initialize_app(firebase_admin.credentials.Certificate(cert_file_path), {
-    'databaseURL': os.getenv('FIREBASE_DATABASE_URL'),
-})
+def create_get_saved_messages_callback(storage_provider):
+    def get_saved_messages_callback(bot, update):
+        replies = storage_provider.get_all_replies()
 
+        def format_saved_message(message):  # type: (Message) -> str
+            return '*{}* - [{}](tg://user?id={})'.format(message.text, message.from_user.first_name,
+                                                         message.from_user.id)
 
-def Saved(bot, update):
-    storage = FirebaseReplyStorageProvider(db_reference=db.reference())
-    replies = storage.get_all_replies()
+        formatted_replies = list(map(format_saved_message, replies))
 
-    def format_saved_message(message):  # type: (Message) -> str
-        return '*{}* - [{}](tg://user?id={})'.format(message.text, message.from_user.first_name, message.from_user.id)
+        text = '\n'.join(formatted_replies)
 
-    formatted_replies = list(map(format_saved_message, replies))
+        bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
 
-    text = '\n'.join(formatted_replies)
-
-    bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
+    return get_saved_messages_callback
 
 
 def Julien(bot, update):

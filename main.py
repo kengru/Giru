@@ -1,9 +1,15 @@
 import logging
+import os
+
+import firebase_admin
+from dotenv import load_dotenv
 
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
+from firebase_admin import db
 
-from commands import Start, Caps, Saved, Julien, Spotify, PaDondeHoy, Ayuda
-from repliers import FilterMmg, FilterSaveReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira, FilterFelicidades
+from commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, create_get_saved_messages_callback
+from repliers import FilterMmg, FilterSaveReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira, FilterFelicidades, \
+    FirebaseReplyStorageProvider
 from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
 from repliers import respondM, sdm, salute, recon, sendWTF, sendMentira, sendHBD
 from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
@@ -11,8 +17,16 @@ from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendV
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 updater = Updater(token='487860520:AAEgLKKYShLi9iut4v0Zl5HLnrUf8sNF418')
 
+load_dotenv()
+cert_file_path = os.path.realpath(os.getenv('FIREBASE_ACCOUNT_KEY_FILE_PATH'))
+firebase_admin.initialize_app(firebase_admin.credentials.Certificate(cert_file_path), {
+    'databaseURL': os.getenv('FIREBASE_DATABASE_URL'),
+})
+
+message_storage = FirebaseReplyStorageProvider(db.reference())
+
 filter_mmg = FilterMmg()
-filter_save_reply = FilterSaveReply()
+filter_save_reply = FilterSaveReply(message_storage)
 filter_salut = FilterSalut()
 filter_recon = FilterRecon()
 filter_wtf = FilterWtf()
@@ -41,7 +55,7 @@ def unknown(bot, update):
 commandsl = [
     CommandHandler('start', Start),
     CommandHandler('vociao', Caps, pass_args=True),
-    CommandHandler('saved', Saved),
+    CommandHandler('saved', create_get_saved_messages_callback(message_storage)),
     CommandHandler('julien', Julien),
     CommandHandler('spotify', Spotify, pass_args=True),
     CommandHandler('padondehoy', PaDondeHoy),
