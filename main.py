@@ -9,7 +9,7 @@ from firebase_admin import db
 
 from commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, create_get_saved_messages_callback
 from repliers import FilterMmg, FilterSaveReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira, FilterFelicidades, \
-    FirebaseReplyStorageProvider
+    FirebaseReplyStorageProvider, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider
 from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
 from repliers import respondM, sdm, salute, recon, sendWTF, sendMentira, sendHBD
 from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
@@ -23,7 +23,14 @@ firebase_admin.initialize_app(firebase_admin.credentials.Certificate(cert_file_p
     'databaseURL': os.getenv('FIREBASE_DATABASE_URL'),
 })
 
-message_storage = FirebaseReplyStorageProvider(db.reference())
+
+storage_location = os.getenv('STORAGE_LOCATION')
+message_storage = InMemoryReplyStorageProvider()
+if storage_location == 'file_system':
+    # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
+    message_storage = FileSystemReplyStorageProvider(os.path.realpath(os.path.join('.', 'src/texts/replies.ndjson')))
+elif storage_location == 'firebase':
+    message_storage = FirebaseReplyStorageProvider(db.reference())
 
 filter_mmg = FilterMmg()
 filter_save_reply = FilterSaveReply(message_storage)

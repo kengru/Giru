@@ -1,18 +1,13 @@
 import datetime
-import os
 import random
 from functools import lru_cache
-from firebase_admin import db
-from dotenv import load_dotenv
 
-import firebase_admin
 import spotipy
 from emoji import emojize
 from spotipy.oauth2 import SpotifyClientCredentials
 from telegram import Message, ParseMode
 
 from data import julien, days, ayuda
-from repliers import FirebaseReplyStorageProvider
 
 SPOTIPY_CLIENT_ID = '0f9f9324ddd54895848e32fe5cea0d47'
 SPOTIPY_CLIENT_SECRET = 'e6a9ce6a89ed4196a83e3fc65709ccc0'
