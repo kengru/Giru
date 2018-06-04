@@ -5,7 +5,7 @@ import time
 from os import path
 
 from firebase_admin.db import Reference
-from telegram import Message
+from telegram import Message, User
 from telegram.ext import BaseFilter
 
 saved = 'src/texts/saved.txt'
@@ -28,7 +28,7 @@ def respondM(bot, update):
 
 
 def convert_reply_dict_to_message(reply_dict):
-    reply_dict['from_user'] = reply_dict['from']  # NOTE: required by python telegram API
+    reply_dict['from_user'] = User(**reply_dict['from'])  # NOTE: required by python telegram API
     reply_dict['reply_to_message'] = convert_reply_dict_to_message(
         reply_dict['reply_to_message']) if 'reply_to_message' in reply_dict else None
     return Message(**reply_dict)
