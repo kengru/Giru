@@ -67,7 +67,12 @@ class FileSystemReplyStorageProvider(BaseReplyStorageProvider):
         def convert_json_line_to_message(json_line):
             return convert_reply_dict_to_message(json.loads(json_line))
 
-        with open(self.file_path) as file:
+        try:
+            file_handle = open(self.file_path)
+        except FileNotFoundError:
+            file_handle = open(self.file_path, 'a+')
+
+        with file_handle as file:
             replies = list(map(convert_json_line_to_message, [line.rstrip('\n') for line in file]))
 
         return replies or []
