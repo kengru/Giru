@@ -11,7 +11,7 @@ from telegram.ext import BaseFilter
 saved = 'src/texts/saved.txt'
 
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
-SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', '/src/texts/replies.ndjson'))
+SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'src/texts/replies.ndjson'))
 
 
 class FilterMmg(BaseFilter):
@@ -60,7 +60,7 @@ class FileSystemReplyStorageProvider(BaseReplyStorageProvider):
     def save(self, message):
         json_line = message.to_json() + '\n'
 
-        with open(self.file_path, 'a') as file:
+        with open(self.file_path, 'a+') as file:
             file.write(json_line)
 
     def get_all_replies(self):
