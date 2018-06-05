@@ -18,18 +18,17 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 updater = Updater(token='487860520:AAEgLKKYShLi9iut4v0Zl5HLnrUf8sNF418')
 
 load_dotenv()
-cert_file_path = os.path.realpath(os.getenv('FIREBASE_ACCOUNT_KEY_FILE_PATH'))
-firebase_admin.initialize_app(firebase_admin.credentials.Certificate(cert_file_path), {
-    'databaseURL': os.getenv('FIREBASE_DATABASE_URL'),
-})
-
 
 storage_location = os.getenv('STORAGE_LOCATION')
-message_storage = InMemoryReplyStorageProvider()
-if storage_location == 'file_system':
-    # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
-    message_storage = FileSystemReplyStorageProvider(os.path.realpath(os.path.join('.', 'src/texts/replies.ndjson')))
+# NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
+message_storage = FileSystemReplyStorageProvider(os.path.realpath(os.path.join('.', 'src/texts/replies.ndjson')))
+if storage_location == 'in_memory':
+    message_storage = InMemoryReplyStorageProvider()
 elif storage_location == 'firebase':
+    cert_file_path = os.path.realpath(os.getenv('FIREBASE_ACCOUNT_KEY_FILE_PATH'))
+    firebase_admin.initialize_app(firebase_admin.credentials.Certificate(cert_file_path), {
+        'databaseURL': os.getenv('FIREBASE_DATABASE_URL'),
+    })
     message_storage = FirebaseReplyStorageProvider(db.reference())
 
 filter_mmg = FilterMmg()
