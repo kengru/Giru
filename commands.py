@@ -5,6 +5,7 @@ from functools import lru_cache
 import spotipy
 from emoji import emojize
 from spotipy.oauth2 import SpotifyClientCredentials
+from telegram import Message, ParseMode
 
 from data import julien, days, ayuda
 
@@ -13,6 +14,7 @@ SPOTIPY_CLIENT_SECRET = 'e6a9ce6a89ed4196a83e3fc65709ccc0'
 client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
                                               client_secret=SPOTIPY_CLIENT_SECRET)
 
+SAVED_MESSAGE_LIST_IS_EMPTY_MESSAGE = "No hay mensajes guardao' mi loki"
 
 def Start(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text='SOY GIRU MANIN!! Dale "/ayuda".')
@@ -23,12 +25,21 @@ def Caps(bot, update, args):
     bot.sendMessage(chat_id=update.message.chat_id, text=text + '!')
 
 
-def Saved(bot, update):
-    message = ''
-    with open('src/texts/saved.txt', 'r') as file:
-        for line in file:
-            message += line
-    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
+def create_get_saved_messages_callback(storage_provider):
+    def get_saved_messages_callback(bot, update):
+        replies = storage_provider.get_all_replies()
+
+        def format_saved_message(message):  # type: (Message) -> str
+            return '*{}* - [{}](tg://user?id={})'.format(message.text, message.from_user.first_name,
+                                                         message.from_user.id)
+
+        formatted_replies = list(map(format_saved_message, replies))
+
+        text = '\n'.join(formatted_replies) if formatted_replies else SAVED_MESSAGE_LIST_IS_EMPTY_MESSAGE
+
+        bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
+
+    return get_saved_messages_callback
 
 
 def Julien(bot, update):

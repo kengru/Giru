@@ -1,9 +1,17 @@
 import random
 import re
+import json
+import time
+from os import path
 
+from firebase_admin.db import Reference
+from telegram import Message, User
 from telegram.ext import BaseFilter
 
 saved = 'src/texts/saved.txt'
+
+# NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
+SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'src/texts/replies.ndjson'))
 
 
 class FilterMmg(BaseFilter):
@@ -19,13 +27,81 @@ def respondM(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id, document='http://a.memegen.com/zn4ros.gif')
 
 
-class FilterReply(BaseFilter):
+def convert_reply_dict_to_message(reply_dict):
+    reply_dict['from_user'] = User(**reply_dict['from'])  # NOTE: required by python telegram API
+    reply_dict['reply_to_message'] = convert_reply_dict_to_message(
+        reply_dict['reply_to_message']) if 'reply_to_message' in reply_dict else None
+    return Message(**reply_dict)
+
+
+class BaseReplyStorageProvider:
+    def save(self, message):  # type: (Message) -> None
+        raise NotImplementedError
+
+    def get_all_replies(self):  # type: () -> List[Message]
+        raise NotImplementedError
+
+
+class InMemoryReplyStorageProvider(BaseReplyStorageProvider):
+    def __init__(self):
+        self.saved_replies = []
+
+    def save(self, message):
+        self.saved_replies.append(message)
+
+    def get_all_replies(self):
+        return self.saved_replies
+
+
+class FileSystemReplyStorageProvider(BaseReplyStorageProvider):
+    def __init__(self, file_path):
+        self.file_path = file_path
+
+    def save(self, message):
+        json_line = message.to_json() + '\n'
+
+        with open(self.file_path, 'a+') as file:
+            file.write(json_line)
+
+    def get_all_replies(self):
+        def convert_json_line_to_message(json_line):
+            return convert_reply_dict_to_message(json.loads(json_line))
+
+        try:
+            file_handle = open(self.file_path)
+        except FileNotFoundError:
+            file_handle = open(self.file_path, 'a+')
+
+        with file_handle as file:
+            replies = list(map(convert_json_line_to_message, [line.rstrip('\n') for line in file]))
+
+        return replies or []
+
+
+class FirebaseReplyStorageProvider(BaseReplyStorageProvider):
+    def __init__(self, db_reference):  # type: (Reference) -> None
+        self.db_reference = db_reference
+
+    def save(self, message):
+        timestamp = str(int(time.time()))
+
+        self.db_reference \
+            .child('replies') \
+            .child(timestamp) \
+            .set(message.to_dict())
+
+    def get_all_replies(self):
+        replies_dict = self.db_reference.child('replies').get() or {}
+        return [convert_reply_dict_to_message(reply_dict) for (_, reply_dict) in replies_dict.items()]
+
+
+class FilterSaveReply(BaseFilter):
+    def __init__(self, storage_provider=None):
+        self.storage_provider = storage_provider or FileSystemReplyStorageProvider(file_path=SAVED_REPLIES_FILE_PATH)
+
     def filter(self, message):
-        reply = message.reply_to_message
         if message.reply_to_message and message.text == '-save':
-            with open(saved, 'a') as file:
-                file.write('*' + reply.text + '* - [' + reply.from_user.first_name + '](tg://user?id=' \
-                           + str(reply.from_user.id) + ')\n')
+            self.storage_provider.save(message.reply_to_message)
 
 
 def sdm(bot, update):
