@@ -42,6 +42,9 @@ ayuda = {
     },
     '/padondehoy': {
         'Te dice lo que vamos a hacer hoy.': '/padondehoy'
+    },
+    '/cartelera': {
+        'Trae una lista de las películas que están en los cines actualmente.': '/cartelera'
     }
 }
 
@@ -67,16 +70,3 @@ days = [
     # Domingo
     ["Hoy hay iglesia, maldito impio.", "IGLESIIIIAAA"]
 ]
-
-# with open('src/images/julien.pickle', 'wb') as f:
-#     pickle.dump(julien, f, pickle.HIGHEST_PROTOCOL)
-#
-# with open('src/texts/ayuda.pickle', 'wb') as f:
-#     pickle.dump(ayuda, f, pickle.HIGHEST_PROTOCOL)
-#
-# with open('src/texts/days.pickle', 'wb') as f:
-#     pickle.dump(days, f, pickle.HIGHEST_PROTOCOL)
-#
-# print('Serialized.')
-
-print("No need to serialize.")

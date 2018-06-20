@@ -2,6 +2,10 @@ import datetime
 import random
 from functools import lru_cache
 
+from helpers.reqs import simple_get
+from bs4 import BeautifulSoup
+from imdb import IMDb
+
 import spotipy
 from emoji import emojize
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -81,9 +85,35 @@ def PaDondeHoy(bot, update):
 
 
 def Ayuda(bot, update):
+    """ Sends a list of the commands and their use. """
     message = 'Hola, soy Giru.\n\n*Comandos:* \n'
     for k in sorted(ayuda):
         message += '%s: ' % k
         for k2, i in ayuda[k].items():
-            message += '%s\n\t- _Ejemplo: %s_\n' % (k2, i)
+            message += '%s\n\t- Ejemplo: _%s_\n' % (k2, i)
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
+
+
+@lru_cache()
+def cached_cartelera_rating_response(movie):
+    rating = ''
+    ia = IMDb()
+    search = ia.search_movie(movie)
+    if len(search):
+        movie = search[0]
+        ia.update(movie, ['vote details'])
+        if 'arithmetic mean' in movie.keys():
+            rating = movie['arithmetic mean']
+    return str(rating) if len(str(rating)) > 0 else 'No IMDb.'
+
+
+def Cartelera(bot, update):
+    """ Get's all the movies in theathers right now. """
+    message = '*Cartelera al día {0}:*\n\n'.format(datetime.datetime.today().strftime('%d-%m-%Y'))
+    html = BeautifulSoup(simple_get('http://www.cinema.com.do/index.php?x=cartelera'), 'html.parser')
+    movies = html.find_all('ul', class_='small-block-grid-2')
+    for item in movies:
+        for li in item.find_all('li'):
+            rating = cached_cartelera_rating_response(li.strong.text)
+            message += '[{0}](http://www.cinema.com.do/{1}) (*{2}*)\n'.format(li.strong.text, li.a.get('href'), rating)
+    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown', disable_web_page_preview=True)

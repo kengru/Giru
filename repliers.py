@@ -23,7 +23,6 @@ class FilterMmg(BaseFilter):
 def respondM(bot, update):
     """ Respond to a pattern in FilterMmg. """
     # bot.sendMessage(chat_id=update.message.chat_id, text='MMG UTE!')
-    # bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/basura.ogg', 'rb'))
     bot.sendDocument(chat_id=update.message.chat_id, document='http://a.memegen.com/zn4ros.gif')
 
 
@@ -265,6 +264,3 @@ def sendSK1(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text='Quien dijo menor? :D')
     bot.sendSticker(chat_id=update.message.chat_id, sticker='CAADAQADFwADGp7vCBkeqa14LgcnAg')
 
-# class FilterPalomo(BaseFilter):
-#     def filter(self, message):
-#         reply = message.reply_to_message
