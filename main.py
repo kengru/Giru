@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 from firebase_admin import db
 
-from commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, create_get_saved_messages_callback
+from commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, create_get_saved_messages_callback
 from repliers import FilterMmg, FilterSaveReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira, FilterFelicidades, \
     FirebaseReplyStorageProvider, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider
 from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
@@ -65,6 +65,7 @@ commandsl = [
     CommandHandler('julien', Julien),
     CommandHandler('spotify', Spotify, pass_args=True),
     CommandHandler('padondehoy', PaDondeHoy),
+    CommandHandler('cartelera', Cartelera),
     CommandHandler('ayuda', Ayuda)
 ]
 for cmd in commandsl:

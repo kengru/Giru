@@ -2,9 +2,7 @@ import datetime
 import random
 from functools import lru_cache
 
-from requests import get
-from requests.exceptions import RequestException
-from contextlib import closing
+from helpers.reqs import simple_get
 from bs4 import BeautifulSoup
 
 import spotipy
@@ -96,4 +94,10 @@ def Ayuda(bot, update):
 
 def Cartelera(bot, update):
     """ Get's all the movies in theathers right now. """
-    
+    message = '*Cartelera al día {0}:*\n'.format(datetime.datetime.today().strftime('%d-%m-%Y'))
+    html = BeautifulSoup(simple_get('http://www.cinema.com.do/index.php?x=cartelera'), 'html.parser')
+    movies = html.find_all('ul', class_='small-block-grid-2')
+    for item in movies:
+        for li in item.find_all('li'):
+            message += '[' + li.strong.text + '](http://www.cinema.com.do/' + li.a.get('href') + ')\n'
+    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown', disable_web_page_preview=True)
