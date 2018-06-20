@@ -1,36 +1,52 @@
-import pickle
-import random
-import spotipy
 import datetime
+import random
+from functools import lru_cache
+
+import spotipy
 from emoji import emojize
 from spotipy.oauth2 import SpotifyClientCredentials
-from telegram import InputMediaPhoto
+from telegram import Message, ParseMode
 
-SPOTIPY_CLIENT_ID='0f9f9324ddd54895848e32fe5cea0d47'
-SPOTIPY_CLIENT_SECRET='e6a9ce6a89ed4196a83e3fc65709ccc0'
-client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, \
-     client_secret=SPOTIPY_CLIENT_SECRET)
+from data import julien, days, ayuda
+
+SPOTIPY_CLIENT_ID = '0f9f9324ddd54895848e32fe5cea0d47'
+SPOTIPY_CLIENT_SECRET = 'e6a9ce6a89ed4196a83e3fc65709ccc0'
+client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
+                                              client_secret=SPOTIPY_CLIENT_SECRET)
+
+SAVED_MESSAGE_LIST_IS_EMPTY_MESSAGE = "No hay mensajes guardao' mi loki"
 
 def Start(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text='SOY GIRU MANIN!! Dale "/ayuda".')
+
 
 def Caps(bot, update, args):
     text = ' '.join(args).upper()
     bot.sendMessage(chat_id=update.message.chat_id, text=text + '!')
 
-def Saved(bot, update):
-    message = ''
-    with open('src/texts/saved.txt', 'r') as file:
-        for line in file:
-            message += line
-    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
+
+def create_get_saved_messages_callback(storage_provider):
+    def get_saved_messages_callback(bot, update):
+        replies = storage_provider.get_all_replies()
+
+        def format_saved_message(message):  # type: (Message) -> str
+            return '*{}* - [{}](tg://user?id={})'.format(message.text, message.from_user.first_name,
+                                                         message.from_user.id)
+
+        formatted_replies = list(map(format_saved_message, replies))
+
+        text = '\n'.join(formatted_replies) if formatted_replies else SAVED_MESSAGE_LIST_IS_EMPTY_MESSAGE
+
+        bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode=ParseMode.MARKDOWN)
+
+    return get_saved_messages_callback
+
 
 def Julien(bot, update):
-    with open('src/images/julien.pickle', 'rb') as f:
-        julien = pickle.load(f)
     sel = random.choice(julien)
     # cal = InputMediaPhoto(sel, 'Julien')
     bot.sendPhoto(chat_id=update.message.chat_id, photo=sel)
+
 
 def Spotify(bot, update, args):
     query = ' '.join(args).lower()
@@ -46,20 +62,25 @@ def Spotify(bot, update, args):
         if audio:
             bot.sendAudio(chat_id=update.message.chat_id, audio=audio)
         else:
-            bot.sendMessage(chat_id=update.message.chat_id, \
-            text=emojize(':x:', use_aliases=True) + ' No hay preview.', parse_mode='Markdown')
+            bot.sendMessage(chat_id=update.message.chat_id,
+                            text=emojize(':x:', use_aliases=True) + ' No hay preview.', parse_mode='Markdown')
     else:
         bot.sendMessage(chat_id=update.message.chat_id, text='No encuentro la cancion bi.', parse_mode='Markdown')
 
+
+@lru_cache()
+def cached_padondehoy_response(date, chat):
+    day_of_week = date.weekday()
+    return random.choice(days[day_of_week])
+
+
 def PaDondeHoy(bot, update):
-    day = datetime.date.today().weekday()
-    with open('src/texts/days.pickle', 'rb') as f:
-        days = pickle.load(f)
-    bot.sendMessage(chat_id=update.message.chat_id, text=days[day])
+    date = datetime.date.today()
+    response = cached_padondehoy_response(date, update.message.chat_id)
+    bot.sendMessage(chat_id=update.message.chat_id, text=response)
+
 
 def Ayuda(bot, update):
-    with open('src/texts/ayuda.pickle', 'rb') as f:
-        ayuda = pickle.load(f)
     message = 'Hola, soy Giru.\n\n*Comandos:* \n'
     for k in sorted(ayuda):
         message += '%s: ' % k
