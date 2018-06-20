@@ -2,6 +2,11 @@ import datetime
 import random
 from functools import lru_cache
 
+from requests import get
+from requests.exceptions import RequestException
+from contextlib import closing
+from bs4 import BeautifulSoup
+
 import spotipy
 from emoji import emojize
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -87,3 +92,8 @@ def Ayuda(bot, update):
         for k2, i in ayuda[k].items():
             message += '%s\n\t- _Ejemplo: %s_\n' % (k2, i)
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
+
+
+def Cartelera(bot, update):
+    """ Get's all the movies in theathers right now. """
+    
