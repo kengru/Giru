@@ -2,16 +2,14 @@ import datetime
 import random
 from functools import lru_cache
 
-from helpers.reqs import simple_get
-from bs4 import BeautifulSoup
-from imdb import IMDb
-
 import spotipy
 from emoji import emojize
+from requests import get
 from spotipy.oauth2 import SpotifyClientCredentials
 from telegram import Message, ParseMode
 
 from data import julien, days, ayuda
+from helpers.imdb import get_rating_by_id, get_rating_by_title
 
 SPOTIPY_CLIENT_ID = '0f9f9324ddd54895848e32fe5cea0d47'
 SPOTIPY_CLIENT_SECRET = 'e6a9ce6a89ed4196a83e3fc65709ccc0'
@@ -19,6 +17,7 @@ client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
                                               client_secret=SPOTIPY_CLIENT_SECRET)
 
 SAVED_MESSAGE_LIST_IS_EMPTY_MESSAGE = "No hay mensajes guardao' mi loki"
+
 
 def Start(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text='SOY GIRU MANIN!! Dale "/ayuda".')
@@ -94,26 +93,35 @@ def Ayuda(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
 
 
-@lru_cache()
-def cached_cartelera_rating_response(movie):
-    rating = ''
-    ia = IMDb()
-    search = ia.search_movie(movie)
-    if len(search):
-        movie = search[0]
-        ia.update(movie, ['vote details'])
-        if 'arithmetic mean' in movie.keys():
-            rating = movie['arithmetic mean']
-    return str(rating) if len(str(rating)) > 0 else 'No IMDb.'
-
-
 def Cartelera(bot, update):
     """ Get's all the movies in theathers right now. """
+    movies = get('http://api.cine.com.do/v1/movies').json()
+
     message = '*Cartelera al día {0}:*\n\n'.format(datetime.datetime.today().strftime('%d-%m-%Y'))
-    html = BeautifulSoup(simple_get('http://www.cinema.com.do/index.php?x=cartelera'), 'html.parser')
-    movies = html.find_all('ul', class_='small-block-grid-2')
-    for item in movies:
-        for li in item.find_all('li'):
-            rating = cached_cartelera_rating_response(li.strong.text)
-            message += '[{0}](http://www.cinema.com.do/{1}) (*{2}*)\n'.format(li.strong.text, li.a.get('href'), rating)
+
+    for m in movies:
+        if m.get('published') and not m.get('comingsoon'):
+            imdb_string = ''
+
+            if m.get('imdbScore'):
+                if m.get('imdbId'):
+                    imdb_string = "[{}]({})".format(m.get('imdbScore'),
+                                                    "https://www.imdb.com/title/" + m.get('imdbId'))
+                else:
+                    imdb_string = m.get('imdbScore')
+            else:
+
+                if m.get('imdbId'):
+                    imdb_string = "[{}]({})".format(get_rating_by_id(m.get('imdbId')),
+                                                    "https://www.imdb.com/title/" + m.get('imdbId'))
+                else:
+                    result = get_rating_by_title(m.get('title'))
+                    if result:
+                        rating, imdburl = result
+                        imdb_string = "[{}]({})".format(rating, imdburl)
+
+            message += '[{}]({}) *{}*\n'.format(m.get('title'),
+                                                "http://www.cine.com.do/peliculas/" + m.get('slug'),
+                                                imdb_string)
+
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown', disable_web_page_preview=True)

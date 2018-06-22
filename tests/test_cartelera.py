@@ -4,7 +4,7 @@ from commands import Cartelera
 from tests.mocks import MockBot, MockUpdate
 
 
-class TestCartelera(TestCase):
+class Test_cartelera(TestCase):
 
     def test_catalogue_response_same_chat_same_day(self):
         bot = MockBot()
