@@ -7,7 +7,7 @@ from telegram import Message, Chat, User
 class MockBot:
     last_message = {}
 
-    def sendMessage(self, chat_id, text):
+    def sendMessage(self, chat_id, text, **kwargs):
         self.last_message[chat_id] = text
 
 
