@@ -8,10 +8,8 @@ from firebase_admin.db import Reference
 from telegram import Message, User
 from telegram.ext import BaseFilter
 
-saved = 'src/texts/saved.txt'
-
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
-SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'src/texts/replies.ndjson'))
+SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'src/data/replies.ndjson'))
 
 
 class FilterMmg(BaseFilter):
