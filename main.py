@@ -22,7 +22,7 @@ load_dotenv()
 
 storage_location = os.getenv('STORAGE_LOCATION')
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
-message_storage = FileSystemReplyStorageProvider(os.path.realpath(os.path.join('.', 'src/texts/replies.ndjson')))
+message_storage = FileSystemReplyStorageProvider(os.path.realpath(os.path.join('.', 'src/data/replies.ndjson')))
 if storage_location == 'in_memory':
     message_storage = InMemoryReplyStorageProvider()
 elif storage_location == 'firebase':

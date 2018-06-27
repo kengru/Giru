@@ -19,6 +19,7 @@ lib/
 lib64/
 parts/
 sdist/
+src/data/
 var/
 wheels/
 *.egg-info/
@@ -105,6 +106,3 @@ ENV/
 
 # firebase
 firebase.json
-
-# Giru Specifics
-src/data/*
