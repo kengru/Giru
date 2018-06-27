@@ -1,4 +1,4 @@
-""" Using this file to serialize things with pickle. """
+""" Using this file to save data. """
 
 julien = [
     'https://media.wmagazine.com/photos/59f1031ad473f932b6e964c5/4:3/w_1536/JULIEN_WMAG_37342.jpg',

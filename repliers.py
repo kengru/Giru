@@ -2,6 +2,7 @@ import random
 import re
 import json
 import time
+import pickle
 from os import path
 
 from firebase_admin.db import Reference
@@ -262,3 +263,33 @@ def sendSK1(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text='Quien dijo menor? :D')
     bot.sendSticker(chat_id=update.message.chat_id, sticker='CAADAQADFwADGp7vCBkeqa14LgcnAg')
 
+# Scoring system
+
+class FilterScores(BaseFilter):
+    def filter(self, message):
+        reply = message.reply_to_message
+        if reply and (message.text == '-1' or message.text == '+1') and message.from_user.id != reply.from_user.id:
+            return True
+
+
+def recordPoints(bot, update):
+    scores = {}
+    try:
+        with open('src/data/scores.pkl', 'rb') as f:
+            scores = pickle.load(f)
+    except:
+        with open('src/data/scores.pkl', 'wb') as f:
+            pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
+    name = update.message.reply_to_message.from_user.first_name
+    if name in scores.keys():
+        if update.message.text == '+1':
+            scores[name] += 1
+        else:
+            scores[name] -= 1
+    else:
+        if update.message.text == '+1':
+            scores[name] = scores.get(name, 0) + 1
+        else:
+            scores[name] = scores.get(name, 0) - 1
+    with open('src/data/scores.pkl', 'wb') as f:
+        pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)

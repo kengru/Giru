@@ -1,5 +1,6 @@
 import datetime
 import random
+import pickle
 from functools import lru_cache
 
 from helpers.reqs import simple_get
@@ -117,3 +118,29 @@ def Cartelera(bot, update):
             rating = cached_cartelera_rating_response(li.strong.text)
             message += '[{0}](http://www.cinema.com.do/{1}) (*{2}*)\n'.format(li.strong.text, li.a.get('href'), rating)
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown', disable_web_page_preview=True)
+
+
+def Score(bot, update):
+    """ Gets a list with the points scored by person. """
+    try:
+        with open('src/data/scores.pkl', 'rb') as f:
+            scores = pickle.load(f)
+        message = '*Scores:*\n\n'
+        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        for k, v in sorted_scores:
+            message += '*{0}:*  {1}\n'.format(k, v)
+        # If it ever wants to be divided.
+        # loved = tuple(filter(lambda x: x[1] > 0, sorted_scores))
+        # hated = tuple(filter(lambda x: x[1] < 0, sorted_scores))
+        # if loved:
+        #     message += '*Loved:*\n'
+        #     for k, v in loved:
+        #         message += '{0}: {1}\n'.format(k, v)
+        # message += '\n'
+        # if hated:
+        #     message += '*Hated:*\n'
+        #     for k, v in hated:
+        #         message += '{0}: {1}\n'.format(k, v)
+    except:
+        message = 'No hay scores.'
+    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
