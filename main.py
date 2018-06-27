@@ -7,12 +7,13 @@ from dotenv import load_dotenv
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 from firebase_admin import db
 
-from commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, create_get_saved_messages_callback
+from commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Score, create_get_saved_messages_callback
 from repliers import FilterMmg, FilterSaveReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira, FilterFelicidades, \
-    FirebaseReplyStorageProvider, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider
+    FirebaseReplyStorageProvider, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider, FilterScores
 from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
 from repliers import respondM, sdm, salute, recon, sendWTF, sendMentira, sendHBD
 from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
+from repliers import recordPoints
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 updater = Updater(token='487860520:AAEgLKKYShLi9iut4v0Zl5HLnrUf8sNF418')
@@ -49,6 +50,8 @@ filter_vn7 = FilterVN7()
 
 filter_sk1 = FilterSK1()
 
+filter_score = FilterScores()
+
 dp = updater.dispatcher
 
 
@@ -66,6 +69,7 @@ commandsl = [
     CommandHandler('spotify', Spotify, pass_args=True),
     CommandHandler('padondehoy', PaDondeHoy),
     CommandHandler('cartelera', Cartelera),
+    CommandHandler('score', Score),
     CommandHandler('ayuda', Ayuda)
 ]
 for cmd in commandsl:
@@ -87,6 +91,8 @@ dp.add_handler(MessageHandler(filter_vn4, sendVN4))
 dp.add_handler(MessageHandler(filter_vn5, sendVN5))
 dp.add_handler(MessageHandler(filter_vn6, sendVN6))
 dp.add_handler(MessageHandler(filter_vn7, sendVN7))
+
+dp.add_handler(MessageHandler(filter_score, recordPoints))
 
 dp.add_handler(MessageHandler(Filters.command, unknown))
 
