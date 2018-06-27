@@ -107,5 +107,4 @@ ENV/
 firebase.json
 
 # Giru Specifics
-/src/data/repliers.ndjson
-/src/data/scores.pkl
+/src/data/*

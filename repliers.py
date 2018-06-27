@@ -268,7 +268,7 @@ def sendSK1(bot, update):
 class FilterScores(BaseFilter):
     def filter(self, message):
         reply = message.reply_to_message
-        if reply and (message.text == '-1' or message.text == '+1'):
+        if reply and (message.text == '-1' or message.text == '+1') and message.from_user.id != reply.from_user.id:
             return True
 
 
