@@ -119,8 +119,10 @@ def salute(bot, update):
         bot.sendMessage(chat_id=update.message.chat_id, text='Hola!')
     elif 'klk' in message:
         bot.sendMessage(chat_id=update.message.chat_id, text='Dime buen barrial.')
+    elif 'la' in message:
+        bot.sendMessage(chat_id=update.message.chat_id, text='Hermana, cuente todo')
     else:
-        bot.sendMessage(chat_id=update.message.chat_id, text='Dimelo.')
+        pass
 
 
 class FilterRecon(BaseFilter):

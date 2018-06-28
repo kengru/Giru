@@ -130,6 +130,7 @@ def Score(bot, update):
         for k, v in sorted_scores:
             message += '*{0}:*  {1}\n'.format(k, v)
         # If it ever wants to be divided.
+        # 
         # loved = tuple(filter(lambda x: x[1] > 0, sorted_scores))
         # hated = tuple(filter(lambda x: x[1] < 0, sorted_scores))
         # if loved:
