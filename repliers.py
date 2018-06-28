@@ -8,6 +8,7 @@ from os import path
 from firebase_admin.db import Reference
 from telegram import Message, User
 from telegram.ext import BaseFilter
+from data import replies
 
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
 SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'src/data/replies.ndjson'))
@@ -172,6 +173,18 @@ class FilterFelicidades(BaseFilter):
 def sendHBD(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id,
                      document='https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif')
+
+# Replying to user.
+class FilterReplyToGiru(BaseFilter):
+    def filter(self, message):
+        reply = message.reply_to_message
+        if reply and reply.from_user.is_bot:
+            return True
+
+
+def sendReplyToUser(bot, update):
+    sel = random.choice(replies)
+    bot.sendMessage(chat_id=update.message.chat_id, text=sel, reply_to_message=update.message)
 
 
 # Voicenotes Repliers
