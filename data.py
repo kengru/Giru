@@ -70,3 +70,15 @@ days = [
     # Domingo
     ["Hoy hay iglesia, maldito impio.", "IGLESIIIIAAA"]
 ]
+
+replies = [
+    'No sé que dijiste, pero maricons ute.',
+    'Todo el mundo aquí sabe quien es el mamaguebo.',
+    'Soy un maldito bot, no sé que dices!',
+    'DAME BANDA!!',
+    'No me de reply maricons',
+    'No sé que dices',
+    '?',
+    'Qué?',
+    'Ok'
+]
