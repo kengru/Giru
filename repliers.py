@@ -2,16 +2,16 @@ import random
 import re
 import json
 import time
+import pickle
 from os import path
 
 from firebase_admin.db import Reference
 from telegram import Message, User
 from telegram.ext import BaseFilter
-
-saved = 'src/texts/saved.txt'
+from data import replies
 
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
-SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'src/texts/replies.ndjson'))
+SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'src/data/replies.ndjson'))
 
 
 class FilterMmg(BaseFilter):
@@ -120,8 +120,10 @@ def salute(bot, update):
         bot.sendMessage(chat_id=update.message.chat_id, text='Hola!')
     elif 'klk' in message:
         bot.sendMessage(chat_id=update.message.chat_id, text='Dime buen barrial.')
+    elif 'la' in message:
+        bot.sendMessage(chat_id=update.message.chat_id, text='Hermana, cuente todo')
     else:
-        bot.sendMessage(chat_id=update.message.chat_id, text='Dimelo.')
+        pass
 
 
 class FilterRecon(BaseFilter):
@@ -171,6 +173,18 @@ class FilterFelicidades(BaseFilter):
 def sendHBD(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id,
                      document='https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif')
+
+# Replying to user.
+class FilterReplyToGiru(BaseFilter):
+    def filter(self, message):
+        reply = message.reply_to_message
+        if reply and reply.from_user.is_bot:
+            return True
+
+
+def sendReplyToUser(bot, update):
+    sel = random.choice(replies)
+    bot.sendMessage(chat_id=update.message.chat_id, text=sel, reply_to_message=update.message)
 
 
 # Voicenotes Repliers
@@ -264,3 +278,33 @@ def sendSK1(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text='Quien dijo menor? :D')
     bot.sendSticker(chat_id=update.message.chat_id, sticker='CAADAQADFwADGp7vCBkeqa14LgcnAg')
 
+# Scoring system
+
+class FilterScores(BaseFilter):
+    def filter(self, message):
+        reply = message.reply_to_message
+        if reply and (message.text == '-1' or message.text == '+1') and message.from_user.id != reply.from_user.id:
+            return True
+
+
+def recordPoints(bot, update):
+    scores = {}
+    try:
+        with open('src/data/scores.pkl', 'rb') as f:
+            scores = pickle.load(f)
+    except:
+        with open('src/data/scores.pkl', 'wb') as f:
+            pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
+    name = update.message.reply_to_message.from_user.first_name
+    if name in scores.keys():
+        if update.message.text == '+1':
+            scores[name] += 1
+        else:
+            scores[name] -= 1
+    else:
+        if update.message.text == '+1':
+            scores[name] = scores.get(name, 0) + 1
+        else:
+            scores[name] = scores.get(name, 0) - 1
+    with open('src/data/scores.pkl', 'wb') as f:
+        pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
