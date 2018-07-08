@@ -1,5 +1,5 @@
-from functools import lru_cache, reduce
-from typing import Tuple, Dict
+from functools import reduce
+from typing import Dict
 
 from omdb import OMDBClient
 
@@ -24,7 +24,9 @@ class Movie:
 
     @property
     def emoji_ratings(self) -> Dict[str, str]:
-        movie = omdb.get(imdbid=self.id, title=self.title)
+        id, title = self.id, None if self.id else self.title
+
+        movie = omdb.get(imdbid=id, title=title)
         if movie:
             ratings = movie.get('ratings')
             e_ratings = reduce(emojify_sources, ratings, {})
@@ -36,4 +38,3 @@ if __name__ == '__main__':
     print(Movie(title="Ocean's eight").emoji_ratings)
     print(Movie(title="Deadpool 2").emoji_ratings)
     print(Movie(title="L'Insulte").emoji_ratings)
-
