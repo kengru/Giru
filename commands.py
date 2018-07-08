@@ -1,7 +1,7 @@
 import datetime
-import random
 import pickle
-from functools import lru_cache
+import random
+from functools import lru_cache, reduce
 
 import spotipy
 from emoji import emojize
@@ -10,7 +10,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from telegram import Message, ParseMode
 
 from data import julien, days, ayuda
-from helpers.imdb import get_rating_by_id, get_rating_by_title
+from helpers.movies import Movie
 
 SPOTIPY_CLIENT_ID = '0f9f9324ddd54895848e32fe5cea0d47'
 SPOTIPY_CLIENT_SECRET = 'e6a9ce6a89ed4196a83e3fc65709ccc0'
@@ -98,32 +98,21 @@ def Cartelera(bot, update):
     """ Get's all the movies in theathers right now. """
     movies = get('http://api.cine.com.do/v1/movies').json()
 
-    message = '*Cartelera al día {0}:*\n\n'.format(datetime.datetime.today().strftime('%d-%m-%Y'))
+    message = '*Cartelera de hoy*\n\n'
 
     for m in movies:
         if m.get('published') and not m.get('comingsoon'):
-            imdb_string = ''
-
-            if m.get('imdbScore'):
-                if m.get('imdbId'):
-                    imdb_string = "[{}]({})".format(m.get('imdbScore'),
-                                                    "https://www.imdb.com/title/" + m.get('imdbId'))
-                else:
-                    imdb_string = m.get('imdbScore')
+            ratings = Movie(m.get('imdbId'), m.get('title')).emoji_ratings
+            if ratings and len(ratings):
+                ratings = reduce(lambda s, i: s + "  {}{}".format(*i),
+                                 ratings.items(),
+                                 "")
             else:
-
-                if m.get('imdbId'):
-                    imdb_string = "[{}]({})".format(get_rating_by_id(m.get('imdbId')),
-                                                    "https://www.imdb.com/title/" + m.get('imdbId'))
-                else:
-                    result = get_rating_by_title(m.get('title'))
-                    if result:
-                        rating, imdburl = result
-                        imdb_string = "[{}]({})".format(rating, imdburl)
+                ratings = ''
 
             message += '[{}]({}) *{}*\n'.format(m.get('title'),
                                                 "http://www.cine.com.do/peliculas/" + m.get('slug'),
-                                                imdb_string)
+                                                ratings)
 
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown', disable_web_page_preview=True)
 

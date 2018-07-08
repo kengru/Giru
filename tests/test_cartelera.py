@@ -11,6 +11,6 @@ class Test_cartelera(TestCase):
         update = MockUpdate()
 
         Cartelera(bot, update)
-        response_1 = bot.last_message[update.message.chat_id]
+        response_text = bot.last_message[update.message.chat_id]
 
-        print(response_1)
+        print(response_text)

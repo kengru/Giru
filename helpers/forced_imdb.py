@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Tuple
+from typing import Tuple, Dict
 
 from bs4 import BeautifulSoup
 from requests import get
@@ -9,11 +9,8 @@ IMDb_SEARCH_URL = IMDb_BASE_URL + "/search/title"  # ?title=ocean%27s%20eight&ti
 IMDb_TITLE_URL = IMDb_BASE_URL + "/title/"  # /tt7388562
 
 
-
 @lru_cache()
 def get_rating_by_id(id) -> str:
-    get
-
     movie = BeautifulSoup(get(IMDb_TITLE_URL + id).content, 'html.parser')
     rating = movie.find('span', attrs=dict(itemprop="ratingValue"))
     if rating:
