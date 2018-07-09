@@ -1,13 +1,10 @@
-from os import chdir
 from unittest import TestCase
 
-from commands import PaDondeHoy
 from tests.mocks import MockBot, MockUpdate
+from commands import PaDondeHoy
 
 
 class TestPaDondeHoy(TestCase):
-    def setUpClass():
-        chdir("..")
 
     def test_catalogue_response_same_chat_same_day(self):
         bot = MockBot()
