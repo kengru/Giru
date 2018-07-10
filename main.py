@@ -1,5 +1,6 @@
 import logging
 import os
+from os.path import join
 
 import firebase_admin
 from firebase_admin import db
@@ -14,13 +15,14 @@ from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, Filt
 from repliers import recordPoints, sendReplyToUser
 from repliers import respondM, sdm, salute, recon, sendWTF, sendMentira, sendHBD
 from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
-from settings import TELEGRAM_TOKEN, FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
+from settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
+from settings import TELEGRAM_TOKEN, GIRU_DATA_PATH
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 updater = Updater(token=TELEGRAM_TOKEN)
 
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
-message_storage = FileSystemReplyStorageProvider('~/giru_data/replies.ndjson')
+message_storage = FileSystemReplyStorageProvider(join(GIRU_DATA_PATH, 'replies.ndjson'))
 if GIRU_STORAGE_LOCATION == 'in_memory':
     message_storage = InMemoryReplyStorageProvider()
 elif GIRU_STORAGE_LOCATION == 'firebase':
