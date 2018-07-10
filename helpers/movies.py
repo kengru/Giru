@@ -1,4 +1,5 @@
 from functools import reduce
+from re import findall
 from typing import Dict
 
 from omdb import OMDBClient
@@ -12,6 +13,10 @@ RATING_EMOJI = {'Rotten Tomatoes': '🍅',
 
 def emojify_sources(s: Dict[str, str], rating: Dict[str, str]):
     source, value = rating.get('source'), rating.get('value')
+    matches = findall(r"([\d.]+).*", value)
+    if len(matches):
+        value = matches[0]
+
     s[RATING_EMOJI.get(source, source)] = value
 
     return s
