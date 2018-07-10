@@ -14,9 +14,10 @@ from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, Filt
 from repliers import respondM, sdm, salute, recon, sendWTF, sendMentira, sendHBD
 from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
 from repliers import recordPoints, sendReplyToUser
+from secrets import TELEGRAM_TOKEN
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-updater = Updater(token='487860520:AAEgLKKYShLi9iut4v0Zl5HLnrUf8sNF418')
+updater = Updater(token=TELEGRAM_TOKEN)
 
 load_dotenv()
 
