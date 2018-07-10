@@ -119,7 +119,7 @@ def Cartelera(bot, update):
 def Scores(bot, update):
     """ Gets a list with the points scored by person. """
     try:
-        with open('res/data/scores.pkl', 'rb') as f:
+        with open('~/giru_data/scores.pkl', 'rb') as f:
             scores = pickle.load(f)
         message = '*Scores:*\n\n'
         sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)

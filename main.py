@@ -20,7 +20,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 updater = Updater(token=TELEGRAM_TOKEN)
 
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
-message_storage = FileSystemReplyStorageProvider(os.path.realpath(os.path.join('.', 'res/data/replies.ndjson')))
+message_storage = FileSystemReplyStorageProvider('~/giru_data/replies.ndjson')
 if GIRU_STORAGE_LOCATION == 'in_memory':
     message_storage = InMemoryReplyStorageProvider()
 elif GIRU_STORAGE_LOCATION == 'firebase':
