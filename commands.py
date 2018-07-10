@@ -11,7 +11,7 @@ from telegram import Message, ParseMode
 
 from data import julien, days, ayuda
 from helpers.movies import Movie
-from secrets import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET
+from settings import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET
 
 client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
                                               client_secret=SPOTIPY_CLIENT_SECRET)

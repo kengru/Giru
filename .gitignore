@@ -106,7 +106,3 @@ ENV/
 
 # firebase
 firebase.json
-
-#secrets data
-secrets.py
-*secrets.py

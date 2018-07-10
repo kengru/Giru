@@ -4,7 +4,7 @@ from typing import Dict
 
 from omdb import OMDBClient
 
-from secrets import OMDB_API_KEY
+from settings import OMDB_API_KEY
 
 omdb = OMDBClient(apikey=OMDB_API_KEY)
 

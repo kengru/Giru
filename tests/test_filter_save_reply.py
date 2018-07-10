@@ -1,17 +1,15 @@
 import os
 import time
+from tempfile import NamedTemporaryFile
+from unittest import TestCase
 
 import firebase_admin
-
-from unittest import TestCase
-from tempfile import NamedTemporaryFile
 from firebase_admin import db
-from dotenv import load_dotenv
-
-from tests.mocks import MockMessage, MockUser
 
 from repliers import FilterSaveReply, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider, \
     FirebaseReplyStorageProvider
+from settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL
+from tests.mocks import MockMessage, MockUser
 
 
 class TestFilterSaveReply(TestCase):
@@ -38,11 +36,9 @@ class TestFilterSaveReply(TestCase):
         self.assertTrue(replies[0].text == "it works!")
 
     def test_filter_save_reply_can_store_replies_in_firebase_db(self):
-        load_dotenv()
-
-        cert_file_path = os.path.realpath(os.getenv('FIREBASE_ACCOUNT_KEY_FILE_PATH'))
+        cert_file_path = os.path.realpath(FIREBASE_ACCOUNT_KEY_FILE_PATH)
         firebase_admin.initialize_app(firebase_admin.credentials.Certificate(cert_file_path), {
-            'databaseURL': os.getenv('FIREBASE_DATABASE_URL'),
+            'databaseURL': FIREBASE_DATABASE_URL,
         })
         test_ref_name = '/integration-tests/{}'.format(str(int(time.time())))
         storage = FirebaseReplyStorageProvider(db_reference=db.reference(test_ref_name))
