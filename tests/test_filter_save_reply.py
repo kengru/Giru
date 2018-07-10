@@ -8,7 +8,7 @@ from tempfile import NamedTemporaryFile
 from firebase_admin import db
 from dotenv import load_dotenv
 
-from .mocks import MockMessage, MockUser
+from tests.mocks import MockMessage, MockUser
 
 from repliers import FilterSaveReply, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider, \
     FirebaseReplyStorageProvider
