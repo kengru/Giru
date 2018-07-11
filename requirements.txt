@@ -5,3 +5,4 @@ python-telegram-bot==9.0.0
 requests==2.18.4
 spotipy==2.4.4
 firebase-admin==2.11.0
+omdb==0.10.0

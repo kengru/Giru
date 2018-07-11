@@ -96,5 +96,12 @@ dp.add_handler(MessageHandler(filter_reply_to_giru, sendReplyToUser))
 
 dp.add_handler(MessageHandler(Filters.command, unknown))
 
-# Initiate interactions.
-updater.start_polling()
+
+def start():
+    # Initiate interactions.
+    logging.info('giru started')
+    updater.start_polling()
+
+
+if __name__ == "__main__":
+    start()
