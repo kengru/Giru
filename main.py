@@ -1,34 +1,34 @@
 import logging
 import os
+from os.path import join
 
 import firebase_admin
-from dotenv import load_dotenv
-
-from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 from firebase_admin import db
+from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 
-from commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Scores, create_get_saved_messages_callback
+from commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Scores, \
+    create_get_saved_messages_callback
 from repliers import FilterMmg, FilterSaveReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira, FilterFelicidades, \
-    FirebaseReplyStorageProvider, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider, FilterScores, FilterReplyToGiru
+    FirebaseReplyStorageProvider, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider, FilterScores, \
+    FilterReplyToGiru
 from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
+from repliers import recordPoints, sendReplyToUser
 from repliers import respondM, sdm, salute, recon, sendWTF, sendMentira, sendHBD
 from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
-from repliers import recordPoints, sendReplyToUser
+from settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
+from settings import TELEGRAM_TOKEN, GIRU_DATA_PATH
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-updater = Updater(token='487860520:AAEgLKKYShLi9iut4v0Zl5HLnrUf8sNF418')
+updater = Updater(token=TELEGRAM_TOKEN)
 
-load_dotenv()
-
-storage_location = os.getenv('STORAGE_LOCATION')
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
-message_storage = FileSystemReplyStorageProvider(os.path.realpath(os.path.join('.', 'src/data/replies.ndjson')))
-if storage_location == 'in_memory':
+message_storage = FileSystemReplyStorageProvider(join(GIRU_DATA_PATH, 'replies.ndjson'))
+if GIRU_STORAGE_LOCATION == 'in_memory':
     message_storage = InMemoryReplyStorageProvider()
-elif storage_location == 'firebase':
-    cert_file_path = os.path.realpath(os.getenv('FIREBASE_ACCOUNT_KEY_FILE_PATH'))
+elif GIRU_STORAGE_LOCATION == 'firebase':
+    cert_file_path = os.path.realpath(FIREBASE_ACCOUNT_KEY_FILE_PATH)
     firebase_admin.initialize_app(firebase_admin.credentials.Certificate(cert_file_path), {
-        'databaseURL': os.getenv('FIREBASE_DATABASE_URL'),
+        'databaseURL': FIREBASE_DATABASE_URL,
     })
     message_storage = FirebaseReplyStorageProvider(db.reference())
 

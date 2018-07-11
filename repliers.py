@@ -11,7 +11,7 @@ from telegram.ext import BaseFilter
 from data import replies
 
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
-SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'src/data/replies.ndjson'))
+SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'res/data/replies.ndjson'))
 
 
 class FilterMmg(BaseFilter):
@@ -197,7 +197,7 @@ class FilterVN1(BaseFilter):
 
 
 def sendVN1(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/basura.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/basura.ogg', 'rb'))
 
 
 class FilterVN2(BaseFilter):
@@ -208,7 +208,7 @@ class FilterVN2(BaseFilter):
 
 
 def sendVN2(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/carmate.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/carmate.ogg', 'rb'))
 
 
 class FilterVN3(BaseFilter):
@@ -219,7 +219,7 @@ class FilterVN3(BaseFilter):
 
 
 def sendVN3(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/felicidades.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/felicidades.ogg', 'rb'))
 
 
 class FilterVN4(BaseFilter):
@@ -230,7 +230,7 @@ class FilterVN4(BaseFilter):
 
 
 def sendVN4(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/llegaronloshaterz.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/llegaronloshaterz.ogg', 'rb'))
 
 
 class FilterVN5(BaseFilter):
@@ -241,7 +241,7 @@ class FilterVN5(BaseFilter):
 
 
 def sendVN5(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/okgracias.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/okgracias.ogg', 'rb'))
 
 
 class FilterVN6(BaseFilter):
@@ -252,7 +252,7 @@ class FilterVN6(BaseFilter):
 
 
 def sendVN6(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/todobien.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/todobien.ogg', 'rb'))
 
 
 class FilterVN7(BaseFilter):
@@ -263,7 +263,7 @@ class FilterVN7(BaseFilter):
 
 
 def sendVN7(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('src/audio/laveelcarro.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/laveelcarro.ogg', 'rb'))
 
 
 # Stickers
@@ -290,10 +290,10 @@ class FilterScores(BaseFilter):
 def recordPoints(bot, update):
     scores = {}
     try:
-        with open('src/data/scores.pkl', 'rb') as f:
+        with open('res/data/scores.pkl', 'rb') as f:
             scores = pickle.load(f)
     except:
-        with open('src/data/scores.pkl', 'wb') as f:
+        with open('res/data/scores.pkl', 'wb') as f:
             pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
     name = update.message.reply_to_message.from_user.first_name
     if name in scores.keys():
@@ -306,5 +306,5 @@ def recordPoints(bot, update):
             scores[name] = scores.get(name, 0) + 1
         else:
             scores[name] = scores.get(name, 0) - 1
-    with open('src/data/scores.pkl', 'wb') as f:
+    with open('res/data/scores.pkl', 'wb') as f:
         pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)

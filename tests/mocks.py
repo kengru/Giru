@@ -41,7 +41,7 @@ def PaDondeHoy(bot, update):
 
     @lru_cache()
     def cached_response(day_of_week, chat):
-        with open('src/texts/days.pickle', 'rb') as f:
+        with open('res/texts/days.pickle', 'rb') as f:
             days = pickle.load(f)
         return random.choice(days[day_of_week])
 

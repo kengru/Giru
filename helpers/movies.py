@@ -4,7 +4,9 @@ from typing import Dict
 
 from omdb import OMDBClient
 
-omdb = OMDBClient(apikey='f95aa941')
+from settings import OMDB_API_KEY
+
+omdb = OMDBClient(apikey=OMDB_API_KEY)
 
 RATING_EMOJI = {'Rotten Tomatoes': '🍅',
                 'Internet Movie Database': '🍿',

@@ -2,6 +2,7 @@ import datetime
 import pickle
 import random
 from functools import lru_cache, reduce
+from os.path import join
 
 import spotipy
 from emoji import emojize
@@ -11,9 +12,8 @@ from telegram import Message, ParseMode
 
 from data import julien, days, ayuda
 from helpers.movies import Movie
+from settings import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, GIRU_DATA_PATH
 
-SPOTIPY_CLIENT_ID = '0f9f9324ddd54895848e32fe5cea0d47'
-SPOTIPY_CLIENT_SECRET = 'e6a9ce6a89ed4196a83e3fc65709ccc0'
 client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
                                               client_secret=SPOTIPY_CLIENT_SECRET)
 
@@ -120,7 +120,7 @@ def Cartelera(bot, update):
 def Scores(bot, update):
     """ Gets a list with the points scored by person. """
     try:
-        with open('src/data/scores.pkl', 'rb') as f:
+        with open(join(GIRU_DATA_PATH, 'scores.pkl'), 'rb') as f:
             scores = pickle.load(f)
         message = '*Scores:*\n\n'
         sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
