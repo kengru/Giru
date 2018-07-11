@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Tuple, Dict
+from typing import Tuple
 
 from bs4 import BeautifulSoup
 from requests import get

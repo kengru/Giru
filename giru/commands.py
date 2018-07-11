@@ -10,9 +10,9 @@ from requests import get
 from spotipy.oauth2 import SpotifyClientCredentials
 from telegram import Message, ParseMode
 
-from data import julien, days, ayuda
-from helpers.movies import Movie
-from settings import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, GIRU_DATA_PATH
+from giru.data import julien, days, ayuda
+from giru.helpers.movies import Movie
+from giru.settings import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, GIRU_DATA_PATH
 
 client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
                                               client_secret=SPOTIPY_CLIENT_SECRET)

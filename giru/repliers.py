@@ -1,14 +1,15 @@
+import json
+import pickle
 import random
 import re
-import json
 import time
-import pickle
 from os import path
 
 from firebase_admin.db import Reference
 from telegram import Message, User
 from telegram.ext import BaseFilter
-from data import replies
+
+from giru.data import replies
 
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
 SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'res/data/replies.ndjson'))
@@ -174,6 +175,7 @@ def sendHBD(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id,
                      document='https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif')
 
+
 # Replying to user.
 class FilterReplyToGiru(BaseFilter):
     def filter(self, message):
@@ -277,6 +279,7 @@ class FilterSK1(BaseFilter):
 def sendSK1(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text='Quien dijo menor? :D')
     bot.sendSticker(chat_id=update.message.chat_id, sticker='CAADAQADFwADGp7vCBkeqa14LgcnAg')
+
 
 # Scoring system
 

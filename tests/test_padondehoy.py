@@ -1,7 +1,7 @@
 from unittest import TestCase
 
+from giru.commands import PaDondeHoy
 from tests.mocks import MockBot, MockUpdate
-from commands import PaDondeHoy
 
 
 class TestPaDondeHoy(TestCase):
