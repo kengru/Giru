@@ -6,9 +6,9 @@ from unittest import TestCase
 import firebase_admin
 from firebase_admin import db
 
-from repliers import FilterSaveReply, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider, \
+from giru.repliers import FilterSaveReply, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider, \
     FirebaseReplyStorageProvider
-from settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL
+from giru.settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL
 from tests.mocks import MockMessage, MockUser
 
 

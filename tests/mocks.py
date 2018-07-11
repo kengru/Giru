@@ -1,5 +1,5 @@
-from random import randint
 import datetime
+from random import randint
 
 from telegram import Message, Chat, User
 

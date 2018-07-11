@@ -6,17 +6,15 @@ import firebase_admin
 from firebase_admin import db
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 
-from commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Scores, \
+from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Scores, \
     create_get_saved_messages_callback
-from repliers import FilterMmg, FilterSaveReply, FilterSalut, FilterRecon, FilterWtf, FilterMentira, FilterFelicidades, \
-    FirebaseReplyStorageProvider, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider, FilterScores, \
-    FilterReplyToGiru
-from repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
-from repliers import recordPoints, sendReplyToUser
-from repliers import respondM, sdm, salute, recon, sendWTF, sendMentira, sendHBD
-from repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
-from settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
-from settings import TELEGRAM_TOKEN, GIRU_DATA_PATH
+from giru.repliers import *
+from giru.repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
+from giru.repliers import recordPoints, sendReplyToUser
+from giru.repliers import respondM, sdm, salute, recon, sendWTF, sendMentira, sendHBD
+from giru.repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
+from giru.settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
+from giru.settings import TELEGRAM_TOKEN, GIRU_DATA_PATH
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 updater = Updater(token=TELEGRAM_TOKEN)

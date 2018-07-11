@@ -3,7 +3,6 @@ from re import findall
 from typing import Dict
 
 from omdb import OMDBClient
-
 from settings import OMDB_API_KEY
 
 omdb = OMDBClient(apikey=OMDB_API_KEY)
