@@ -25,7 +25,7 @@ except FileNotFoundError:
 
 # What packages are optional?
 EXTRAS = {
-    'testing': ['pytest'],
+    'testing': ['nose', 'coverage', 'python-coveralls'],
 }
 
 # Import the README and use it as the long-description.
