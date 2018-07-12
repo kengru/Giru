@@ -3,16 +3,13 @@ import pickle
 import random
 import re
 import time
-from os import path
 
 from firebase_admin.db import Reference
 from telegram import Message, User
 from telegram.ext import BaseFilter
 
 from giru.data import replies
-
-# NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
-SAVED_REPLIES_FILE_PATH = path.realpath(path.join('.', 'res/data/replies.ndjson'))
+from giru.settings import SAVED_REPLIES_FILE_PATH, SCORES_FILE_PATH
 
 
 class FilterMmg(BaseFilter):
@@ -293,10 +290,10 @@ class FilterScores(BaseFilter):
 def recordPoints(bot, update):
     scores = {}
     try:
-        with open('res/data/scores.pkl', 'rb') as f:
+        with open(SCORES_FILE_PATH, 'rb') as f:
             scores = pickle.load(f)
     except:
-        with open('res/data/scores.pkl', 'wb') as f:
+        with open(SCORES_FILE_PATH, 'wb') as f:
             pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
     name = update.message.reply_to_message.from_user.first_name
     if name in scores.keys():
@@ -309,5 +306,5 @@ def recordPoints(bot, update):
             scores[name] = scores.get(name, 0) + 1
         else:
             scores[name] = scores.get(name, 0) - 1
-    with open('res/data/scores.pkl', 'wb') as f:
+    with open(SCORES_FILE_PATH, 'wb') as f:
         pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
