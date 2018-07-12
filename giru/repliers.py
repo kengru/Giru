@@ -3,13 +3,17 @@ import pickle
 import random
 import re
 import time
+from functools import partial
 
 from firebase_admin.db import Reference
+from pkg_resources import resource_stream
 from telegram import Message, User
 from telegram.ext import BaseFilter
 
 from giru.data import replies
 from giru.settings import SAVED_REPLIES_FILE_PATH, SCORES_FILE_PATH
+
+giru_res = partial(resource_stream, 'giru')
 
 
 class FilterMmg(BaseFilter):
@@ -196,7 +200,7 @@ class FilterVN1(BaseFilter):
 
 
 def sendVN1(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/basura.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/basura.ogg'))
 
 
 class FilterVN2(BaseFilter):
@@ -207,7 +211,7 @@ class FilterVN2(BaseFilter):
 
 
 def sendVN2(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/carmate.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/carmate.ogg'))
 
 
 class FilterVN3(BaseFilter):
@@ -218,7 +222,7 @@ class FilterVN3(BaseFilter):
 
 
 def sendVN3(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/felicidades.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/felicidades.ogg'))
 
 
 class FilterVN4(BaseFilter):
@@ -229,7 +233,7 @@ class FilterVN4(BaseFilter):
 
 
 def sendVN4(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/llegaronloshaterz.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/llegaronloshaterz.ogg'))
 
 
 class FilterVN5(BaseFilter):
@@ -240,7 +244,7 @@ class FilterVN5(BaseFilter):
 
 
 def sendVN5(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/okgracias.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/okgracias.ogg'))
 
 
 class FilterVN6(BaseFilter):
@@ -251,7 +255,7 @@ class FilterVN6(BaseFilter):
 
 
 def sendVN6(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/todobien.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/todobien.ogg'))
 
 
 class FilterVN7(BaseFilter):
@@ -262,7 +266,7 @@ class FilterVN7(BaseFilter):
 
 
 def sendVN7(bot, update):
-    bot.sendVoice(chat_id=update.message.chat_id, voice=open('res/audio/laveelcarro.ogg', 'rb'))
+    bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/laveelcarro.ogg'))
 
 
 # Stickers
