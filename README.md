@@ -1,7 +1,7 @@
 # GIRU
 An only Spanish talking telegram bot.
 
-![Build Status](https://img.shields.io/travis/kengru/Giru.svg) 
+[![Build Status](https://travis-ci.org/kengru/Giru.svg?branch=master)](https://travis-ci.org/kengru/Giru)
 [![Coverage Status](https://coveralls.io/repos/github/kengru/Giru/badge.svg?branch=master)](https://coveralls.io/github/kengru/Giru?branch=master)
 
 ## General info
