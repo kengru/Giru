@@ -1,0 +1,7 @@
+[
+  {
+    "id": "redeploy",
+    "execute-command": "/home/Giru/deploy.sh",
+    "command-working-directory": "/home/Giru"
+  }
+]
