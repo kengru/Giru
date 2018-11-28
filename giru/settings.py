@@ -15,6 +15,6 @@ FIREBASE_DATABASE_URL = getenv('FIREBASE_DATABASE_URL')
 GIRU_STORAGE_LOCATION = getenv('GIRU_STORAGE_LOCATION')
 GIRU_DATA_PATH = getenv('GIRU_DATA_PATH')
 
-# derived from otehr settings
+# derived from other settings
 SAVED_REPLIES_FILE_PATH = path.realpath(path.join(GIRU_DATA_PATH, 'replies.ndjson'))
 SCORES_FILE_PATH = path.realpath(path.join(GIRU_DATA_PATH, 'scores.pkl'))

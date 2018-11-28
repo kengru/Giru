@@ -10,7 +10,7 @@ from pkg_resources import resource_stream
 from telegram import Message, User
 from telegram.ext import BaseFilter
 
-from giru.data import replies
+from giru.data import replies, mmg
 from giru.settings import SAVED_REPLIES_FILE_PATH, SCORES_FILE_PATH
 
 giru_res = partial(resource_stream, 'giru')
@@ -25,7 +25,7 @@ class FilterMmg(BaseFilter):
 def respondM(bot, update):
     """ Respond to a pattern in FilterMmg. """
     # bot.sendMessage(chat_id=update.message.chat_id, text='MMG UTE!')
-    bot.sendDocument(chat_id=update.message.chat_id, document='http://a.memegen.com/zn4ros.gif')
+    bot.sendMessage(chat_id=update.message.chat_id, text=random.choice(mmg))
 
 
 def convert_reply_dict_to_message(reply_dict):
