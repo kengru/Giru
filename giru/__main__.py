@@ -9,9 +9,9 @@ from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Scores, \
     create_get_saved_messages_callback
 from giru.repliers import *
-from giru.repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1
+from giru.repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1, FilterCPOSP
 from giru.repliers import recordPoints, sendReplyToUser
-from giru.repliers import respondM, sdm, salute, recon, sendWTF, sendMentira, sendHBD
+from giru.repliers import respondM, respondCPOSP, sdm, salute, recon, sendWTF, sendMentira, sendHBD
 from giru.repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
 from giru.settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
 from giru.settings import TELEGRAM_TOKEN, GIRU_DATA_PATH
@@ -31,6 +31,7 @@ elif GIRU_STORAGE_LOCATION == 'firebase':
     message_storage = FirebaseReplyStorageProvider(db.reference())
 
 filter_mmg = FilterMmg()
+filter_cposp = FilterCPOSP()
 filter_save_reply = FilterSaveReply(message_storage)
 filter_salut = FilterSalut()
 filter_recon = FilterRecon()
@@ -75,6 +76,7 @@ for cmd in commandsl:
     dp.add_handler(cmd)
 
 dp.add_handler(MessageHandler(filter_mmg, respondM))
+dp.add_handler(MessageHandler(filter_cposp, respondCPOSP))
 dp.add_handler(MessageHandler(filter_wtf, sendWTF))
 dp.add_handler(MessageHandler(filter_mentira, sendMentira))
 dp.add_handler(MessageHandler(filter_sk1, sendSK1))

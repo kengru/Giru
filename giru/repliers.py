@@ -10,7 +10,7 @@ from pkg_resources import resource_stream
 from telegram import Message, User
 from telegram.ext import BaseFilter
 
-from giru.data import replies, mmg
+from giru.data import replies, mmg, cposp
 from giru.settings import SAVED_REPLIES_FILE_PATH, SCORES_FILE_PATH
 
 giru_res = partial(resource_stream, 'giru')
@@ -126,6 +126,18 @@ def salute(bot, update):
         bot.sendMessage(chat_id=update.message.chat_id, text='Hermana, cuente todo')
     else:
         pass
+
+
+class FilterCPOSP(BaseFilter):
+    def filter(self, message):
+        found = re.search("CERTIFIED PIECE OF SHIT PERSON", message.text, re.IGNORECASE)
+        return found
+
+
+def respondCPOSP(bot, update):
+    """ Respond to a pattern in FilterCPOSP. """
+    # bot.sendMessage(chat_id=update.message.chat_id, text='MMG UTE!')
+    bot.sendMessage(chat_id=update.message.chat_id, text=random.choice(cposp))
 
 
 class FilterRecon(BaseFilter):

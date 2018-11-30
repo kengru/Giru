@@ -127,3 +127,17 @@ mmg = [
     'FELICIDADES! Usted es el mamaguebo 1,000,000. Se haga ganado el premio de: 3 venezolanas de las baratas! Para recibir su premio por favor mande su informacion personal y numero de cuenta a: tmm@girubot.com', 
     'FELICIDADES! Usted es el mamaguebo 1,000,000. Se haga ganado el premio de: una maldita galleta tu maldita madre! Para recibir su premio por favor mande su informacion personal y numero de cuenta a: tmm@girubot.com'
 ]
+
+cposp = [
+    "aren't we all?", "indeed", "un buen mmg en verdad",
+    "CERTIFIED PIECE OF SHIT BOT", "it's ok fam we'll be alright",
+    "nah, you are fine", "Jesus made you that way", "mano ute se merece una fria",
+    "*hugs*", "*Giru sits in silence as an act of empathy with your human condition*",
+    "yet a bit less shit than yesterday", "no le pare",
+    "no le pare, el mundo ta' lleno de mierda", "you trying your best, fam",
+    "A good day to listen to Julien Baker",
+    "just gotta make it through the day and you'll be fine",
+    "quit your jobs, run to the country, start a small life",
+    "fuck that shit man", "it don't matter, we are all dead already",
+    "pls get laid soon"
+]
