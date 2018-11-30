@@ -130,8 +130,9 @@ def salute(bot, update):
 
 class FilterCPOSP(BaseFilter):
     def filter(self, message):
-        found = re.search("CERTIFIED PIECE OF SHIT PERSON", message.text, re.IGNORECASE)
-        return found
+        if "certified piece of shit person" in message.text.lower():
+            return True
+        return False
 
 
 def respondCPOSP(bot, update):
