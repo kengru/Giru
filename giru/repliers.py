@@ -325,3 +325,16 @@ def recordPoints(bot, update):
             scores[name] = scores.get(name, 0) - 1
     with open(SCORES_FILE_PATH, 'wb') as f:
         pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
+
+
+class AlcoholRelatedFilter(BaseFilter):
+    alcohol_related_pattern = r'(booze|romo|beer|birra)'
+
+    def filter(self, message):
+        has_match = re.search(self.alcohol_related_pattern, message.text)
+
+        return has_match
+
+
+def send_alcohol_related_message_reply(bot, update):
+    bot.send_document(update.message.chat_id, document='https://media.giphy.com/media/cC9nMt8P3gsUVka1Ul/giphy.gif')
