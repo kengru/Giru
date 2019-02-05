@@ -15,3 +15,7 @@ class TestAlcoholRelatedFilter(TestCase):
         message_2 = MockMessage(text='pero no hay cuarto', from_user=user)
 
         self.assertFalse(matcher.filter(message_2))
+
+        message_3 = MockMessage(text='TRAIGANLE ROMO A DENISSE', from_user=user)
+
+        self.assertTrue(matcher.filter(message_3))

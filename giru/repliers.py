@@ -331,7 +331,7 @@ class AlcoholRelatedFilter(BaseFilter):
     alcohol_related_pattern = r'(booze|romo|beer|birra)'
 
     def filter(self, message):
-        has_match = re.search(self.alcohol_related_pattern, message.text)
+        has_match = re.search(self.alcohol_related_pattern, message.text, re.IGNORECASE)
 
         return has_match
 
