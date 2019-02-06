@@ -6,7 +6,7 @@ from omdb import OMDBClient
 
 from giru.settings import OMDB_API_KEY
 
-omdb = OMDBClient(apikey=OMDB_API_KEY)
+omdb = None
 
 RATING_EMOJI = {'Rotten Tomatoes': '🍅',
                 'Internet Movie Database': '🍿',
@@ -31,6 +31,9 @@ class Movie:
 
     @property
     def emoji_ratings(self) -> Dict[str, str]:
+        global omdb
+        if omdb is None:
+            omdb=OMDBClient(apikey=OMDB_API_KEY)
         id, title = self.id, None if self.id else self.title
 
         movie = omdb.get(imdbid=id, title=title)
