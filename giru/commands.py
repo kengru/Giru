@@ -13,8 +13,7 @@ from giru.data import julien, days, ayuda
 from giru.helpers.movies import Movie
 from giru.settings import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SCORES_FILE_PATH
 
-client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
-                                              client_secret=SPOTIPY_CLIENT_SECRET)
+client_credentials = None
 
 SAVED_MESSAGE_LIST_IS_EMPTY_MESSAGE = "No hay mensajes guardao' mi loki"
 
@@ -52,6 +51,11 @@ def Julien(bot, update):
 
 
 def Spotify(bot, update, args):
+    global client_credentials
+    if client_credentials is None:
+        client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
+                                 client_secret=SPOTIPY_CLIENT_SECRET)
+
     query = ' '.join(args).lower()
     sp = spotipy.Spotify(client_credentials_manager=client_credentials)
     results = sp.search(q='' + query, type='track', limit=1)
@@ -97,7 +101,7 @@ def Cartelera(bot, update):
     """ Get's all the movies in theathers right now. """
     movies = get('http://api.cine.com.do/v1/movies').json()
 
-    message = '*Cartelera de hoy*\n\n'
+    message = '*Manga ahí*\n\n'
 
     for m in movies:
         if m.get('published') and not m.get('comingsoon'):
