@@ -9,8 +9,7 @@ install:
 
 # command to run tests
 script:
-->
-  if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+->if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
     nosetests --with-coverage tests_non_pr tests
   else
     nosetests --with-coverage tests
