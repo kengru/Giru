@@ -95,6 +95,7 @@ dp.add_handler(MessageHandler(filter_vn7, sendVN7))
 
 dp.add_handler(MessageHandler(filter_score, recordPoints))
 dp.add_handler(MessageHandler(filter_reply_to_giru, sendReplyToUser))
+dp.add_handler(MessageHandler(AlcoholRelatedFilter(), send_alcohol_related_message_reply))
 
 dp.add_handler(MessageHandler(Filters.command, unknown))
 
