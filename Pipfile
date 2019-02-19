@@ -12,8 +12,11 @@ requests = ">=2.20.0"
 spotipy = "==2.4.4"
 firebase-admin = "==2.11.0"
 omdb = "==0.10.0"
+future = "*"
 
 [dev-packages]
+coverage = "*"
+nose = "*"
 
 [requires]
 python_version = "3.6"
