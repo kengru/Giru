@@ -15,7 +15,7 @@ class JulienCommandTestCase(CommandTestCaseMixin, TestCase):
 
         Julien(self.bot, update)
 
-        self.bot.send_photo.assert_called()
+        self.assertIsNotNone(self.bot.send_photo.call_args)
 
         args, kwargs = self.bot.send_photo.call_args
 
