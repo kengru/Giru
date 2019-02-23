@@ -3,6 +3,7 @@ from unittest import TestCase
 from unittest.mock import Mock, MagicMock
 
 from telegram import Bot, Update
+from telegram.ext import MessageHandler
 
 from giru.core.repliers import OnMatchPatternSendTextMessageReplier, OnMatchPatternInCSVFileSendTextMessageReplier
 from tests.mocks import MockMessage
@@ -43,6 +44,12 @@ class OnMatchPatternSendTextMessageReplierTestCase(TestCase):
     def simulate_message_is_sent(self, message):
         self.update.message = message
         self.bot.send_message = MagicMock(side_effect=lambda **kwargs: MockMessage(text=kwargs.get('text')))
+
+    def test_can_be_converted_to_message_handler(self):
+        replier = OnMatchPatternSendTextMessageReplier(pattern='foo', message_content='match!')
+        message_handler = replier.to_message_handler()
+
+        self.assertTrue(isinstance(message_handler, MessageHandler))
 
 
 class OnMatchPatternInCSVFileSendTextMessageReplierTestCase(TestCase):

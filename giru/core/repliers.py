@@ -5,6 +5,7 @@ from abc import ABC
 from typing import TypeVar, TextIO, Iterable, Dict
 
 from telegram import Message, Bot, Update
+from telegram.ext import MessageHandler
 from telegram.ext.filters import BaseFilter, Filters
 
 FilterType = TypeVar("FilterType", bound=BaseFilter)
@@ -24,6 +25,9 @@ class BaseReplier(BaseFilter, ABC):
 
     def filter(self, message):  # type: (Message) -> bool
         return self.get_filter()(message)
+
+    def to_message_handler(self):  # type: () -> MessageHandler
+        return MessageHandler(self.get_filter(), lambda *args, **kwargs: self.reply(*args, **kwargs))
 
 
 class ReplyWithTextMessageMixin(ABC):
