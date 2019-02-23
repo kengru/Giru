@@ -13,10 +13,21 @@ class MockBot:
     def sendMessage(self, *args, **kwargs):
         self.send_message(*args, **kwargs)
 
+    def send_photo(self, chat_id, photo, *args, **kwargs):
+        self.last_message[chat_id] = photo
+
+    def sendPhoto(self, *args, **kwargs):
+        self.send_photo(*args, **kwargs)
+
 
 class MockChat(Chat):
     def __init__(self, id=None, type=Chat.PRIVATE):
-        super().__init__(id=id or randint(1, 1000), type=type)
+        _id = id
+
+        if not _id:
+            _id = randint(1, 1000)
+
+        super().__init__(id=_id, type=type)
 
 
 class MockUser(User):
@@ -35,7 +46,10 @@ class MockMessage(Message):
 
 
 class MockUpdate:
-    message = MockMessage()
+    message = None
+
+    def __init__(self, message=MockMessage()):
+        self.message = message
 
 
 """
