@@ -8,13 +8,14 @@ from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 
 from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Scores, \
     create_get_saved_messages_callback
+from giru.core.repliers import load_text_repliers_from_csv_file
 from giru.repliers import *
 from giru.repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1, FilterCPOSP
 from giru.repliers import recordPoints, sendReplyToUser
 from giru.repliers import respondM, respondCPOSP, sdm, salute, recon, sendWTF, sendMentira, sendHBD
 from giru.repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
 from giru.settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
-from giru.settings import TELEGRAM_TOKEN, GIRU_DATA_PATH
+from giru.settings import TELEGRAM_TOKEN, GIRU_DATA_PATH, REPLIES_FILE_PATH
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 updater = Updater(token=TELEGRAM_TOKEN)
@@ -96,6 +97,14 @@ dp.add_handler(MessageHandler(filter_vn7, sendVN7))
 dp.add_handler(MessageHandler(filter_score, recordPoints))
 dp.add_handler(MessageHandler(filter_reply_to_giru, sendReplyToUser))
 dp.add_handler(MessageHandler(AlcoholRelatedFilter(), send_alcohol_related_message_reply))
+
+try:
+    with open(REPLIES_FILE_PATH, 'r') as replies_file:
+        for r in load_text_repliers_from_csv_file(replies_file):
+            dp.add_handler(r.to_message_handler())
+except FileNotFoundError:
+    print(f'[ERROR] replies file "{REPLIES_FILE_PATH}" not found, file-based replies will not be triggered.')
+
 
 dp.add_handler(MessageHandler(Filters.command, unknown))
 
