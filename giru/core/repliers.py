@@ -12,7 +12,7 @@ FilterType = TypeVar("FilterType", bound=BaseFilter)
 
 
 class BaseReplier(BaseFilter, ABC):
-    _filter = Filters.all
+    _filter = None
 
     def reply(self, bot, update):  # type: (Bot, Update) -> Message
         raise NotImplementedError
@@ -27,7 +27,7 @@ class BaseReplier(BaseFilter, ABC):
         return self.get_filter()(message)
 
     def to_message_handler(self):  # type: () -> MessageHandler
-        return MessageHandler(self.get_filter(), lambda *args, **kwargs: self.reply(*args, **kwargs))
+        return MessageHandler(self, lambda *args, **kwargs: self.reply(*args, **kwargs))
 
 
 class ReplyWithTextMessageMixin(ABC):
