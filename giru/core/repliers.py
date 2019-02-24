@@ -27,7 +27,7 @@ class BaseReplier(BaseFilter, ABC):
         return self.get_filter()(message)
 
     def to_message_handler(self):  # type: () -> MessageHandler
-        return MessageHandler(self, lambda *args, **kwargs: self.reply(*args, **kwargs))
+        return MessageHandler(self, self.reply)
 
 
 class ReplyWithTextMessageMixin(ABC):

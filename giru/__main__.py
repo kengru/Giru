@@ -10,7 +10,8 @@ from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Carte
     create_get_saved_messages_callback
 from giru.core.repliers import load_repliers_from_csv_file
 from giru.repliers import *
-from giru.repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1, FilterCPOSP
+from giru.repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1, \
+    FilterCPOSP
 from giru.repliers import recordPoints, sendReplyToUser
 from giru.repliers import respondM, respondCPOSP, sdm, salute, recon, sendWTF, sendMentira, sendHBD
 from giru.repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
@@ -103,11 +104,10 @@ try:
         for r in load_repliers_from_csv_file(replies_file):
             dp.add_handler(r.to_message_handler())
 except FileNotFoundError:
-    print(f'[ERROR] replies file "{REPLIES_FILE_PATH}" not found, file-based replies will not be triggered.')
+    logging.error(f'[ERROR] replies file "{REPLIES_FILE_PATH}" not found, file-based replies will not be triggered.')
 except ValueError:
-    print(f'[ERROR] replies file "{REPLIES_FILE_PATH}" cannot be processed, file-based replies will not be triggered.')
-
-
+    logging.error(
+        f'[ERROR] replies file "{REPLIES_FILE_PATH}" cannot be processed, file-based replies will not be triggered.')
 
 dp.add_handler(MessageHandler(Filters.command, unknown))
 
