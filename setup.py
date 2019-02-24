@@ -55,7 +55,7 @@ setup(
     author_email=EMAIL,
     # python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=find_packages(exclude=('tests',)),
+    packages=find_packages(exclude=('tests','tests_non_pr')),
     package_data={'giru': ['res/*']},
     install_requires=REQUIRED,
     extras_require=EXTRAS,
