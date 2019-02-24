@@ -8,7 +8,7 @@ from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 
 from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Scores, \
     create_get_saved_messages_callback
-from giru.core.repliers import load_text_repliers_from_csv_file
+from giru.core.repliers import load_repliers_from_csv_file
 from giru.repliers import *
 from giru.repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1, FilterCPOSP
 from giru.repliers import recordPoints, sendReplyToUser
@@ -100,10 +100,13 @@ dp.add_handler(MessageHandler(AlcoholRelatedFilter(), send_alcohol_related_messa
 
 try:
     with open(REPLIES_FILE_PATH, 'r') as replies_file:
-        for r in load_text_repliers_from_csv_file(replies_file):
+        for r in load_repliers_from_csv_file(replies_file):
             dp.add_handler(r.to_message_handler())
 except FileNotFoundError:
     print(f'[ERROR] replies file "{REPLIES_FILE_PATH}" not found, file-based replies will not be triggered.')
+except ValueError:
+    print(f'[ERROR] replies file "{REPLIES_FILE_PATH}" cannot be processed, file-based replies will not be triggered.')
+
 
 
 dp.add_handler(MessageHandler(Filters.command, unknown))

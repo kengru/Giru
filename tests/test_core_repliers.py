@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 from telegram import Bot, Update, Message
 from telegram.ext import MessageHandler
 
-from giru.core.repliers import OnMatchPatternSendTextMessageReplier, load_text_repliers_from_csv_file, \
+from giru.core.repliers import OnMatchPatternSendTextMessageReplier, load_repliers_from_csv_file, \
     OnMatchPatternSendDocumentMessageReplier
 from tests.mocks import MockMessage
 
@@ -89,15 +89,25 @@ class OnMatchPatternSendDocumentMessageReplierTestCase(ReplierSetupMixin, TestCa
         self.bot.send_document.assert_called_with(chat_id=123, document=self.document_url)
 
 
-class LoadTextRepliersFromCSVFileTestCase(TestCase):
-    def setUp(self):
-        self.file = StringIO('(foo),match')
-
+class LoadRepliersFromCSVFileTestCase(TestCase):
     def test_it_can_load_text_repliers_from_csv_file(self):
-        repliers = load_text_repliers_from_csv_file(self.file)
+        file = StringIO('(foo),text,match')
+        repliers = load_repliers_from_csv_file(file)
 
         self.assertEqual(len(repliers), 1)
 
         replier = repliers[0]
 
         self.assertTrue(replier.filter(MockMessage(text='foo')))
+        self.assertIsInstance(replier, OnMatchPatternSendTextMessageReplier)
+
+    def test_it_can_load_document_repliers_from_csv_file(self):
+        file = StringIO('(foo),document,https://media.giphy.com/media/c6WtwzAXB1Aov1MejW/giphy.gif')
+        repliers = load_repliers_from_csv_file(file)
+
+        self.assertEqual(len(repliers), 1)
+
+        replier = repliers[0]
+
+        self.assertTrue(replier.filter(MockMessage(text='foo')))
+        self.assertIsInstance(replier, OnMatchPatternSendDocumentMessageReplier)

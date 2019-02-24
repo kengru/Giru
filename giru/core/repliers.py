@@ -86,7 +86,13 @@ class OnMatchPatternSendDocumentMessageReplier(MatchPatternInTextMessageMixin, R
         self.document = message_content
 
 
-def load_text_repliers_from_csv_file(file):  # type: (TextIO) -> List[OnMatchPatternSendTextMessageReplier]
+def load_repliers_from_csv_file(file):  # type: (TextIO) -> List[BaseReplier]
     rows = csv.reader(file)
+    repliers = []
+    for pattern, replier_type, content in rows:
+        if replier_type == 'document':
+            repliers.append(OnMatchPatternSendDocumentMessageReplier(pattern, content))
+        else:
+            repliers.append(OnMatchPatternSendTextMessageReplier(pattern, content))
 
-    return [OnMatchPatternSendTextMessageReplier(pattern=p, message_content=mc) for p, mc in rows]
+    return repliers
