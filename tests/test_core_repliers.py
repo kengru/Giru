@@ -1,19 +1,30 @@
+from abc import ABC
 from io import StringIO
 from unittest import TestCase
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock
 
-from telegram import Bot, Update
+from telegram import Bot, Update, Message
 from telegram.ext import MessageHandler
 
-from giru.core.repliers import OnMatchPatternSendTextMessageReplier, load_text_repliers_from_csv_file
+from giru.core.repliers import OnMatchPatternSendTextMessageReplier, load_text_repliers_from_csv_file, \
+    OnMatchPatternSendDocumentMessageReplier
 from tests.mocks import MockMessage
 
+MockBot = MagicMock(spec=Bot)
+MockUpdate = MagicMock(spec=Update)
+MagicMockMessage = MagicMock(spec=Message)
 
-class OnMatchPatternSendTextMessageReplierTestCase(TestCase):
+
+class ReplierSetupMixin(ABC):
+    bot = None
+    update = None
+
     def setUp(self):
-        self.bot = Mock(spec=Bot)
-        self.update = Mock(spec=Update)
+        self.bot = MockBot()
+        self.update = MockUpdate()
 
+
+class OnMatchPatternSendTextMessageReplierTestCase(ReplierSetupMixin, TestCase):
     def test_it_matches_a_given_pattern(self):
         pattern = r'(foo)'
         expected_reply = 'bar'
@@ -50,6 +61,32 @@ class OnMatchPatternSendTextMessageReplierTestCase(TestCase):
         message_handler = replier.to_message_handler()
 
         self.assertTrue(isinstance(message_handler, MessageHandler))
+
+
+class OnMatchPatternSendDocumentMessageReplierTestCase(ReplierSetupMixin, TestCase):
+    def setUp(self):
+        super(OnMatchPatternSendDocumentMessageReplierTestCase, self).setUp()
+
+        self.document_url = 'https://media.giphy.com/media/c6WtwzAXB1Aov1MejW/giphy.gif'
+
+    def test_it_matches_a_given_pattern(self):
+        replier = OnMatchPatternSendDocumentMessageReplier(pattern=r'(foo)', message_content=self.document_url)
+        message = MagicMockMessage()
+        message.text = 'foo'
+
+        self.assertTrue(replier.filter(message))
+
+    def test_document_reply_is_sent_if_pattern_is_matched(self):
+        replier = OnMatchPatternSendDocumentMessageReplier(pattern=r'(foo)', message_content=self.document_url)
+        message = MagicMockMessage()
+        message.text = 'foo'
+        message.chat_id = 123
+        self.update.message = message
+        self.bot.send_document = MagicMock()
+
+        replier.reply(bot=self.bot, update=self.update)
+
+        self.bot.send_document.assert_called_with(chat_id=123, document=self.document_url)
 
 
 class LoadTextRepliersFromCSVFileTestCase(TestCase):

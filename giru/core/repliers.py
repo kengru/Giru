@@ -64,6 +64,28 @@ class OnMatchPatternSendTextMessageReplier(MatchPatternInTextMessageMixin, Reply
         self.text = message_content
 
 
+class ReplyWithDocumentMessageMixin(ABC):
+    document = None
+
+    def reply(self, bot, update):  # type: (Bot, Update) -> Message
+        message = update.message  # type: Message
+
+        return bot.send_document(chat_id=message.chat_id, document=self.get_document())
+
+    def get_document(self):
+        if not self.document:
+            raise ValueError("document must be set")
+
+        return self.document
+
+
+class OnMatchPatternSendDocumentMessageReplier(MatchPatternInTextMessageMixin, ReplyWithDocumentMessageMixin,
+                                               BaseReplier):
+    def __init__(self, pattern, message_content):
+        self.pattern = pattern
+        self.document = message_content
+
+
 def load_text_repliers_from_csv_file(file):  # type: (TextIO) -> List[OnMatchPatternSendTextMessageReplier]
     rows = csv.reader(file)
 
