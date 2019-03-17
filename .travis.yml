@@ -10,7 +10,7 @@ install:
 # command to run tests
 script:
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then nosetests --with-coverage tests; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then nosetests --with-coverage tests_non_pr tests; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then nosetests --with-coverage tests tests_non_pr; fi'
 
 after_success:
   - coveralls
