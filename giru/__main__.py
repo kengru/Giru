@@ -104,10 +104,12 @@ try:
         for r in load_repliers_from_csv_file(replies_file):
             dp.add_handler(r.to_message_handler())
 except FileNotFoundError:
-    logging.error(f'[ERROR] replies file "{REPLIES_FILE_PATH}" not found, file-based replies will not be triggered.')
+    logging.error(
+        '[ERROR] replies file "{}" not found, file-based replies will not be triggered.'.format(REPLIES_FILE_PATH))
 except ValueError:
     logging.error(
-        f'[ERROR] replies file "{REPLIES_FILE_PATH}" cannot be processed, file-based replies will not be triggered.')
+        '[ERROR] replies file "{}" cannot be processed, file-based replies will not be triggered.'.format(
+            REPLIES_FILE_PATH))
 
 dp.add_handler(MessageHandler(Filters.command, unknown))
 
