@@ -5,15 +5,22 @@ import re
 import time
 from functools import partial
 
+from emoji import emojize
 from firebase_admin.db import Reference
 from pkg_resources import resource_stream
-from telegram import Message, User
+from telegram.message import Message
+from telegram.user import User
 from telegram.ext import BaseFilter
 
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+
 from giru.data import replies, mmg, cposp
-from giru.settings import SAVED_REPLIES_FILE_PATH, SCORES_FILE_PATH
+from giru.settings import SAVED_REPLIES_FILE_PATH, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
+    SCORES_FILE_PATH
 
 giru_res = partial(resource_stream, 'giru')
+client_credentials = None
 
 
 class FilterMmg(BaseFilter):
@@ -22,7 +29,7 @@ class FilterMmg(BaseFilter):
         return found
 
 
-def respondM(bot, update):
+def respond_mmg(bot, update):
     """ Respond to a pattern in FilterMmg. """
     # bot.sendMessage(chat_id=update.message.chat_id, text='MMG UTE!')
     bot.sendMessage(chat_id=update.message.chat_id, text=random.choice(mmg))
@@ -135,9 +142,8 @@ class FilterCPOSP(BaseFilter):
         return False
 
 
-def respondCPOSP(bot, update):
+def respond_certified(bot, update):
     """ Respond to a pattern in FilterCPOSP. """
-    # bot.sendMessage(chat_id=update.message.chat_id, text='MMG UTE!')
     bot.sendMessage(chat_id=update.message.chat_id, text=random.choice(cposp))
 
 
@@ -162,7 +168,7 @@ class FilterWtf(BaseFilter):
             return True
 
 
-def sendWTF(bot, update):
+def send_wtf(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id, document='https://media.giphy.com/media/aZ3LDBs1ExsE8/giphy.gif')
 
 
@@ -173,7 +179,7 @@ class FilterMentira(BaseFilter):
             return True
 
 
-def sendMentira(bot, update):
+def send_mentira(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id,
                      document='http://78.media.tumblr.com/tumblr_m3zgenZn7S1r3tlbto1_400.gif')
 
@@ -185,7 +191,7 @@ class FilterFelicidades(BaseFilter):
             return True
 
 
-def sendHBD(bot, update):
+def send_hbd(bot, update):
     bot.sendDocument(chat_id=update.message.chat_id,
                      document='https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif')
 
@@ -198,7 +204,7 @@ class FilterReplyToGiru(BaseFilter):
             return True
 
 
-def sendReplyToUser(bot, update):
+def send_reply_to_user(bot, update):
     sel = random.choice(replies)
     bot.sendMessage(chat_id=update.message.chat_id, text=sel, reply_to_message=update.message)
 
@@ -212,7 +218,7 @@ class FilterVN1(BaseFilter):
             return True
 
 
-def sendVN1(bot, update):
+def send_vn1(bot, update):
     bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/basura.ogg'))
 
 
@@ -223,7 +229,7 @@ class FilterVN2(BaseFilter):
             return True
 
 
-def sendVN2(bot, update):
+def send_vn2(bot, update):
     bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/carmate.ogg'))
 
 
@@ -234,7 +240,7 @@ class FilterVN3(BaseFilter):
             return True
 
 
-def sendVN3(bot, update):
+def send_vn3(bot, update):
     bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/felicidades.ogg'))
 
 
@@ -245,7 +251,7 @@ class FilterVN4(BaseFilter):
             return True
 
 
-def sendVN4(bot, update):
+def send_vn4(bot, update):
     bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/llegaronloshaterz.ogg'))
 
 
@@ -256,7 +262,7 @@ class FilterVN5(BaseFilter):
             return True
 
 
-def sendVN5(bot, update):
+def send_vn5(bot, update):
     bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/okgracias.ogg'))
 
 
@@ -267,7 +273,7 @@ class FilterVN6(BaseFilter):
             return True
 
 
-def sendVN6(bot, update):
+def send_vn6(bot, update):
     bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/todobien.ogg'))
 
 
@@ -278,7 +284,7 @@ class FilterVN7(BaseFilter):
             return True
 
 
-def sendVN7(bot, update):
+def send_vn7(bot, update):
     bot.sendVoice(chat_id=update.message.chat_id, voice=giru_res('res/audio/laveelcarro.ogg'))
 
 
@@ -290,7 +296,7 @@ class FilterSK1(BaseFilter):
             return True
 
 
-def sendSK1(bot, update):
+def send_sk1(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text='Quien dijo menor? :D')
     bot.sendSticker(chat_id=update.message.chat_id, sticker='CAADAQADFwADGp7vCBkeqa14LgcnAg')
 
@@ -304,12 +310,12 @@ class FilterScores(BaseFilter):
             return True
 
 
-def recordPoints(bot, update):
+def record_points(bot, update):
     scores = {}
     try:
         with open(SCORES_FILE_PATH, 'rb') as f:
             scores = pickle.load(f)
-    except:
+    except IOError:
         with open(SCORES_FILE_PATH, 'wb') as f:
             pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
     name = update.message.reply_to_message.from_user.first_name
@@ -338,3 +344,57 @@ class AlcoholRelatedFilter(BaseFilter):
 
 def send_alcohol_related_message_reply(bot, update):
     bot.send_document(update.message.chat_id, document='https://media.giphy.com/media/cC9nMt8P3gsUVka1Ul/giphy.gif')
+
+
+# New Replies
+
+class FamiliaFilter(BaseFilter):
+    familia_pattern = r'(familia)'
+
+    def filter(self, message):
+        has_match = re.search(self.familia_pattern, message.text, re.IGNORECASE)
+        return has_match
+
+
+def send_familia_message_reply(bot, update):
+    bot.send_photo(update.message.chat_id, photo=giru_res('res/images/familia.jpg'))
+
+
+class SpotifyLinkFilter(BaseFilter):
+    spotify_pattern = 'r(open.spotify.com)'
+
+    def filter(self, message):
+        has_match = re.search(self.spotify_pattern, message.text, re.IGNORECASE)
+        return has_match
+
+
+def send_spotify_link_reply(bot, update):
+    global client_credentials
+    if client_credentials is None:
+        client_credentials = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
+                                                      client_secret=SPOTIPY_CLIENT_SECRET)
+
+    start = update.message.text.find("https://open.spotify")
+    query = update.message.text[start:start+53]
+    sp = spotipy.Spotify(client_credentials_manager=client_credentials)
+    result = sp.track(track_id=query)
+    if result['preview_url']:
+        audio = result['preview_url']
+        message = emojize('Here is a preview :notes:', use_aliases=True)
+        bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
+        bot.sendAudio(chat_id=update.message.chat_id, audio=audio)
+    else:
+        bot.sendMessage(chat_id=update.message.chat_id,
+                        text=emojize(':x:', use_aliases=True) + ' No hay preview.', parse_mode='Markdown')
+
+
+class DrogaFilter(BaseFilter):
+    droga_pattern = r'(droga|drugs)'
+
+    def filter(self, message):
+        has_match = re.search(self.droga_pattern, message.text, re.IGNORECASE)
+        return has_match
+
+
+def send_droga_message_reply(bot, update):
+    bot.send_photo(update.message.chat_id, photo=giru_res('res/images/droga.jpg'))

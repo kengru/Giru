@@ -1,7 +1,9 @@
 import datetime
 from random import randint
 
-from telegram import Message, Chat, User
+from telegram.message import Message
+from telegram.chat import Chat
+from telegram.user import User
 
 
 class MockBot:

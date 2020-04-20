@@ -3,7 +3,9 @@ from io import StringIO
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from telegram import Bot, Update, Message
+from telegram.bot import Bot
+from telegram.update import Update
+from telegram.message import Message
 from telegram.ext import MessageHandler
 
 from giru.core.repliers import OnMatchPatternSendTextMessageReplier, load_repliers_from_csv_file, \
