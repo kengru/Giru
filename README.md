@@ -1,4 +1,5 @@
-# GIRU
+# GIRU v1.0.1
+
 An only Spanish talking telegram bot.
 
 [![Build Status](https://travis-ci.org/kengru/Giru.svg?branch=master)](https://travis-ci.org/kengru/Giru)
