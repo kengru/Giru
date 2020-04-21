@@ -94,7 +94,8 @@ def Ayuda(bot, update):
         message += '%s: ' % k
         for k2, i in ayuda[k].items():
             message += '%s\n\t- Ejemplo: _%s_\n' % (k2, i)
-    bot.sendMessage(chat_id=update.message.from_user.id, text=message, parse_mode='Markdown')
+    chat_id = update.message.from_user.id or update.message.chat_id
+    bot.sendMessage(chat_id=chat_id, text=message, parse_mode='Markdown')
 
 
 def Cartelera(bot, update):

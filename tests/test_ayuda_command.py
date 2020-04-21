@@ -2,7 +2,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
 from tests.mixins import CommandTestCaseMixin
-
+from tests.mocks import MockUser
 
 mock_help = {
     '/command-1': {
@@ -30,8 +30,8 @@ class AyudaCommandTestCase(CommandTestCaseMixin, TestCase):
                                 "\t- Ejemplo: _/command-2_\n"
 
         self.bot.send_message = MagicMock()
-
-        update = self.create_mock_update_with_chat_id_and_message(expected_chat_id)
+        user = MockUser(id=expected_chat_id)
+        update = self.create_mock_update_with_chat_id_message_and_user(chat_id=expected_chat_id, from_user=user)
 
         from giru.commands import Ayuda
 
