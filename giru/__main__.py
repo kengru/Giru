@@ -6,7 +6,7 @@ import firebase_admin
 from firebase_admin import db
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 
-from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Scores, \
+from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, scores, \
     create_get_saved_messages_callback
 from giru.core.repliers import load_repliers_from_csv_file
 from giru.repliers import *
@@ -44,7 +44,7 @@ commands = [
     CommandHandler('spotify', Spotify, pass_args=True),
     CommandHandler('padondehoy', PaDondeHoy),
     CommandHandler('cartelera', Cartelera),
-    CommandHandler('scores', Scores),
+    CommandHandler('scores', scores),
     CommandHandler('ayuda', Ayuda)
 ]
 for cmd in commands:

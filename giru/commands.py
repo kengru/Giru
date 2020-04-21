@@ -120,7 +120,7 @@ def Cartelera(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown', disable_web_page_preview=True)
 
 
-def Scores(bot, update):
+def scores(bot, update):
     """ Gets a list with the points scored by person. """
     try:
         with open(SCORES_FILE_PATH, 'rb') as f:
