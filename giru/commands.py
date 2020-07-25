@@ -7,9 +7,10 @@ import spotipy
 from emoji import emojize
 from requests import get
 from spotipy.oauth2 import SpotifyClientCredentials
-from telegram import Message, ParseMode
+from telegram.message import Message
+from telegram.parsemode import ParseMode
 
-from giru.data import julien, days, ayuda
+from giru.data import julien, days, ayuda, mepajeo
 from giru.helpers.movies import Movie
 from giru.settings import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SCORES_FILE_PATH
 
@@ -46,7 +47,6 @@ def create_get_saved_messages_callback(storage_provider):
 
 def Julien(bot, update):
     sel = random.choice(julien)
-    # cal = InputMediaPhoto(sel, 'Julien')
     bot.sendPhoto(chat_id=update.message.chat_id, photo=sel)
 
 
@@ -87,6 +87,10 @@ def PaDondeHoy(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text=response)
 
 
+def MePajeo(bot, update):
+    bot.sendMessage(chat_id=update.message.chat_id, text=random.choice(mepajeo))
+
+
 def Ayuda(bot, update):
     """ Sends a list of the commands and their use. """
     message = 'Hola, soy Giru.\n\n*Comandos:* \n'
@@ -94,7 +98,8 @@ def Ayuda(bot, update):
         message += '%s: ' % k
         for k2, i in ayuda[k].items():
             message += '%s\n\t- Ejemplo: _%s_\n' % (k2, i)
-    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')
+    chat_id = update.message.from_user.id or update.message.chat_id
+    bot.sendMessage(chat_id=chat_id, text=message, parse_mode='Markdown')
 
 
 def Cartelera(bot, update):
@@ -124,9 +129,9 @@ def Scores(bot, update):
     """ Gets a list with the points scored by person. """
     try:
         with open(SCORES_FILE_PATH, 'rb') as f:
-            scores = pickle.load(f)
+            _scores = pickle.load(f)
         message = '*Scores:*\n\n'
-        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        sorted_scores = sorted(_scores.items(), key=lambda x: x[1], reverse=True)
         for k, v in sorted_scores:
             message += '*{0}:*  {1}\n'.format(k, v)
         # If it ever wants to be divided.
@@ -142,6 +147,6 @@ def Scores(bot, update):
         #     message += '*Hated:*\n'
         #     for k, v in hated:
         #         message += '{0}: {1}\n'.format(k, v)
-    except:
+    except IOError:
         message = 'No hay scores.'
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')

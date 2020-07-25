@@ -10,11 +10,6 @@ from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Carte
     create_get_saved_messages_callback
 from giru.core.repliers import load_repliers_from_csv_file
 from giru.repliers import *
-from giru.repliers import FilterVN1, FilterVN2, FilterVN3, FilterVN4, FilterVN5, FilterVN6, FilterVN7, FilterSK1, \
-    FilterCPOSP
-from giru.repliers import recordPoints, sendReplyToUser
-from giru.repliers import respondM, respondCPOSP, sdm, salute, recon, sendWTF, sendMentira, sendHBD
-from giru.repliers import sendVN1, sendVN2, sendVN3, sendVN4, sendVN5, sendVN6, sendVN7, sendSK1
 from giru.settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
 from giru.settings import TELEGRAM_TOKEN, GIRU_DATA_PATH, REPLIES_FILE_PATH
 
@@ -32,28 +27,6 @@ elif GIRU_STORAGE_LOCATION == 'firebase':
     })
     message_storage = FirebaseReplyStorageProvider(db.reference())
 
-filter_mmg = FilterMmg()
-filter_cposp = FilterCPOSP()
-filter_save_reply = FilterSaveReply(message_storage)
-filter_salut = FilterSalut()
-filter_recon = FilterRecon()
-filter_wtf = FilterWtf()
-filter_mentira = FilterMentira()
-filter_felicidades = FilterFelicidades()
-
-filter_vn1 = FilterVN1()
-filter_vn2 = FilterVN2()
-filter_vn3 = FilterVN3()
-filter_vn4 = FilterVN4()
-filter_vn5 = FilterVN5()
-filter_vn6 = FilterVN6()
-filter_vn7 = FilterVN7()
-
-filter_sk1 = FilterSK1()
-
-filter_score = FilterScores()
-filter_reply_to_giru = FilterReplyToGiru()
-
 dp = updater.dispatcher
 
 
@@ -63,7 +36,7 @@ def unknown(bot, update):
 
 
 # Creating and adding handlers.
-commandsl = [
+commands = [
     CommandHandler('start', Start),
     CommandHandler('vociao', Caps, pass_args=True),
     CommandHandler('saved', create_get_saved_messages_callback(message_storage)),
@@ -74,30 +47,34 @@ commandsl = [
     CommandHandler('scores', Scores),
     CommandHandler('ayuda', Ayuda)
 ]
-for cmd in commandsl:
+for cmd in commands:
     dp.add_handler(cmd)
 
-dp.add_handler(MessageHandler(filter_mmg, respondM))
-dp.add_handler(MessageHandler(filter_cposp, respondCPOSP))
-dp.add_handler(MessageHandler(filter_wtf, sendWTF))
-dp.add_handler(MessageHandler(filter_mentira, sendMentira))
-dp.add_handler(MessageHandler(filter_sk1, sendSK1))
-dp.add_handler(MessageHandler(filter_felicidades, sendHBD))
-dp.add_handler(MessageHandler(filter_salut, salute))
-dp.add_handler(MessageHandler(filter_save_reply, sdm))
-dp.add_handler(MessageHandler(filter_recon, recon))
+message_handlers = [
+    MessageHandler(FilterMmg(), respond_mmg),
+    MessageHandler(FilterCPOSP(), respond_certified),
+    MessageHandler(FilterWtf(), send_wtf),
+    MessageHandler(FilterMentira(), send_mentira),
+    MessageHandler(FilterFelicidades(), send_hbd),
+    MessageHandler(FilterSalut(), salute),
+    MessageHandler(FilterSaveReply(message_storage), sdm),
+    MessageHandler(FilterRecon(), recon),
+    MessageHandler(FilterSK1(), send_sk1),
+    MessageHandler(FilterVN1(), send_vn1),
+    MessageHandler(FilterVN2(), send_vn2),
+    MessageHandler(FilterVN3(), send_vn3),
+    MessageHandler(FilterVN4(), send_vn4),
+    MessageHandler(FilterVN5(), send_vn5),
+    MessageHandler(FilterVN6(), send_vn6),
+    MessageHandler(FilterVN7(), send_vn7),
+    MessageHandler(FilterScores(), record_points),
+    MessageHandler(FilterReplyToGiru(), send_reply_to_user),
+    MessageHandler(AlcoholRelatedFilter(), send_alcohol_related_message_reply),
+    MessageHandler(FamiliaFilter(), send_familia_message_reply)
+]
 
-dp.add_handler(MessageHandler(filter_vn1, sendVN1))
-dp.add_handler(MessageHandler(filter_vn2, sendVN2))
-dp.add_handler(MessageHandler(filter_vn3, sendVN3))
-dp.add_handler(MessageHandler(filter_vn4, sendVN4))
-dp.add_handler(MessageHandler(filter_vn5, sendVN5))
-dp.add_handler(MessageHandler(filter_vn6, sendVN6))
-dp.add_handler(MessageHandler(filter_vn7, sendVN7))
-
-dp.add_handler(MessageHandler(filter_score, recordPoints))
-dp.add_handler(MessageHandler(filter_reply_to_giru, sendReplyToUser))
-dp.add_handler(MessageHandler(AlcoholRelatedFilter(), send_alcohol_related_message_reply))
+for msg_h in message_handlers:
+    dp.add_handler(msg_h)
 
 try:
     with open(REPLIES_FILE_PATH, 'r') as replies_file:

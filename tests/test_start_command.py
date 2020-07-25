@@ -1,11 +1,8 @@
 from unittest import TestCase
-from unittest.mock import Mock, MagicMock
-
-from telegram import Bot, Update, Message, Chat
+from unittest.mock import MagicMock
 
 from giru.commands import Start
 from tests.mixins import CommandTestCaseMixin
-from tests.mocks import MockMessage, MockBot, MockUpdate, MockChat
 
 
 class StartCommandTestCase(CommandTestCaseMixin, TestCase):

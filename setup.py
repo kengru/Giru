@@ -10,7 +10,7 @@ URL = 'https://github.com/kengru/Giru'
 EMAIL = ''
 AUTHOR = 'kengru'
 REQUIRES_PYTHON = '==3.5'
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 LICENSE = 'MIT'
 
 here = os.path.abspath(os.path.dirname(__file__))
