@@ -343,13 +343,14 @@ class AlcoholRelatedFilter(BaseFilter):
 
 
 def send_alcohol_related_message_reply(bot, update):
-    bot.send_document(update.message.chat_id, document='https://media.giphy.com/media/cC9nMt8P3gsUVka1Ul/giphy.gif')
+    choices = ["https://media.giphy.com/media/Jp3sIkRR030uGYVGpX/giphy.gif", "https://media.giphy.com/media/cC9nMt8P3gsUVka1Ul/giphy.gif"]
+    bot.send_document(update.message.chat_id, document=random.choice(choices))
 
 
 # New Replies
 
 class FamiliaFilter(BaseFilter):
-    familia_pattern = r'(familia)'
+    familia_pattern = r'(familia|family)'
 
     def filter(self, message):
         has_match = re.search(self.familia_pattern, message.text, re.IGNORECASE)

@@ -7,7 +7,7 @@ from firebase_admin import db
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 
 from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Scores, \
-    create_get_saved_messages_callback
+    create_get_saved_messages_callback, MePajeo
 from giru.core.repliers import load_repliers_from_csv_file
 from giru.repliers import *
 from giru.settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
@@ -41,6 +41,7 @@ commands = [
     CommandHandler('vociao', Caps, pass_args=True),
     CommandHandler('saved', create_get_saved_messages_callback(message_storage)),
     CommandHandler('julien', Julien),
+    CommandHandler('mepajeo', MePajeo),
     CommandHandler('spotify', Spotify, pass_args=True),
     CommandHandler('padondehoy', PaDondeHoy),
     CommandHandler('cartelera', Cartelera),
@@ -70,7 +71,8 @@ message_handlers = [
     MessageHandler(FilterScores(), record_points),
     MessageHandler(FilterReplyToGiru(), send_reply_to_user),
     MessageHandler(AlcoholRelatedFilter(), send_alcohol_related_message_reply),
-    MessageHandler(FamiliaFilter(), send_familia_message_reply)
+    MessageHandler(FamiliaFilter(), send_familia_message_reply),
+    MessageHandler(DrogaFilter(), send_droga_message_reply)
 ]
 
 for msg_h in message_handlers:
