@@ -10,7 +10,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from telegram.message import Message
 from telegram.parsemode import ParseMode
 
-from giru.data import julien, days, ayuda
+from giru.data import julien, days, ayuda, mepajeo
 from giru.helpers.movies import Movie
 from giru.settings import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SCORES_FILE_PATH
 
@@ -85,6 +85,10 @@ def PaDondeHoy(bot, update):
     date = datetime.date.today()
     response = cached_padondehoy_response(date, update.message.chat_id)
     bot.sendMessage(chat_id=update.message.chat_id, text=response)
+
+
+def MePajeo(bot, update):
+    bot.sendMessage(chat_id=update.message.chat_id, text=random.choice(mepajeo))
 
 
 def Ayuda(bot, update):
