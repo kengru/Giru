@@ -174,7 +174,7 @@ def send_wtf(bot, update):
 
 class FilterMentira(BaseFilter):
     def filter(self, message):
-        found = re.search("(liar)|(jablador)|(mentiroso)|(mentira)|(lies)", message.text, re.IGNORECASE)
+        found = re.search("([\s$]liar)|(jablador)|(mentiroso)|([\s$]mentira)|([\s$]lies)", message.text, re.IGNORECASE)
         if found:
             return True
 
