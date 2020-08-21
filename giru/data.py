@@ -28,22 +28,22 @@ julien = [
 ]
 
 ayuda = {
-    '/vociao': {
+    'vociao': {
         'Devuelve el mensaje en mayusculas.': '/vociao [mensaje]',
     },
-    '/saved': {
+    'saved': {
         'Muestra los mensajes guardados.': '/saved'
     },
-    '/spotify': {
+    'spotify': {
         'Trae el link de spotify de la cancion indicada y un preview de 30 segundos (si existe).': '/spotify [cancion]'
     },
-    '/ayuda': {
+    'ayuda': {
         'Muestra los comandos y mensajes que se pueden utilizar.': '/ayuda'
     },
-    '/padondehoy': {
+    'padondehoy': {
         'Te dice lo que vamos a hacer hoy.': '/padondehoy'
     },
-    '/cartelera': {
+    'cartelera': {
         'Trae una lista de las películas que están en los cines actualmente.': '/cartelera'
     }
 }

@@ -6,8 +6,9 @@ import firebase_admin
 from firebase_admin import db
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 
-from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Ayuda, Cartelera, Scores, \
-    create_get_saved_messages_callback, MePajeo
+from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy,  Cartelera, Scores, \
+    create_get_saved_messages_callback, MePajeo, create_ayuda_cb
+from giru import data
 from giru.core.repliers import load_repliers_from_csv_file
 from giru.repliers import *
 from giru.settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
@@ -46,8 +47,10 @@ commands = [
     CommandHandler('padondehoy', PaDondeHoy),
     CommandHandler('cartelera', Cartelera),
     CommandHandler('scores', Scores),
-    CommandHandler('ayuda', Ayuda)
 ]
+ayuda_cb = CommandHandler('ayuda', create_ayuda_cb(commands, data.ayuda))
+commands.append(ayuda_cb)
+
 for cmd in commands:
     dp.add_handler(cmd)
 

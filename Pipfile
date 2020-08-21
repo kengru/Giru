@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"beautifulsoup4" = "==4.4.1"
+beautifulsoup4 = "==4.4.1"
 emoji = "==0.5.0"
 python-dotenv = "==0.8.2"
 python-telegram-bot = "==9.0.0"
