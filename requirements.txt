@@ -1,4 +1,4 @@
--i https://pypi.org/simple
+#-i https://pypi.org/simple
 beautifulsoup4==4.4.1
 cachecontrol==0.12.6
 cachetools==4.1.1
