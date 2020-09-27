@@ -4,12 +4,13 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from telegram.bot import Bot
-from telegram.update import Update
-from telegram.message import Message
 from telegram.ext import MessageHandler
+from telegram.message import Message
+from telegram.update import Update
 
 from giru.core.repliers import OnMatchPatternSendTextMessageReplier, load_repliers_from_csv_file, \
-    OnMatchPatternSendDocumentMessageReplier
+    OnMatchPatternSendDocumentMessageReplier, OnMatchPatternPickAndSendDocumentMessageReplier, \
+    OnMatchPatternPickAndSendTextMessageReplier, OnMatchPatternPickAndSendCorruptedTextMessageReplier
 from tests.mocks import MockMessage
 
 MockBot = MagicMock(spec=Bot)
@@ -113,3 +114,48 @@ class LoadRepliersFromCSVFileTestCase(TestCase):
 
         self.assertTrue(replier.filter(MockMessage(text='foo')))
         self.assertIsInstance(replier, OnMatchPatternSendDocumentMessageReplier)
+
+    def test_it_can_load_document_list_replier_from_csv_file(self):
+        file = StringIO(
+            '(foo),random_document,https://media.giphy.com/media/c6WtwzAXB1Aov1MejW/giphy.gif https://media.giphy.com/media/c6WtwzAXB1Aov1MejW/giphy.gif ')
+        repliers = load_repliers_from_csv_file(file)
+
+        self.assertEqual(len(repliers), 1)
+
+        replier = repliers[0]
+
+        self.assertTrue(replier.filter(MockMessage(text='foo')))
+        self.assertIsInstance(replier, OnMatchPatternPickAndSendDocumentMessageReplier)
+
+    def test_it_can_load_text_list_replier_from_csv_file(self):
+        file = StringIO('(foo),random_text, hello;hello')
+        repliers = load_repliers_from_csv_file(file)
+
+        self.assertEqual(len(repliers), 1)
+
+        replier = repliers[0]
+
+        self.assertTrue(replier.filter(MockMessage(text='foo')))
+        self.assertIsInstance(replier, OnMatchPatternPickAndSendTextMessageReplier)
+
+    def test_it_can_load_corrupted_text_replier_from_csv_file(self):
+        file = StringIO('(foo),corrupted_random_text, NANI?!')
+        repliers = load_repliers_from_csv_file(file)
+
+        self.assertEqual(len(repliers), 1)
+
+        replier = repliers[0]
+
+        self.assertTrue(replier.filter(MockMessage(text='foo')))
+        self.assertIsInstance(replier, OnMatchPatternPickAndSendCorruptedTextMessageReplier)
+
+    def test_it_will_load_secret_message_replier_from_csv_file(self):
+        file = StringIO('(foo),another_type_does_not_exist, hello;hello')
+        repliers = load_repliers_from_csv_file(file)
+
+        self.assertEqual(len(repliers), 1)
+
+        replier = repliers[0]
+
+        self.assertTrue(replier.filter(MockMessage(text='foo')))
+        self.assertIsInstance(replier, OnMatchPatternPickAndSendCorruptedTextMessageReplier)

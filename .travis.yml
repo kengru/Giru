@@ -5,7 +5,7 @@ python:
 
 # command to install dependencies
 install:
-  - pip install -e .[testing]
+  - pipenv install --system --deploy --ignore-pipfile --dev
 
 # command to run tests
 script:

@@ -4,4 +4,5 @@ omit =
     */site-packages/nose/*
     *__init__*
     *tests/
+    *build/
 

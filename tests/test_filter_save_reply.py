@@ -1,21 +1,14 @@
-import os
-import time
+from os import path
 from tempfile import TemporaryDirectory
 from unittest import TestCase
-from os import path
 
-import firebase_admin
-from firebase_admin import db
-
-from giru.repliers import FilterSaveReply, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider, \
-    FirebaseReplyStorageProvider
-from giru.settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL
 from tests.mocks import MockMessage, MockUser
 
 
 class TestFilterSaveReply(TestCase):
 
     def test_filter_save_reply_stores_replies_in_a_storage_provider(self):
+        from giru.repliers import FilterSaveReply, InMemoryReplyStorageProvider
         storage = InMemoryReplyStorageProvider()
         sut = FilterSaveReply(storage_provider=storage)
         message = _create_replied_message_mock("it works!")
@@ -26,6 +19,7 @@ class TestFilterSaveReply(TestCase):
         self.assertTrue(replies[0].text == "it works!")
 
     def test_filter_save_reply_can_store_replies_in_filesystem(self):
+        from giru.repliers import FilterSaveReply, FileSystemReplyStorageProvider
         with TemporaryDirectory() as dir_name:
             storage = FileSystemReplyStorageProvider(file_path=path.join(dir_name, "tempfile"))
             sut = FilterSaveReply(storage_provider=storage)

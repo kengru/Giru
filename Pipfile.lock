@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b326d854b076459d874f3fe3db475ed81e4f8ec44c3115ff0edab067ceecb293"
+            "sha256": "d29f7101c25533e3f1f08a26cd36d934746c05c0e6d2e9164564849376a460c9"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -368,6 +368,13 @@
                 "sha256:e7983572181f5e1522d9c98453462384ee92a0be7fac5f1413a1e35c56cc0461"
             ],
             "version": "==1.25.10"
+        },
+        "zalgo-text": {
+            "hashes": [
+                "sha256:4917b5053a014e3251e95e2f6fd32ed29770ccc2d89921dcab147eb8fc6be224"
+            ],
+            "index": "pypi",
+            "version": "==0.6"
         }
     },
     "develop": {

@@ -1,4 +1,0 @@
-webhook -hooks /home/Giru/hooks.json &
-python3 -m giru &
-
-exit 0

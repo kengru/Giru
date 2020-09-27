@@ -2,7 +2,6 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from giru.data import ayuda as ayuda_text
-
 from tests.mixins import CommandTestCaseMixin
 from tests.mocks import MockUser
 

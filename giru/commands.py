@@ -13,6 +13,7 @@ from telegram.message import Message
 from telegram.parsemode import ParseMode
 from telegram.bot import Bot
 
+from giru.core.scorekeeping import FsScoreKeeper
 from giru.data import julien, days, mepajeo
 from giru import data
 from giru.helpers.movies import Movie
@@ -136,15 +137,18 @@ def Cartelera(bot, update):
 
 def Scores(bot, update):
     """ Gets a list with the points scored by person. """
-    try:
-        with open(SCORES_FILE_PATH, 'rb') as f:
-            _scores = pickle.load(f)
+    k = FsScoreKeeper(SCORES_FILE_PATH)
+    _scores = k.list_scores(update.message.chat_id)
+    if len(_scores) == 0:
+
+        message = 'No hay scores.'
+    else:
         message = '*Scores:*\n\n'
         sorted_scores = sorted(_scores.items(), key=lambda x: x[1], reverse=True)
         for k, v in sorted_scores:
             message += '*{0}:*  {1}\n'.format(k, v)
         # If it ever wants to be divided.
-        # 
+        #
         # loved = tuple(filter(lambda x: x[1] > 0, sorted_scores))
         # hated = tuple(filter(lambda x: x[1] < 0, sorted_scores))
         # if loved:
@@ -156,6 +160,4 @@ def Scores(bot, update):
         #     message += '*Hated:*\n'
         #     for k, v in hated:
         #         message += '{0}: {1}\n'.format(k, v)
-    except IOError:
-        message = 'No hay scores.'
     bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode='Markdown')

@@ -13,6 +13,7 @@ spotipy = "==2.4.4"
 firebase-admin = "==2.11.0"
 omdb = "==0.10.0"
 future = "*"
+zalgo-text = "*"
 
 [dev-packages]
 coverage = "*"

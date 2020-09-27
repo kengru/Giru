@@ -3,7 +3,6 @@ from unittest.mock import MagicMock
 
 from giru.commands import Caps
 from tests.mixins import CommandTestCaseMixin
-from tests.mocks import MockBot, MockUpdate, MockMessage, MockChat
 
 
 class CapsCommandTestCase(CommandTestCaseMixin, TestCase):

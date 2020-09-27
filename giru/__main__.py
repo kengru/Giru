@@ -5,8 +5,9 @@ from os.path import join
 import firebase_admin
 from firebase_admin import db
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
+from zalgo_text.zalgo import zalgo
 
-from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy,  Cartelera, Scores, \
+from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Cartelera, Scores, \
     create_get_saved_messages_callback, MePajeo, create_ayuda_cb
 from giru import data
 from giru.core.repliers import load_repliers_from_csv_file
@@ -33,7 +34,8 @@ dp = updater.dispatcher
 
 def unknown(bot, update):
     """ What to do when the command is not recognizable. """
-    bot.sendMessage(chat_id=update.message.chat_id, text='No le llego mi loco.')
+    t = zalgo().zalgofy(random.choice(data.BAD_CONFIG_SECRET_MESSAGE))
+    bot.sendMessage(chat_id=update.message.chat_id, text=t)
 
 
 # Creating and adding handlers.
