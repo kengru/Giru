@@ -1,20 +1,14 @@
-import os
-import time
-from tempfile import NamedTemporaryFile
+from os import path
+from tempfile import TemporaryDirectory
 from unittest import TestCase
 
-import firebase_admin
-from firebase_admin import db
-
-from giru.repliers import FilterSaveReply, InMemoryReplyStorageProvider, FileSystemReplyStorageProvider, \
-    FirebaseReplyStorageProvider
-from giru.settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL
 from tests.mocks import MockMessage, MockUser
 
 
 class TestFilterSaveReply(TestCase):
 
     def test_filter_save_reply_stores_replies_in_a_storage_provider(self):
+        from giru.repliers import FilterSaveReply, InMemoryReplyStorageProvider
         storage = InMemoryReplyStorageProvider()
         sut = FilterSaveReply(storage_provider=storage)
         message = _create_replied_message_mock("it works!")
@@ -25,15 +19,17 @@ class TestFilterSaveReply(TestCase):
         self.assertTrue(replies[0].text == "it works!")
 
     def test_filter_save_reply_can_store_replies_in_filesystem(self):
-        file = NamedTemporaryFile()
-        storage = FileSystemReplyStorageProvider(file_path=file.name)
-        sut = FilterSaveReply(storage_provider=storage)
-        message = _create_replied_message_mock("it works!")
-        sut.filter(message)
-        replies = storage.get_all_replies()
+        from giru.repliers import FilterSaveReply, FileSystemReplyStorageProvider
+        with TemporaryDirectory() as dir_name:
+            storage = FileSystemReplyStorageProvider(file_path=path.join(dir_name, "tempfile"))
+            sut = FilterSaveReply(storage_provider=storage)
+            message = _create_replied_message_mock("it works!")
+            sut.filter(message)
+            replies = storage.get_all_replies()
 
-        self.assertGreater(len(replies), 0)
-        self.assertTrue(replies[0].text == "it works!")
+            self.assertGreater(len(replies), 0)
+            self.assertTrue(replies[0].text == "it works!")
+            self.assertIsNotNone(dir_name)
 
     # def test_filter_save_reply_can_store_replies_in_firebase_db(self):
     #     cert_file_path = os.path.realpath(FIREBASE_ACCOUNT_KEY_FILE_PATH)

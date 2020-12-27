@@ -16,7 +16,7 @@ An only Spanish talking telegram bot.
 ### To Run:
 
 ```bash
-$ pip install -r requirements.txt
+$ pipenv install
 $ python main.py
 ```
 

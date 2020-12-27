@@ -22,5 +22,3 @@ class JulienCommandTestCase(CommandTestCaseMixin, TestCase):
         photo = kwargs.get('photo')
 
         self.assertIn(photo, JULIEN_PICTURES)
-
-

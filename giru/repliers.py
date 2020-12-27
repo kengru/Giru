@@ -1,20 +1,18 @@
 import json
-import pickle
 import random
 import re
 import time
 from functools import partial
 
+import spotipy
 from emoji import emojize
-from firebase_admin.db import Reference
 from pkg_resources import resource_stream
+from spotipy.oauth2 import SpotifyClientCredentials
+from telegram.ext import BaseFilter
 from telegram.message import Message
 from telegram.user import User
-from telegram.ext import BaseFilter
 
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-
+import giru.core.scorekeeping
 from giru.data import replies, mmg, cposp
 from giru.settings import SAVED_REPLIES_FILE_PATH, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
     SCORES_FILE_PATH
@@ -86,23 +84,6 @@ class FileSystemReplyStorageProvider(BaseReplyStorageProvider):
         return replies or []
 
 
-class FirebaseReplyStorageProvider(BaseReplyStorageProvider):
-    def __init__(self, db_reference):  # type: (Reference) -> None
-        self.db_reference = db_reference
-
-    def save(self, message):
-        timestamp = str(int(time.time()))
-
-        self.db_reference \
-            .child('replies') \
-            .child(timestamp) \
-            .set(message.to_dict())
-
-    def get_all_replies(self):
-        replies_dict = self.db_reference.child('replies').get() or {}
-        return [convert_reply_dict_to_message(reply_dict) for (_, reply_dict) in replies_dict.items()]
-
-
 class FilterSaveReply(BaseFilter):
     def __init__(self, storage_provider=None):
         self.storage_provider = storage_provider or FileSystemReplyStorageProvider(file_path=SAVED_REPLIES_FILE_PATH)
@@ -157,6 +138,7 @@ class FilterRecon(BaseFilter):
 def recon(bot, update):
     text = '*Reconocimiento empezado!*\nCargando respuesta.....'
     bot.sendMessage(chat_id=update.message.chat_id, text=text, parse_mode='Markdown')
+    time.sleep(3)
     text = 'He encontrado un *' + str(random.randint(60, 100)) + '%* de que en la imagen hay un *mamaguebo*.'
     bot.sendMessage(chat_id=update.message.chat_id, text=text.format(), parse_mode='Markdown')
 
@@ -311,26 +293,15 @@ class FilterScores(BaseFilter):
 
 
 def record_points(bot, update):
-    scores = {}
-    try:
-        with open(SCORES_FILE_PATH, 'rb') as f:
-            scores = pickle.load(f)
-    except IOError:
-        with open(SCORES_FILE_PATH, 'wb') as f:
-            pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
+    k = giru.core.scorekeeping.FsScoreKeeper(SCORES_FILE_PATH)
+
     name = update.message.reply_to_message.from_user.first_name
-    if name in scores.keys():
-        if update.message.text == '+1':
-            scores[name] += 1
-        else:
-            scores[name] -= 1
+    chat_id = update.message.chat_id
+
+    if update.message.text == '+1':
+        k.add_point(chat_id, name)
     else:
-        if update.message.text == '+1':
-            scores[name] = scores.get(name, 0) + 1
-        else:
-            scores[name] = scores.get(name, 0) - 1
-    with open(SCORES_FILE_PATH, 'wb') as f:
-        pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
+        k.remove_point(chat_id, name)
 
 
 class AlcoholRelatedFilter(BaseFilter):
@@ -343,7 +314,8 @@ class AlcoholRelatedFilter(BaseFilter):
 
 
 def send_alcohol_related_message_reply(bot, update):
-    choices = ["https://media.giphy.com/media/Jp3sIkRR030uGYVGpX/giphy.gif", "https://media.giphy.com/media/cC9nMt8P3gsUVka1Ul/giphy.gif"]
+    choices = ["https://media.giphy.com/media/Jp3sIkRR030uGYVGpX/giphy.gif",
+               "https://media.giphy.com/media/cC9nMt8P3gsUVka1Ul/giphy.gif"]
     bot.send_document(update.message.chat_id, document=random.choice(choices))
 
 
@@ -376,7 +348,7 @@ def send_spotify_link_reply(bot, update):
                                                       client_secret=SPOTIPY_CLIENT_SECRET)
 
     start = update.message.text.find("https://open.spotify")
-    query = update.message.text[start:start+53]
+    query = update.message.text[start:start + 53]
     sp = spotipy.Spotify(client_credentials_manager=client_credentials)
     result = sp.track(track_id=query)
     if result['preview_url']:
