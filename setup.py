@@ -17,11 +17,11 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 # What packages are required for this module to be executed?
 REQUIRED = []
-try:
-    with io.open(os.path.join(here, 'requirements.txt'), encoding='utf-8') as f:
-        REQUIRED.extend(f.readlines())
-except FileNotFoundError:
-    pass
+# try:
+#     with io.open(os.path.join(here, '__OLDrequirements.txt'), encoding='utf-8') as f:
+#         REQUIRED.extend(f.readlines())
+# except FileNotFoundError:
+#     pass
 
 # What packages are optional?
 EXTRAS = {

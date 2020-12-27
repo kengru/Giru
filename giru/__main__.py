@@ -2,14 +2,13 @@ import logging
 import os
 from os.path import join
 
-import firebase_admin
-from firebase_admin import db
+from telegram import ParseMode
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 from zalgo_text.zalgo import zalgo
 
+from giru import data
 from giru.commands import Start, Caps, Julien, Spotify, PaDondeHoy, Cartelera, Scores, \
     create_get_saved_messages_callback, MePajeo, create_ayuda_cb
-from giru import data
 from giru.core.repliers import load_repliers_from_csv_file
 from giru.repliers import *
 from giru.settings import FIREBASE_ACCOUNT_KEY_FILE_PATH, FIREBASE_DATABASE_URL, GIRU_STORAGE_LOCATION
@@ -23,11 +22,14 @@ message_storage = FileSystemReplyStorageProvider(join(GIRU_DATA_PATH, 'replies.n
 if GIRU_STORAGE_LOCATION == 'in_memory':
     message_storage = InMemoryReplyStorageProvider()
 elif GIRU_STORAGE_LOCATION == 'firebase':
+    import firebase_admin
+    from firebase_replier import FirebaseReplyStorageProvider
+
     cert_file_path = os.path.realpath(FIREBASE_ACCOUNT_KEY_FILE_PATH)
     firebase_admin.initialize_app(firebase_admin.credentials.Certificate(cert_file_path), {
         'databaseURL': FIREBASE_DATABASE_URL,
     })
-    message_storage = FirebaseReplyStorageProvider(db.reference())
+    message_storage = FirebaseReplyStorageProvider(firebase_admin.db.reference())
 
 dp = updater.dispatcher
 
@@ -35,7 +37,7 @@ dp = updater.dispatcher
 def unknown(bot, update):
     """ What to do when the command is not recognizable. """
     t = zalgo().zalgofy(random.choice(data.BAD_CONFIG_SECRET_MESSAGE))
-    bot.sendMessage(chat_id=update.message.chat_id, text=t)
+    bot.sendMessage(chat_id=update.message.chat_id, text=t, parse_mode=ParseMode.MARKDOWN)
 
 
 # Creating and adding handlers.

@@ -102,9 +102,9 @@ def create_ayuda_cb(commands: List[CommandHandler], help_text):
         message = 'Hola, soy Giru.\n\n*Comandos:* \n'
 
         for c in commands:
-            message += f'/{c.command}: '
+            message += f'/{c.command[0]}: '
             message += '\n'.join((f'{desc}\n\t- Ejemplo: _{example}_\n'
-                                  for desc, example in help_text.get(c.command, {"??": "??"}).items()))
+                                  for desc, example in help_text.get(c.command[0], {"??": "??"}).items()))
 
         chat_id = update.message.from_user.id or update.message.chat_id
         bot.sendMessage(chat_id=chat_id, text=message, parse_mode='Markdown')

@@ -1,15 +1,28 @@
 version: "3"
 
 volumes:
-  giru-data: ~/giru-dev-data
-
+  giru-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/giru/data
 
 services:
+  duckdns-updater: #https://docs.linuxserver.io/images/docker-duckdns
+    image: ghcr.io/linuxserver/duckdns
+    container_name: duckdns
+    environment:
+      - PUID=1000 #optional
+      - PGID=1000 #optional
+      - TZ=Europe/London
+      - SUBDOMAINS=giru
+      - TOKEN=${duckDnsToken}
+    restart: unless-stopped
+
   giru:
     build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
+      context: ./Giru
+    env_file: .env
     volumes:
       - giru-data:/home/GiruData:rw
