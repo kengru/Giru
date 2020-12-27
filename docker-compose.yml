@@ -6,7 +6,7 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/giru/data
+      device: /home/Giru/data
 
 services:
   duckdns-updater: #https://docs.linuxserver.io/images/docker-duckdns
@@ -22,7 +22,8 @@ services:
 
   giru:
     build:
-      context: ./Giru
+      context: .
     env_file: .env
     volumes:
       - giru-data:/home/GiruData:rw
+    restart: unless-stopped
