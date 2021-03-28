@@ -86,7 +86,9 @@ class MatchPatternInTextMessageMixin(ABC):
     pattern = None
 
     def filter(self, message):  # type: (Message) -> bool
-        return bool(re.search(self.get_pattern(), message.text))
+        return bool(
+            re.search(self.get_pattern(), message.text, re.MULTILINE | re.IGNORECASE)
+        )
 
     def get_pattern(self):  # type: () -> str
         if not self.pattern:
@@ -130,6 +132,20 @@ class ReplyWithDocumentMessageMixin(ABC):
         return self.document
 
 
+class ReplyWithAudioMessageMixin(ReplyWithDocumentMessageMixin):
+    def reply(self, bot, update):  # type: (Bot, Update) -> Message
+        message = update.message  # type: Message
+
+        return bot.send_audio(chat_id=message.chat_id, audio=self.get_document())
+
+
+class ReplyWithPictureMessageMixin(ReplyWithDocumentMessageMixin):
+    def reply(self, bot, update):  # type: (Bot, Update) -> Message
+        message = update.message  # type: Message
+
+        return bot.send_photo(chat_id=message.chat_id, photo=self.get_document())
+
+
 class ReplyWithStickerMixin(ABC):
     sticker_id = None
     message_text = None
@@ -137,8 +153,9 @@ class ReplyWithStickerMixin(ABC):
     def reply(self, bot, update):  # type: (Bot, Update) -> Message
         message = update.message  # type: Message
 
-        bot.send_message(chatid=message.chat_id, text=self.get_message_text())
-        return bot.send_sticker(chat_id=message.chat_id, sticker_id=self.get_sticker())
+        if self.message_text:
+            bot.send_message(chat_id=message.chat_id, text=self.get_message_text())
+        return bot.send_sticker(chat_id=message.chat_id, sticker=self.get_sticker())
 
     def get_sticker(self):
         if not self.sticker_id:
@@ -155,6 +172,22 @@ class ReplyWithStickerMixin(ABC):
 
 class OnMatchPatternSendDocumentMessageReplier(
     MatchPatternInTextMessageMixin, ReplyWithDocumentMessageMixin, BaseReplier
+):
+    def __init__(self, pattern, message_content):
+        self.pattern = pattern
+        self.document = message_content
+
+
+class OnMatchPatternSendAudioMessageReplier(
+    MatchPatternInTextMessageMixin, ReplyWithAudioMessageMixin, BaseReplier
+):
+    def __init__(self, pattern, message_content):
+        self.pattern = pattern
+        self.document = message_content
+
+
+class OnMatchPatternSendPictureMessageReplier(
+    MatchPatternInTextMessageMixin, ReplyWithPictureMessageMixin, BaseReplier
 ):
     def __init__(self, pattern, message_content):
         self.pattern = pattern

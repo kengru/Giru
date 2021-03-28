@@ -17,6 +17,10 @@ from giru.core.repliers import (
     OnMatchPatternSendDocumentMessageReplier,
     OnMatchPatternPickAndSendDocumentMessageReplier,
     OnMatchPatternSendStickerReplier,
+    OnMatchPatternSendAudioMessageReplier,
+    OnMatchPatternSendPictureMessageReplier,
+    OnMatchPatternSendTextMessageReplier,
+    OnMatchPatternPickAndSendTextMessageReplier,
 )
 from giru.data import replies, mmg, cposp
 from giru.settings import (
@@ -34,16 +38,7 @@ def sdm(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text="Mensaje guardado.")
 
 
-class FilterMmg(BaseFilter):
-    def filter(self, message):
-        found = re.search("(mmg)|(mamague(b|v))", message.text, re.IGNORECASE)
-        return found
-
-
-def respond_mmg(bot, update):
-    """ Respond to a pattern in FilterMmg. """
-    # bot.sendMessage(chat_id=update.message.chat_id, text='MMG UTE!')
-    bot.sendMessage(chat_id=update.message.chat_id, text=random.choice(mmg))
+mmg_replier = OnMatchPatternPickAndSendTextMessageReplier(r"(mmg)|(mamague(b|v))", mmg)
 
 
 def convert_reply_dict_to_message(reply_dict):
@@ -115,35 +110,24 @@ class FilterSaveReply(BaseFilter):
             self.storage_provider.save(message.reply_to_message)
 
 
-class FilterSalut(BaseFilter):
-    def filter(self, message):
-        found = re.search("(giru)", message.text, re.IGNORECASE)
-        if found:
-            return True
+salute_hola_replier = OnMatchPatternSendTextMessageReplier(
+    r"(hol[ai]).*(giru)", "Hola!"
+)
 
+salute_klk_replier = OnMatchPatternSendTextMessageReplier(
+    r"(klk).*(giru)", "Dime buen barrial."
+)
+salute_klk_post_replier = OnMatchPatternSendTextMessageReplier(
+    r"(giru).*(klk)", "Dime buen barrial."
+)
 
-def salute(bot, update):
-    message = update.message.text.lower()
-    if "hola" in message or "holi" in message:
-        bot.sendMessage(chat_id=update.message.chat_id, text="Hola!")
-    elif "klk" in message:
-        bot.sendMessage(chat_id=update.message.chat_id, text="Dime buen barrial.")
-    elif "la" in message:
-        bot.sendMessage(chat_id=update.message.chat_id, text="Hermana, cuente todo")
-    else:
-        pass
+salute_gay_replier = OnMatchPatternSendTextMessageReplier(
+    r"(^|\s)la giru", "Hermana, cuente todo"
+)
 
-
-class FilterCPOSP(BaseFilter):
-    def filter(self, message):
-        if "certified piece of shit person" in message.text.lower():
-            return True
-        return False
-
-
-def respond_certified(bot, update):
-    """ Respond to a pattern in FilterCPOSP. """
-    bot.sendMessage(chat_id=update.message.chat_id, text=random.choice(cposp))
+cposp_replier = OnMatchPatternPickAndSendTextMessageReplier(
+    r"certified piece of shit person", cposp
+)
 
 
 class FilterRecon(BaseFilter):
@@ -167,54 +151,20 @@ def recon(bot, update):
     )
 
 
-class FilterWtf(BaseFilter):
-    def filter(self, message):
-        found = re.search("(wtf)|(what the fuck)|(dafuq)", message.text, re.IGNORECASE)
-        if found:
-            return True
+wtf_replier = OnMatchPatternSendDocumentMessageReplier(
+    r"(wtf)|(what the fuck)|(dafuq)",
+    "https://media.giphy.com/media/aZ3LDBs1ExsE8/giphy.gif",
+)
 
+mentira_replier = OnMatchPatternSendDocumentMessageReplier(
+    r"((^|\s)liar)|(jablador)|(mentiroso)|(mentira)|((^|\s)lies)",
+    "http://78.media.tumblr.com/tumblr_m3zgenZn7S1r3tlbto1_400.gif",
+)
 
-def send_wtf(bot, update):
-    bot.sendDocument(
-        chat_id=update.message.chat_id,
-        document="https://media.giphy.com/media/aZ3LDBs1ExsE8/giphy.gif",
-    )
-
-
-class FilterMentira(BaseFilter):
-    def filter(self, message):
-        found = re.search(
-            "((^|\s)liar)|(jablador)|(mentiroso)|(mentira)|((^|\s)lies)",
-            message.text,
-            re.IGNORECASE,
-        )
-        if found:
-            return True
-
-
-def send_mentira(bot, update):
-    bot.sendDocument(
-        chat_id=update.message.chat_id,
-        document="http://78.media.tumblr.com/tumblr_m3zgenZn7S1r3tlbto1_400.gif",
-    )
-
-
-class FilterFelicidades(BaseFilter):
-    def filter(self, message):
-        found = re.search(
-            "(feliz cumpleaños)|(feliz cumpleanos)|(happy birthday)|(hbd)",
-            message.text,
-            re.IGNORECASE,
-        )
-        if found:
-            return True
-
-
-def send_hbd(bot, update):
-    bot.sendDocument(
-        chat_id=update.message.chat_id,
-        document="https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif",
-    )
+hbd_replier = OnMatchPatternSendDocumentMessageReplier(
+    r"(feliz cumpleaños)|(feliz cumpleanos)|(happy birthday)|(hbd)",
+    "https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif",
+)
 
 
 # Replying to user.
@@ -233,31 +183,31 @@ def send_reply_to_user(bot, update):
 
 
 # Voicenotes Repliers
-diablo_replier = OnMatchPatternSendDocumentMessageReplier(
+diablo_replier = OnMatchPatternSendAudioMessageReplier(
     r"(y esa basura)|(y esa mielda)|(diablo arsenio)", giru_res("res/audio/basura.ogg")
 )
 
-calmate_filter = OnMatchPatternSendDocumentMessageReplier(
-    "(ca[lr]mate)", giru_res("res/audio/carmate.ogg")
+calmate_filter = OnMatchPatternSendAudioMessageReplier(
+    r"(ca[lr]mate)", giru_res("res/audio/carmate.ogg")
 )
 
-felicidades_filter = OnMatchPatternSendDocumentMessageReplier(
-    "(ok felicidades)", giru_res("res/audio/felicidades.ogg")
+felicidades_filter = OnMatchPatternSendAudioMessageReplier(
+    r"(ok felicidades)", giru_res("res/audio/felicidades.ogg")
 )
 
-haters_replier = OnMatchPatternSendDocumentMessageReplier(
+haters_replier = OnMatchPatternSendAudioMessageReplier(
     r"(haterz)", giru_res("res/audio/llegaronloshaterz.ogg")
 )
 
-ok_gracia_replier = OnMatchPatternSendDocumentMessageReplier(
+ok_gracia_replier = OnMatchPatternSendAudioMessageReplier(
     r"(okgracia)|(ok gracia)", giru_res("res/audio/okgracias.ogg")
 )
 
-todo_bien_replier = OnMatchPatternSendDocumentMessageReplier(
+todo_bien_replier = OnMatchPatternSendAudioMessageReplier(
     r"(todobie)|(todo bie)", giru_res("res/audio/todobien.ogg")
 )
 
-lave_el_carro_filter = OnMatchPatternSendDocumentMessageReplier(
+lave_el_carro_filter = OnMatchPatternSendAudioMessageReplier(
     r"(lave el carro)", giru_res("res/audio/laveelcarro.ogg")
 )
 
@@ -291,7 +241,7 @@ def record_points(bot, update):
         k.remove_point(chat_id, name)
 
 
-alcohol_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
+alcohol_replier = OnMatchPatternPickAndSendDocumentMessageReplier(  # docuemnt?
     r"(booze|romo|beer|birra|alcohol)",
     [
         "https://media.giphy.com/media/Jp3sIkRR030uGYVGpX/giphy.gif",
@@ -299,16 +249,18 @@ alcohol_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
     ],
 )
 
-familia_replier = OnMatchPatternSendDocumentMessageReplier(
+familia_replier = OnMatchPatternSendPictureMessageReplier(
     r"(familia|family)", giru_res("res/images/familia.jpg")
 )
 
 
 class SpotifyLinkFilter(BaseFilter):
-    spotify_pattern = "r(open.spotify.com)"
+    spotify_pattern = r"(open.spotify.com)"
 
     def filter(self, message):
-        has_match = re.search(self.spotify_pattern, message.text, re.IGNORECASE)
+        has_match = re.search(
+            self.spotify_pattern, message.text, re.IGNORECASE | re.MULTILINE
+        )
         return has_match
 
 
@@ -338,6 +290,6 @@ def send_spotify_link_reply(bot, update):
         )
 
 
-droga_replier = OnMatchPatternSendDocumentMessageReplier(
+droga_replier = OnMatchPatternSendPictureMessageReplier(
     r"(droga|drugs)", giru_res("res/images/droga.jpg")
 )

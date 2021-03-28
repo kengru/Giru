@@ -19,7 +19,7 @@ from giru.commands import (
     MePajeo,
     create_ayuda_cb,
 )
-from giru.core.repliers import load_repliers_from_csv_file, BaseReplier
+from giru.core.repliers import load_repliers_from_csv_file
 from giru.repliers import *
 from giru.settings import (
     FIREBASE_ACCOUNT_KEY_FILE_PATH,
@@ -80,14 +80,19 @@ for cmd in commands:
     dp.add_handler(cmd)
 
 message_handlers = [
-    MessageHandler(FilterMmg(), respond_mmg),
-    MessageHandler(FilterCPOSP(), respond_certified),
-    MessageHandler(FilterWtf(), send_wtf),
-    MessageHandler(FilterMentira(), send_mentira),
-    MessageHandler(FilterFelicidades(), send_hbd),
-    MessageHandler(FilterSalut(), salute),
     MessageHandler(FilterSaveReply(message_storage), sdm),
+    MessageHandler(FilterScores(), record_points),
     MessageHandler(FilterRecon(), recon),
+    MessageHandler(FilterReplyToGiru(), send_reply_to_user),
+    mmg_replier.to_message_handler(),
+    cposp_replier.to_message_handler(),
+    wtf_replier.to_message_handler(),
+    mentira_replier.to_message_handler(),
+    hbd_replier.to_message_handler(),
+    salute_gay_replier.to_message_handler(),
+    salute_hola_replier.to_message_handler(),
+    salute_klk_replier.to_message_handler(),
+    salute_klk_post_replier.to_message_handler(),
     diablo_replier.to_message_handler(),
     calmate_filter.to_message_handler(),
     felicidades_filter.to_message_handler(),
@@ -98,8 +103,6 @@ message_handlers = [
     alcohol_replier.to_message_handler(),
     familia_replier.to_message_handler(),
     droga_replier.to_message_handler(),
-    MessageHandler(FilterScores(), record_points),
-    MessageHandler(FilterReplyToGiru(), send_reply_to_user),
 ]
 
 for msg_h in message_handlers:
