@@ -5,7 +5,6 @@ from tests.mocks import MockBot, MockUpdate
 
 
 class CarteleraTestCase(TestCase):
-
     @skip
     def test_catalogue_response_same_chat_same_day(self):
         bot = MockBot()

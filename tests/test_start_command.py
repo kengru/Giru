@@ -11,8 +11,12 @@ class StartCommandTestCase(CommandTestCaseMixin, TestCase):
         expected_message_text = 'SOY GIRU MANIN!! Dale "/ayuda".'
 
         self.bot.send_message = MagicMock()
-        update = self.create_mock_update_with_chat_id_and_message(expected_chat_id, expected_message_text)
+        update = self.create_mock_update_with_chat_id_and_message(
+            expected_chat_id, expected_message_text
+        )
 
         Start(self.bot, update)
 
-        self.bot.send_message.assert_called_with(chat_id=expected_chat_id, text=expected_message_text)
+        self.bot.send_message.assert_called_with(
+            chat_id=expected_chat_id, text=expected_message_text
+        )

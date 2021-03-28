@@ -31,14 +31,14 @@ class FsScoreKeeper(BaseScoreKeeper):
     def change_points(self, name, op):
         scores = {}
         try:
-            with open(self.path, 'rb') as f:
+            with open(self.path, "rb") as f:
                 scores = pickle.load(f)
         except (IOError, EOFError):
             pass
 
         scores[name] = op(scores.get(name, 0))
 
-        with open(self.path, 'wb') as f:
+        with open(self.path, "wb") as f:
             pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
 
     def remove_point(self, chatid, userid):
@@ -49,7 +49,7 @@ class FsScoreKeeper(BaseScoreKeeper):
 
     def list_scores(self, chatid):
         try:
-            with open(self.path, 'rb') as f:
+            with open(self.path, "rb") as f:
                 _scores = pickle.load(f)
             return _scores
         except (IOError, EOFError):

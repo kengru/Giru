@@ -19,6 +19,6 @@ class JulienCommandTestCase(CommandTestCaseMixin, TestCase):
 
         args, kwargs = self.bot.send_photo.call_args
 
-        photo = kwargs.get('photo')
+        photo = kwargs.get("photo")
 
         self.assertIn(photo, JULIEN_PICTURES)
