@@ -1,4 +1,3 @@
-import json
 import random
 import re
 import time
@@ -9,8 +8,6 @@ from emoji import emojize
 from pkg_resources import resource_stream
 from spotipy.oauth2 import SpotifyClientCredentials
 from telegram.ext import BaseFilter
-from telegram.message import Message
-from telegram.user import User
 
 import giru.core.scorekeeping
 from giru.core.repliers import (
@@ -24,7 +21,6 @@ from giru.core.repliers import (
 )
 from giru.data import replies, mmg, cposp
 from giru.settings import (
-    SAVED_REPLIES_FILE_PATH,
     SPOTIPY_CLIENT_ID,
     SPOTIPY_CLIENT_SECRET,
     SCORES_FILE_PATH,
@@ -41,69 +37,9 @@ def sdm(bot, update):
 mmg_replier = OnMatchPatternPickAndSendTextMessageReplier(r"(mmg)|(mamague(b|v))", mmg)
 
 
-def convert_reply_dict_to_message(reply_dict):
-    reply_dict["from_user"] = User(
-        **reply_dict["from"]
-    )  # NOTE: required by python telegram API
-    reply_dict["reply_to_message"] = (
-        convert_reply_dict_to_message(reply_dict["reply_to_message"])
-        if "reply_to_message" in reply_dict
-        else None
-    )
-    return Message(**reply_dict)
-
-
-class BaseReplyStorageProvider:
-    def save(self, message):  # type: (Message) -> None
-        raise NotImplementedError
-
-    def get_all_replies(self):  # type: () -> List[Message]
-        raise NotImplementedError
-
-
-class InMemoryReplyStorageProvider(BaseReplyStorageProvider):
-    def __init__(self):
-        self.saved_replies = []
-
-    def save(self, message):
-        self.saved_replies.append(message)
-
-    def get_all_replies(self):
-        return self.saved_replies
-
-
-class FileSystemReplyStorageProvider(BaseReplyStorageProvider):
-    def __init__(self, file_path):
-        self.file_path = file_path
-
-    def save(self, message):
-        json_line = message.to_json() + "\n"
-
-        with open(self.file_path, "a+") as file:
-            file.write(json_line)
-
-    def get_all_replies(self):
-        def convert_json_line_to_message(json_line):
-            return convert_reply_dict_to_message(json.loads(json_line))
-
-        try:
-            file_handle = open(self.file_path)
-        except FileNotFoundError:
-            file_handle = open(self.file_path, "a+")
-
-        with file_handle as file:
-            replies = list(
-                map(convert_json_line_to_message, [line.rstrip("\n") for line in file])
-            )
-
-        return replies or []
-
-
 class FilterSaveReply(BaseFilter):
     def __init__(self, storage_provider=None):
-        self.storage_provider = storage_provider or FileSystemReplyStorageProvider(
-            file_path=SAVED_REPLIES_FILE_PATH
-        )
+        self.storage_provider = storage_provider
 
     def filter(self, message):
         if message.reply_to_message and message.text == "-save":
@@ -142,9 +78,9 @@ def recon(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text=text, parse_mode="Markdown")
     time.sleep(3)
     text = (
-        "He encontrado un *"
-        + str(random.randint(60, 100))
-        + "%* de que en la imagen hay un *mamaguebo*."
+            "He encontrado un *"
+            + str(random.randint(60, 100))
+            + "%* de que en la imagen hay un *mamaguebo*."
     )
     bot.sendMessage(
         chat_id=update.message.chat_id, text=text.format(), parse_mode="Markdown"
@@ -222,9 +158,9 @@ class FilterScores(BaseFilter):
     def filter(self, message):
         reply = message.reply_to_message
         if (
-            reply
-            and (message.text == "-1" or message.text == "+1")
-            and message.from_user.id != reply.from_user.id
+                reply
+                and (message.text == "-1" or message.text == "+1")
+                and message.from_user.id != reply.from_user.id
         ):
             return True
 
@@ -241,7 +177,7 @@ def record_points(bot, update):
         k.remove_point(chat_id, name)
 
 
-alcohol_replier = OnMatchPatternPickAndSendDocumentMessageReplier(  # docuemnt?
+alcohol_replier = OnMatchPatternPickAndSendDocumentMessageReplier(  # document?
     r"(booze|romo|beer|birra|alcohol)",
     [
         "https://media.giphy.com/media/Jp3sIkRR030uGYVGpX/giphy.gif",
@@ -272,7 +208,7 @@ def send_spotify_link_reply(bot, update):
         )
 
     start = update.message.text.find("https://open.spotify")
-    query = update.message.text[start : start + 53]
+    query = update.message.text[start: start + 53]
     sp = spotipy.Spotify(client_credentials_manager=client_credentials)
     result = sp.track(track_id=query)
     if result["preview_url"]:
@@ -293,3 +229,9 @@ def send_spotify_link_reply(bot, update):
 droga_replier = OnMatchPatternSendPictureMessageReplier(
     r"(droga|drugs)", giru_res("res/images/droga.jpg")
 )
+
+built_in_repliers = [mmg_replier, cposp_replier, wtf_replier, mentira_replier,
+                     hbd_replier, salute_gay_replier, salute_hola_replier, salute_klk_replier,
+                     salute_klk_post_replier, diablo_replier, calmate_filter, felicidades_filter,
+                     haters_replier, ok_gracia_replier, todo_bien_replier, menor_replier,
+                     alcohol_replier, familia_replier, droga_replier]

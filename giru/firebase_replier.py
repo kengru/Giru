@@ -1,6 +1,6 @@
 import time
 
-from giru.repliers import BaseReplyStorageProvider, convert_reply_dict_to_message
+from giru.saved_reply_storage import BaseReplyStorageProvider, convert_reply_dict_to_message
 from firebase_admin.db import Reference
 
 
