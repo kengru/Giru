@@ -7,8 +7,8 @@ from tests.mocks import MockMessage, MockUser
 
 class TestFilterSaveReply(TestCase):
     def test_filter_save_reply_stores_replies_in_a_storage_provider(self):
-        from giru.repliers import FilterSaveReply
-        from giru.saved_reply_storage import InMemoryReplyStorageProvider
+        from giru.core.repliers import FilterSaveReply
+        from giru.adapters_memory import InMemoryReplyStorageProvider
 
         storage = InMemoryReplyStorageProvider()
         sut = FilterSaveReply(storage_provider=storage)
@@ -20,8 +20,8 @@ class TestFilterSaveReply(TestCase):
         self.assertTrue(replies[0].text == "it works!")
 
     def test_filter_save_reply_can_store_replies_in_filesystem(self):
-        from giru.repliers import FilterSaveReply
-        from giru.saved_reply_storage import FileSystemReplyStorageProvider
+        from giru.core.repliers import FilterSaveReply
+        from giru.adapters_fs import FileSystemReplyStorageProvider
 
         with TemporaryDirectory() as dir_name:
             storage = FileSystemReplyStorageProvider(

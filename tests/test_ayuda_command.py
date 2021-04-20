@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from giru.data import ayuda as ayuda_text
+from giru.core.repliers.data import ayuda as ayuda_text
 from tests.mixins import CommandTestCaseMixin
 from tests.mocks import MockUser
 
@@ -39,7 +39,7 @@ class AyudaCommandTestCase(CommandTestCaseMixin, TestCase):
             chat_id=expected_chat_id, from_user=user
         )
 
-        from giru.commands import create_ayuda_cb
+        from giru.core.commands import create_ayuda_cb
 
         ayuda_cb = create_ayuda_cb(mock_commands, ayuda_text)
         ayuda_cb(self.bot, update)

@@ -1,6 +1,6 @@
 from unittest import TestCase, skip
 
-from giru.commands import Cartelera
+from giru.core.commands import Cartelera
 from tests.mocks import MockBot, MockUpdate
 
 

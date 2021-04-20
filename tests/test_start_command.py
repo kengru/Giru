@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from giru.commands import Start
+from giru.core.commands import Start
 from tests.mixins import CommandTestCaseMixin
 
 

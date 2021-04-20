@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from giru.commands import Caps
+from giru.core.commands import Caps
 from tests.mixins import CommandTestCaseMixin
 
 

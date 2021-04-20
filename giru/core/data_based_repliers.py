@@ -1,18 +1,17 @@
-import csv
 import re
 
 from abc import ABC
 from dataclasses import dataclass
 from enum import Enum, unique
 from random import choice
-from typing import TypeVar, TextIO, List
+from typing import TypeVar, List
 
 from telegram import Message, Bot, Update
 from telegram.ext import MessageHandler
 from telegram.ext.filters import BaseFilter
 from zalgo_text.zalgo import zalgo
 
-from giru.data import BAD_CONFIG_SECRET_MESSAGE
+from giru.core.repliers.data import BAD_CONFIG_SECRET_MESSAGE
 
 FilterType = TypeVar("FilterType", bound=BaseFilter)
 
@@ -241,17 +240,3 @@ def create_replier(pattern, replier_type_value, config):
             return OnMatchPatternPickAndSendTextMessageReplier(pattern, config)
         elif replier_type == ReplierType.random_corrupted_text_from_list:
             return OnMatchPatternPickAndSendCorruptedTextMessageReplier(pattern, config)
-
-
-def load_repliers_from_csv_file(file):  # type: (TextIO) -> List[BaseReplier]
-    rows = csv.reader(file)
-    repliers = []
-
-    for pattern, replier_type_value, config in rows:
-        if replier_type_value == "random_document":
-            config = config.split(" ")
-        elif replier_type_value in ("random_text", "corrupted_random_text"):
-            config = config.split(";")
-        repliers.append(create_replier(pattern, replier_type_value, config))
-
-    return repliers

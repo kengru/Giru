@@ -8,14 +8,14 @@ from telegram.ext import MessageHandler
 from telegram.message import Message
 from telegram.update import Update
 
-from giru.core.repliers import (
+from giru.core.data_based_repliers import (
     OnMatchPatternSendTextMessageReplier,
-    load_repliers_from_csv_file,
     OnMatchPatternSendDocumentMessageReplier,
     OnMatchPatternPickAndSendDocumentMessageReplier,
     OnMatchPatternPickAndSendTextMessageReplier,
     OnMatchPatternPickAndSendCorruptedTextMessageReplier,
 )
+from giru.adapters_fs import load_repliers_from_csv_file
 from tests.mocks import MockMessage
 
 MockBot = MagicMock(spec=Bot)

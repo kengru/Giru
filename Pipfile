@@ -13,8 +13,6 @@ spotipy = ">=2.4.4"
 omdb = ">=0.10.0"
 future = "*"
 zalgo-text = "*"
-fastapi = "*"
-uvicorn = {extras = ["standard"], version = "*"}
 
 [dev-packages]
 coverage = "*"

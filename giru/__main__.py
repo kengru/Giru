@@ -5,26 +5,31 @@ from telegram import ParseMode
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 from zalgo_text.zalgo import zalgo
 
-from giru import data
-from giru.commands import (
+from giru.core.commands import (
     Start,
     Caps,
     Julien,
     Spotify,
     PaDondeHoy,
     Cartelera,
-    Scores,
+    score_command_factory,
     create_get_saved_messages_callback,
     MePajeo,
     create_ayuda_cb,
 )
-from giru.core.repliers import load_repliers_from_csv_file
-from giru.repliers import *
-from giru.saved_reply_storage import InMemoryReplyStorageProvider, FileSystemReplyStorageProvider
+from giru.core.repliers import *
+from giru.adapters_memory import InMemoryReplyStorageProvider, InMemoryScoreKeeper
+from giru.adapters_fs import (
+    FileSystemReplyStorageProvider,
+    FsScoreKeeper,
+    load_repliers_from_csv_file,
+)
 from giru.settings import (
     FIREBASE_ACCOUNT_KEY_FILE_PATH,
     FIREBASE_DATABASE_URL,
     GIRU_STORAGE_LOCATION,
+    SAVED_REPLIES_FILE_PATH,
+    SCORES_FILE_PATH,
 )
 from giru.settings import TELEGRAM_TOKEN, REPLIES_FILE_PATH
 
@@ -32,14 +37,17 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 updater = Updater(token=TELEGRAM_TOKEN)
+dp = updater.dispatcher
 
 # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
 message_storage = FileSystemReplyStorageProvider(SAVED_REPLIES_FILE_PATH)
+score_keeper_storage = FsScoreKeeper(SCORES_FILE_PATH)
 if GIRU_STORAGE_LOCATION == "in_memory":
     message_storage = InMemoryReplyStorageProvider()
+    score_keeper_storage = InMemoryScoreKeeper()
 elif GIRU_STORAGE_LOCATION == "firebase":
     import firebase_admin
-    from firebase_replier import FirebaseReplyStorageProvider
+    from giru.adapters_firebase import FirebaseReplyStorageProvider
 
     cert_file_path = os.path.realpath(FIREBASE_ACCOUNT_KEY_FILE_PATH)
     firebase_admin.initialize_app(
@@ -49,8 +57,6 @@ elif GIRU_STORAGE_LOCATION == "firebase":
         },
     )
     message_storage = FirebaseReplyStorageProvider(firebase_admin.db.reference())
-
-dp = updater.dispatcher
 
 
 def unknown(bot, update):
@@ -71,7 +77,7 @@ commands = [
     CommandHandler("spotify", Spotify, pass_args=True),
     CommandHandler("padondehoy", PaDondeHoy),
     CommandHandler("cartelera", Cartelera),
-    CommandHandler("scores", Scores),
+    CommandHandler("scores", score_command_factory(score_keeper_storage)),
 ]
 ayuda_cb = CommandHandler("ayuda", create_ayuda_cb(commands, data.ayuda))
 commands.append(ayuda_cb)
@@ -81,10 +87,10 @@ for cmd in commands:
 
 message_handlers = [
     MessageHandler(FilterSaveReply(message_storage), sdm),
-    MessageHandler(FilterScores(), record_points),
+    MessageHandler(FilterScores(), record_points_factory(score_keeper_storage)),
     MessageHandler(FilterRecon(), recon),
     MessageHandler(FilterReplyToGiru(), send_reply_to_user),
-    *(m.to_message_handler() for m in built_in_repliers)
+    *(m.to_message_handler() for m in built_in_repliers),
 ]
 
 for msg_h in message_handlers:
