@@ -1,11 +1,10 @@
 from unittest import TestCase, skip
 
-from giru.commands import Cartelera
+from giru.core.commands import Cartelera
 from tests.mocks import MockBot, MockUpdate
 
 
 class CarteleraTestCase(TestCase):
-
     @skip
     def test_catalogue_response_same_chat_same_day(self):
         bot = MockBot()

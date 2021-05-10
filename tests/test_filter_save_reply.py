@@ -6,9 +6,10 @@ from tests.mocks import MockMessage, MockUser
 
 
 class TestFilterSaveReply(TestCase):
-
     def test_filter_save_reply_stores_replies_in_a_storage_provider(self):
-        from giru.repliers import FilterSaveReply, InMemoryReplyStorageProvider
+        from giru.core.repliers import FilterSaveReply
+        from giru.adapters_memory import InMemoryReplyStorageProvider
+
         storage = InMemoryReplyStorageProvider()
         sut = FilterSaveReply(storage_provider=storage)
         message = _create_replied_message_mock("it works!")
@@ -19,9 +20,13 @@ class TestFilterSaveReply(TestCase):
         self.assertTrue(replies[0].text == "it works!")
 
     def test_filter_save_reply_can_store_replies_in_filesystem(self):
-        from giru.repliers import FilterSaveReply, FileSystemReplyStorageProvider
+        from giru.core.repliers import FilterSaveReply
+        from giru.adapters_fs import FileSystemReplyStorageProvider
+
         with TemporaryDirectory() as dir_name:
-            storage = FileSystemReplyStorageProvider(file_path=path.join(dir_name, "tempfile"))
+            storage = FileSystemReplyStorageProvider(
+                file_path=path.join(dir_name, "tempfile")
+            )
             sut = FilterSaveReply(storage_provider=storage)
             message = _create_replied_message_mock("it works!")
             sut.filter(message)
@@ -54,6 +59,8 @@ def _create_replied_message_mock(text):
     user_denisse = MockUser(id=0, first_name="Denisse")
     user_ken = MockUser(id=1, first_name="Ken")
     message = MockMessage(text=text, from_user=user_denisse)
-    replied_message = MockMessage(reply_to_message=message, text="-save", from_user=user_ken)
+    replied_message = MockMessage(
+        reply_to_message=message, text="-save", from_user=user_ken
+    )
 
     return replied_message

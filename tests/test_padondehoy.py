@@ -1,11 +1,10 @@
 from unittest import TestCase
 
-from giru.commands import PaDondeHoy
+from giru.core.commands import PaDondeHoy
 from tests.mocks import MockBot, MockUpdate
 
 
 class TestPaDondeHoy(TestCase):
-
     def test_catalogue_response_same_chat_same_day(self):
         bot = MockBot()
         update = MockUpdate()
