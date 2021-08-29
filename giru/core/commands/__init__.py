@@ -7,15 +7,15 @@ import spotipy
 from emoji import emojize
 from requests import get
 from spotipy.oauth2 import SpotifyClientCredentials
-from telegram.ext import CommandHandler
-from telegram.message import Message
-from telegram.parsemode import ParseMode
+from telegram import Message
 from telegram.bot import Bot
+from telegram.ext import CommandHandler
+from telegram.parsemode import ParseMode
 
-from giru.core.commands.data import julien, days, mepajeo
-from giru.core.ports import BaseScoreKeeper, BaseReplyStorageProvider
+from giru.config import settings
+from giru.core.commands.data import days, julien, mepajeo
+from giru.core.ports import BaseReplyStorageProvider, BaseScoreKeeper
 from giru.helpers.movies import Movie
-from giru.settings import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET
 
 client_credentials = None
 
@@ -35,9 +35,10 @@ def Caps(bot, update, args):
 
 def create_get_saved_messages_callback(storage_provider: BaseReplyStorageProvider):
     def get_saved_messages_callback(bot, update):
-        replies = storage_provider.get_all_replies()
+        replies = storage_provider.get_all_replies(update.message.chat_id)
 
-        def format_saved_message(message):  # type: (Message) -> str
+        def format_saved_message(message: Message
+                                 ) -> str:
             return "*{}* - [{}](tg://user?id={})".format(
                 message.text, message.from_user.first_name, message.from_user.id
             )
@@ -46,7 +47,7 @@ def create_get_saved_messages_callback(storage_provider: BaseReplyStorageProvide
 
         text = (
             "\n".join(formatted_replies)
-            if formatted_replies
+            if replies
             else SAVED_MESSAGE_LIST_IS_EMPTY_MESSAGE
         )
 
@@ -66,7 +67,8 @@ def Spotify(bot, update, args):
     global client_credentials
     if client_credentials is None:
         client_credentials = SpotifyClientCredentials(
-            client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET
+            client_id=settings.SPOTIPY_CLIENT_ID,
+            client_secret=settings.SPOTIPY_CLIENT_SECRET,
         )
 
     query = " ".join(args).lower()
@@ -118,7 +120,7 @@ def MePajeo(bot, update):
 
 def create_ayuda_cb(commands: List[CommandHandler], help_text):
     def Ayuda(bot: Bot, update):
-        """ Sends a list of the commands and their use. """
+        """Sends a list of the commands and their use."""
         message = "Hola, soy Giru.\n\n*Comandos:* \n"
 
         for c in commands:
@@ -139,7 +141,7 @@ def create_ayuda_cb(commands: List[CommandHandler], help_text):
 
 
 def Cartelera(bot, update):
-    """ Get's all the movies in theathers right now. """
+    """Get's all the movies in theathers right now."""
     movies = get("http://api.cine.com.do/v1/movies").json()
 
     message = "*Manga ahí*\n\n"
@@ -170,8 +172,7 @@ def Cartelera(bot, update):
 
 def score_command_factory(keeper: BaseScoreKeeper):
     def scores(bot, update):
-        """ Gets a list with the points scored by person. """
-        # k = FsScoreKeeper(SCORES_FILE_PATH)
+        """Gets a list with the points scored by person."""
         _scores = keeper.list_scores(update.message.chat_id)
         if len(_scores) == 0:
             message = "No hay scores."
@@ -180,21 +181,20 @@ def score_command_factory(keeper: BaseScoreKeeper):
             sorted_scores = sorted(_scores.items(), key=lambda x: x[1], reverse=True)
             for k, v in sorted_scores:
                 message += "*{0}:*  {1}\n".format(k, v)
-            # If it ever wants to be divided.
-            #
-            # loved = tuple(filter(lambda x: x[1] > 0, sorted_scores))
-            # hated = tuple(filter(lambda x: x[1] < 0, sorted_scores))
-            # if loved:
-            #     message += '*Loved:*\n'
-            #     for k, v in loved:
-            #         message += '{0}: {1}\n'.format(k, v)
-            # message += '\n'
-            # if hated:
-            #     message += '*Hated:*\n'
-            #     for k, v in hated:
-            #         message += '{0}: {1}\n'.format(k, v)
+
         bot.sendMessage(
             chat_id=update.message.chat_id, text=message, parse_mode="Markdown"
         )
 
     return scores
+
+
+built_in_commands = [
+    CommandHandler("start", Start),
+    CommandHandler("vociao", Caps, pass_args=True),
+    CommandHandler("julien", Julien),
+    CommandHandler("mepajeo", MePajeo),
+    CommandHandler("spotify", Spotify, pass_args=True),
+    CommandHandler("padondehoy", PaDondeHoy),
+    CommandHandler("cartelera", Cartelera),
+]

@@ -1,26 +1,26 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import NoReturn
 
-from telegram import Message
+from telegram import User, Message
 
 
 class BaseReplyStorageProvider:
-    def save(self, message):  # type: (Message) -> None
+    def save(self, message: Message) -> NoReturn:
         raise NotImplementedError
 
-    def get_all_replies(self):  # type: () -> List[Message]
+    def get_all_replies(self, chat_id: int) -> list[Message]:
         raise NotImplementedError
 
 
 class BaseScoreKeeper(ABC):
     @abstractmethod
-    def add_point(self, chatid, userid):
+    def add_point(self, chatid: str, user: User) -> NoReturn:
         pass
 
     @abstractmethod
-    def remove_point(self, chatid, userid):
+    def remove_point(self, chatid: str, user: User) -> NoReturn:
         pass
 
     @abstractmethod
-    def list_scores(self, chatid):
+    def list_scores(self, chatid: str) -> dict[str, int]:
         pass

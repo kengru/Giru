@@ -1,7 +1,7 @@
 language: python
 cache: pip
 python:
-  - "3.8"
+  - "3.9"
 
 # command to install dependencies
 install:
@@ -9,8 +9,8 @@ install:
 
 # command to run tests
 script:
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then nosetests --with-coverage tests; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then nosetests --with-coverage tests tests_non_pr; fi'
+  - make check
+  - make coverage
 
 after_success:
   - coveralls

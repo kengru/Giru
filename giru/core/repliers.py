@@ -1,50 +1,18 @@
+import logging
 import re
-
 from abc import ABC
-from dataclasses import dataclass
-from enum import Enum, unique
 from random import choice
-from typing import TypeVar, List
+from typing import List, TypeVar
 
-from telegram import Message, Bot, Update
+from telegram import Bot, Message, Update
 from telegram.ext import MessageHandler
 from telegram.ext.filters import BaseFilter
 from zalgo_text.zalgo import zalgo
 
-from giru.core.repliers.data import BAD_CONFIG_SECRET_MESSAGE
+from giru.built_in_repliers.data import BAD_CONFIG_SECRET_MESSAGE
+from giru.core.model import ReplierType
 
 FilterType = TypeVar("FilterType", bound=BaseFilter)
-
-
-@unique
-class ReplierType(Enum):
-    fixed_text = "text"
-    fixed_document = "document"
-    random_text_from_list = "random_text"
-    random_document_from_list = "random_document"
-    random_corrupted_text_from_list = "corrupted_random_text"
-    lambda_text = "lambda_text"
-
-
-@dataclass
-class BaseReplierConfiguration:
-    pattern: str
-    type: ReplierType
-    data: object
-
-
-@dataclass
-class FixedReplierConfiguration(BaseReplierConfiguration):
-    pattern: str
-    type: ReplierType
-    data: str
-
-
-@dataclass
-class ListReplierConfiguration(BaseReplierConfiguration):
-    pattern: str
-    type: ReplierType
-    data: str
 
 
 class BaseReplier(BaseFilter, ABC):
@@ -72,7 +40,7 @@ class ReplyWithTextMessageMixin(ABC):
     def reply(self, bot, update):  # type: (Bot, Update) -> Message
         message = update.message  # type: Message
 
-        return bot.send_message(chat_id=message.chat_id, text=self.get_text())
+        return bot.send_message(chat_id=message.chat_id, text=self.get_text(), parse_mode='markdown')
 
     def get_text(self):
         if not self.text:
@@ -94,14 +62,6 @@ class MatchPatternInTextMessageMixin(ABC):
             raise ValueError("pattern must be set")
 
         return self.pattern
-
-
-class OnMatchPatternSendTextMessageReplier(
-    MatchPatternInTextMessageMixin, ReplyWithTextMessageMixin, BaseReplier
-):
-    def __init__(self, pattern, message_content):  # type: (re, str) -> None
-        self.pattern = pattern
-        self.text = message_content
 
 
 class OnMatchPatternPickAndSendTextMessageReplier(
@@ -169,14 +129,6 @@ class ReplyWithStickerMixin(ABC):
         return self.message_text
 
 
-class OnMatchPatternSendDocumentMessageReplier(
-    MatchPatternInTextMessageMixin, ReplyWithDocumentMessageMixin, BaseReplier
-):
-    def __init__(self, pattern, message_content):
-        self.pattern = pattern
-        self.document = message_content
-
-
 class OnMatchPatternSendAudioMessageReplier(
     MatchPatternInTextMessageMixin, ReplyWithAudioMessageMixin, BaseReplier
 ):
@@ -222,21 +174,13 @@ class OnMatchPatternPickAndSendCorruptedTextMessageReplier(
         return zalgo().zalgofy(choice(self.text_options))
 
 
-def create_replier(pattern, replier_type_value, config):
-    try:
-        replier_type = ReplierType(replier_type_value)
-    except ValueError:  # invalid replier type
-        return OnMatchPatternPickAndSendCorruptedTextMessageReplier(
-            pattern, BAD_CONFIG_SECRET_MESSAGE
-        )
+def create_replier(pattern: str, type: ReplierType, data: list[str]):
+    if type == ReplierType.random_document_from_list:
+        return OnMatchPatternPickAndSendDocumentMessageReplier(pattern, data)
+    elif type == ReplierType.random_text_from_list:
+        return OnMatchPatternPickAndSendTextMessageReplier(pattern, data)
+    elif type == ReplierType.random_corrupted_text_from_list:
+        return OnMatchPatternPickAndSendCorruptedTextMessageReplier(pattern, data)
     else:
-        if replier_type == ReplierType.fixed_document:
-            return OnMatchPatternSendDocumentMessageReplier(pattern, config)
-        elif replier_type == ReplierType.fixed_text:
-            return OnMatchPatternSendTextMessageReplier(pattern, config)
-        elif replier_type == ReplierType.random_document_from_list:
-            return OnMatchPatternPickAndSendDocumentMessageReplier(pattern, config)
-        elif replier_type == ReplierType.random_text_from_list:
-            return OnMatchPatternPickAndSendTextMessageReplier(pattern, config)
-        elif replier_type == ReplierType.random_corrupted_text_from_list:
-            return OnMatchPatternPickAndSendCorruptedTextMessageReplier(pattern, config)
+        logging.error('Could not load replier %r', locals())
+        return OnMatchPatternPickAndSendCorruptedTextMessageReplier(pattern, BAD_CONFIG_SECRET_MESSAGE)
