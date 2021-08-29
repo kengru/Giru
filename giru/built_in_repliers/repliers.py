@@ -34,7 +34,11 @@ class FilterSaveReply(BaseFilter):
         self.storage_provider = storage_provider
 
     def filter(self, message):
-        if  message.text == "-save" and message.reply_to_message and message.reply_to_message.from_user.id != 487860520:
+        if (
+            message.text == "-save"
+            and message.reply_to_message
+            and message.reply_to_message.from_user.id != 487860520
+        ):
             self.storage_provider.save(message.reply_to_message)
 
 
@@ -50,9 +54,9 @@ def recon(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text=text, parse_mode="Markdown")
     time.sleep(3)
     text = (
-            "He encontrado un *"
-            + str(random.randint(60, 100))
-            + "%* de que en la imagen hay un *mamaguebo*."
+        "He encontrado un *"
+        + str(random.randint(60, 100))
+        + "%* de que en la imagen hay un *mamaguebo*."
     )
     bot.sendMessage(
         chat_id=update.message.chat_id, text=text.format(), parse_mode="Markdown"
@@ -79,9 +83,9 @@ class FilterScores(BaseFilter):
     def filter(self, message):
         reply = message.reply_to_message
         if (
-                reply
-                and (message.text == "-1" or message.text == "+1")
-                and message.from_user.id != reply.from_user.id
+            reply
+            and (message.text == "-1" or message.text == "+1")
+            and message.from_user.id != reply.from_user.id
         ):
             return True
 
@@ -118,7 +122,7 @@ def send_spotify_link_reply(bot, update):
         )
 
     start = update.message.text.find("https://open.spotify")
-    query = update.message.text[start: start + 53]
+    query = update.message.text[start : start + 53]
     sp = spotipy.Spotify(client_credentials_manager=client_credentials)
     result = sp.track(track_id=query)
     if result["preview_url"]:
@@ -136,40 +140,45 @@ def send_spotify_link_reply(bot, update):
         )
 
 
-mmg_replier = OnMatchPatternPickAndSendTextMessageReplier(r"(mmg)|(mamague(b|v))", mmg)
+mmg_replier = OnMatchPatternPickAndSendTextMessageReplier(
+    r"(mmg)|(mamague(b|v))", mmg, "mmg_replier"
+)
 
 salute_hola_replier = OnMatchPatternPickAndSendTextMessageReplier(
-    r"(hol[ai]).*(giru)", ["Hola!"]
+    r"(hol[ai]).*(giru)", ["Hola!"], "salute_hola_replier"
 )
 
 salute_klk_replier = OnMatchPatternPickAndSendTextMessageReplier(
-    r"(klk).*(giru)", ["Dime buen barrial."]
+    r"(klk).*(giru)", ["Dime buen barrial."], "salute_klk_replier"
 )
 salute_klk_post_replier = OnMatchPatternPickAndSendTextMessageReplier(
-    r"(giru).*(klk)", ["Dime buen barrial."]
+    r"(giru).*(klk)", ["Dime buen barrial."], "salute_klk_post_replier"
 )
 
 salute_gay_replier = OnMatchPatternPickAndSendTextMessageReplier(
-    r"(^|\s)la giru", ["Hermana, cuente todo"]
+    r"(^|\s)la giru", ["Hermana, cuente todo"], "salute_gay_replier"
 )
 
 cposp_replier = OnMatchPatternPickAndSendTextMessageReplier(
-    r"certified piece of shit person", cposp
+    r"certified piece of shit person", cposp, "cposp_replier"
 )
 
 wtf_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
     r"(wtf)|(what the fuck)|(dafuq)",
     ["https://media.giphy.com/media/aZ3LDBs1ExsE8/giphy.gif"],
+    "wtf_replier",
 )
 
 mentira_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
     r"((^|\s)liar)|(jablador)|(mentiroso)|(mentira)|((^|\s)lies)",
     ["http://78.media.tumblr.com/tumblr_m3zgenZn7S1r3tlbto1_400.gif"],
+    "mentira_replier",
 )
 
 hbd_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
     r"(feliz cumpleaños)|(feliz cumpleanos)|(happy birthday)|(hbd)",
     ["https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif"],
+    "hbd_replier",
 )
 
 # Voicenotes Repliers
@@ -212,6 +221,7 @@ alcohol_replier = OnMatchPatternPickAndSendDocumentMessageReplier(  # document?
         "https://media.giphy.com/media/Jp3sIkRR030uGYVGpX/giphy.gif",
         "https://media.giphy.com/media/cC9nMt8P3gsUVka1Ul/giphy.gif",
     ],
+    "alcohol_replier",
 )
 
 familia_replier = OnMatchPatternSendPictureMessageReplier(

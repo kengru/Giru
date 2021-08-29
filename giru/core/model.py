@@ -15,4 +15,3 @@ class ReplierConfiguration(BaseModel):
     pattern: str
     type: ReplierType
     data: list[str]
-

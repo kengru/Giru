@@ -31,7 +31,9 @@ class BaseReplier(BaseFilter, ABC):
         return self.get_filter()(message)
 
     def to_message_handler(self):  # type: () -> MessageHandler
-        return MessageHandler(self, self.reply)
+        handler = MessageHandler(self, self.reply)
+        setattr(handler, "name", getattr(self, "name", ""))
+        return handler
 
 
 class ReplyWithTextMessageMixin(ABC):
@@ -40,7 +42,9 @@ class ReplyWithTextMessageMixin(ABC):
     def reply(self, bot, update):  # type: (Bot, Update) -> Message
         message = update.message  # type: Message
 
-        return bot.send_message(chat_id=message.chat_id, text=self.get_text(), parse_mode='markdown')
+        return bot.send_message(
+            chat_id=message.chat_id, text=self.get_text(), parse_mode="markdown"
+        )
 
     def get_text(self):
         if not self.text:
@@ -67,7 +71,8 @@ class MatchPatternInTextMessageMixin(ABC):
 class OnMatchPatternPickAndSendTextMessageReplier(
     MatchPatternInTextMessageMixin, ReplyWithTextMessageMixin, BaseReplier
 ):
-    def __init__(self, pattern, text_options):  # type: (re, List[str]) -> None
+    def __init__(self, pattern, text_options, name: str):
+        self.name = name
         self.pattern = pattern
         self.text_options = text_options
 
@@ -157,7 +162,8 @@ class OnMatchPatternSendStickerReplier(
 class OnMatchPatternPickAndSendDocumentMessageReplier(
     MatchPatternInTextMessageMixin, ReplyWithDocumentMessageMixin, BaseReplier
 ):
-    def __init__(self, pattern, document_options: List[str]):
+    def __init__(self, pattern, document_options: List[str], name: str):
+        self.name = name
         self.pattern = pattern
         self.document_options = document_options
 
@@ -174,13 +180,15 @@ class OnMatchPatternPickAndSendCorruptedTextMessageReplier(
         return zalgo().zalgofy(choice(self.text_options))
 
 
-def create_replier(pattern: str, type: ReplierType, data: list[str]):
+def create_replier(pattern: str, type: ReplierType, data: list[str], name: str):
     if type == ReplierType.random_document_from_list:
-        return OnMatchPatternPickAndSendDocumentMessageReplier(pattern, data)
+        return OnMatchPatternPickAndSendDocumentMessageReplier(pattern, data, name)
     elif type == ReplierType.random_text_from_list:
-        return OnMatchPatternPickAndSendTextMessageReplier(pattern, data)
+        return OnMatchPatternPickAndSendTextMessageReplier(pattern, data, name)
     elif type == ReplierType.random_corrupted_text_from_list:
-        return OnMatchPatternPickAndSendCorruptedTextMessageReplier(pattern, data)
+        return OnMatchPatternPickAndSendCorruptedTextMessageReplier(pattern, data, name)
     else:
-        logging.error('Could not load replier %r', locals())
-        return OnMatchPatternPickAndSendCorruptedTextMessageReplier(pattern, BAD_CONFIG_SECRET_MESSAGE)
+        logging.error("Could not load replier %r", locals())
+        return OnMatchPatternPickAndSendCorruptedTextMessageReplier(
+            pattern, BAD_CONFIG_SECRET_MESSAGE, name
+        )

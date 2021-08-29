@@ -1,11 +1,12 @@
 import csv
 import json
+from itertools import count
 from typing import TextIO
 
 from telegram import Message
 
 from giru.core.ports import BaseReplyStorageProvider, BaseScoreKeeper
-from giru.core.repliers import create_replier, BaseReplier
+from giru.core.repliers import BaseReplier, create_replier
 
 
 def incr(x):
@@ -71,10 +72,13 @@ class FileSystemReplyStorageProvider(BaseReplyStorageProvider):
 
 
 def load_repliers_from_csv_file(file: TextIO) -> list[BaseReplier]:
+    cnt = count()
     rows = csv.reader(file)
     for pattern, replier_type_value, config in rows:
         if replier_type_value == "document":
             config = config.split(" ")
         elif replier_type_value in ("text", "corrupted_text"):
             config = config.split(";")
-        yield create_replier(pattern, replier_type_value, config)
+        yield create_replier(
+            pattern, replier_type_value, config, f"replier-{next(cnt)}"
+        )
