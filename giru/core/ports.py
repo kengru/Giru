@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import NoReturn
 
-from telegram import User, Message
+from telegram import Message, User
 
 
 class BaseReplyStorageProvider:

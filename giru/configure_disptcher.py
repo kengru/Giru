@@ -39,7 +39,13 @@ additional_repliers = []
 if settings.GIRU_STORAGE_LOCATION == StorageLocation.FIREBASE:
     import firebase_admin.firestore
     from google.cloud.firestore_v1 import Client
-    from giru.adapters.firebase import FirebaseReplyStorageProvider, FirebaseScoreStorageProvider, get_firebase_repliers
+
+    from giru.adapters.firebase import (
+        FirebaseReplyStorageProvider,
+        FirebaseScoreStorageProvider,
+        auto_update_dispatcher_from_firebase_repliers,
+        get_firebase_repliers,
+    )
 
     cert_file_path = Path(settings.FIREBASE_ACCOUNT_KEY_FILE_PATH).absolute()
     firebase_admin.initialize_app(
@@ -54,7 +60,8 @@ if settings.GIRU_STORAGE_LOCATION == StorageLocation.FIREBASE:
         additional_repliers = list(get_firebase_repliers(db))
     except Exception as exc:
         logging.error(
-            "replier config could not be read from firebase, replies will not be triggered.", exc_info=exc
+            "replier config could not be read from firebase, replies will not be triggered.",
+            exc_info=exc,
         )
 else:
     # NOTE: Replies are being saved in new-line delimited JSON (.ndjson)
@@ -111,3 +118,6 @@ def configure_dispatcher(dp: Dispatcher):
         dp.add_handler(r.to_message_handler())
 
     dp.add_handler(MessageHandler(Filters.command, unknown))
+
+    if settings.GIRU_STORAGE_LOCATION == StorageLocation.FIREBASE:
+        auto_update_dispatcher_from_firebase_repliers(db, dp)

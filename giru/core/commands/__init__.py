@@ -37,8 +37,7 @@ def create_get_saved_messages_callback(storage_provider: BaseReplyStorageProvide
     def get_saved_messages_callback(bot, update):
         replies = storage_provider.get_all_replies(update.message.chat_id)
 
-        def format_saved_message(message: Message
-                                 ) -> str:
+        def format_saved_message(message: Message) -> str:
             return "*{}* - [{}](tg://user?id={})".format(
                 message.text, message.from_user.first_name, message.from_user.id
             )

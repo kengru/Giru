@@ -13,8 +13,8 @@ def main():
     with open(SCORES_FILE_PATH, "rb") as f:
         _scores = pickle.load(f)
 
-    json.dump(_scores, JSON_SCORES_FILE_PATH.open('w'))
+    json.dump(_scores, JSON_SCORES_FILE_PATH.open("w"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
