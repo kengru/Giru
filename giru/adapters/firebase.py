@@ -108,12 +108,10 @@ def auto_update_dispatcher_from_firebase_repliers(db: Client, dp: Dispatcher) ->
             logging.info("%s replier %s - %r", change.type.name, id, doc)
 
             existing_handlers: list = dp.handlers[0]
-            matching_handler = next(
-                h for h in existing_handlers if getattr(h, "name", "") == id
-            )
-            if matching_handler:
+            for h in existing_handlers:
                 # delete the old handler regardless, because firebase sends "ADDED" events more than once
-                existing_handlers.remove(matching_handler)
+                if getattr(h, "name", "") == id:
+                    existing_handlers.remove(h)
 
             if change.type.name in ("ADDED", "MODIFIED"):
                 # then just add it back again
