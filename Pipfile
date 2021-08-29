@@ -4,20 +4,23 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-beautifulsoup4 = ">=4.4.1"
 emoji = ">=0.5.0"
 python-dotenv = ">=0.8.2"
 python-telegram-bot = "==9.0.0"
 requests = ">=2.20.0"
 spotipy = ">=2.4.4"
 omdb = ">=0.10.0"
-future = "*"
 zalgo-text = "*"
+firebase-admin = "*"
+fastapi-cloudauth = "*"
+pydantic = "*"
 
 [dev-packages]
 coverage = "*"
-nose = "*"
 black = "*"
+pytest = "*"
+pytest-cov = "*"
+isort = "*"
 
 [requires]
 python_version = "3.9"

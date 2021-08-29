@@ -4,7 +4,7 @@ from typing import Dict
 
 from omdb import OMDBClient
 
-from giru.settings import OMDB_API_KEY
+from giru.config import settings
 
 omdb = None
 
@@ -35,7 +35,7 @@ class Movie:
     def emoji_ratings(self) -> Dict[str, str]:
         global omdb
         if omdb is None:
-            omdb = OMDBClient(apikey=OMDB_API_KEY)
+            omdb = OMDBClient(apikey=settings.OMDB_API_KEY)
         id, title = self.id, None if self.id else self.title
 
         movie = omdb.get(imdbid=id, title=title)

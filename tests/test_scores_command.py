@@ -1,10 +1,9 @@
 from unittest import TestCase
-from unittest.mock import patch, MagicMock, mock_open
+from unittest.mock import MagicMock
 
-from giru.adapters_memory import InMemoryScoreKeeper
+from giru.adapters.memory import InMemoryScoreKeeper
+from giru.built_in_repliers.repliers import record_points_factory
 from giru.core.commands import score_command_factory
-
-from giru.core.repliers import record_points_factory
 from tests.mixins import CommandTestCaseMixin
 from tests.mocks import MockChat, MockMessage
 

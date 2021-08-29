@@ -1,7 +1,7 @@
 from abc import ABC
 from random import randint
 
-from tests.mocks import MockBot, MockUpdate, MockMessage, MockChat
+from tests.mocks import MockBot, MockChat, MockMessage, MockUpdate
 
 
 class CommandTestCaseMixin(ABC):

@@ -7,26 +7,25 @@ import spotipy
 from emoji import emojize
 from pkg_resources import resource_stream
 from spotipy.oauth2 import SpotifyClientCredentials
-from telegram.ext import BaseFilter
+from telegram import Update
+from telegram.ext import BaseFilter, MessageHandler
 
-from giru.core.data_based_repliers import (
-    OnMatchPatternSendDocumentMessageReplier,
+from giru.built_in_repliers.data import cposp, mmg, replies
+from giru.config import settings
+from giru.core.ports import BaseScoreKeeper
+from giru.core.repliers import (
     OnMatchPatternPickAndSendDocumentMessageReplier,
-    OnMatchPatternSendStickerReplier,
+    OnMatchPatternPickAndSendTextMessageReplier,
     OnMatchPatternSendAudioMessageReplier,
     OnMatchPatternSendPictureMessageReplier,
-    OnMatchPatternSendTextMessageReplier,
-    OnMatchPatternPickAndSendTextMessageReplier,
+    OnMatchPatternSendStickerReplier,
 )
-from giru.core.ports import BaseScoreKeeper
-from giru.core.repliers.data import replies, mmg, cposp
-from giru.settings import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET
 
 giru_res = partial(resource_stream, "giru")
 client_credentials = None
 
 
-def sdm(bot, update):
+def save_dm(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text="Mensaje guardado.")
 
 
@@ -35,7 +34,7 @@ class FilterSaveReply(BaseFilter):
         self.storage_provider = storage_provider
 
     def filter(self, message):
-        if message.reply_to_message and message.text == "-save":
+        if  message.text == "-save" and message.reply_to_message and message.reply_to_message.from_user.id != 487860520:
             self.storage_provider.save(message.reply_to_message)
 
 
@@ -51,9 +50,9 @@ def recon(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text=text, parse_mode="Markdown")
     time.sleep(3)
     text = (
-        "He encontrado un *"
-        + str(random.randint(60, 100))
-        + "%* de que en la imagen hay un *mamaguebo*."
+            "He encontrado un *"
+            + str(random.randint(60, 100))
+            + "%* de que en la imagen hay un *mamaguebo*."
     )
     bot.sendMessage(
         chat_id=update.message.chat_id, text=text.format(), parse_mode="Markdown"
@@ -80,24 +79,22 @@ class FilterScores(BaseFilter):
     def filter(self, message):
         reply = message.reply_to_message
         if (
-            reply
-            and (message.text == "-1" or message.text == "+1")
-            and message.from_user.id != reply.from_user.id
+                reply
+                and (message.text == "-1" or message.text == "+1")
+                and message.from_user.id != reply.from_user.id
         ):
             return True
 
 
 def record_points_factory(keeper: BaseScoreKeeper):
-    def record_points(bot, update):
-        # keeper = giru.adapters_fs.FsScoreKeeper(SCORES_FILE_PATH)
-
-        name = update.message.reply_to_message.from_user.first_name
+    def record_points(bot, update: Update):
+        user = update.message.reply_to_message.from_user
         chat_id = update.message.chat_id
 
         if update.message.text == "+1":
-            keeper.add_point(chat_id, name)
+            keeper.add_point(chat_id, user)
         else:
-            keeper.remove_point(chat_id, name)
+            keeper.remove_point(chat_id, user)
 
     return record_points
 
@@ -116,11 +113,12 @@ def send_spotify_link_reply(bot, update):
     global client_credentials
     if client_credentials is None:
         client_credentials = SpotifyClientCredentials(
-            client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET
+            client_id=settings.SPOTIPY_CLIENT_ID,
+            client_secret=settings.SPOTIPY_CLIENT_SECRET,
         )
 
     start = update.message.text.find("https://open.spotify")
-    query = update.message.text[start : start + 53]
+    query = update.message.text[start: start + 53]
     sp = spotipy.Spotify(client_credentials_manager=client_credentials)
     result = sp.track(track_id=query)
     if result["preview_url"]:
@@ -140,38 +138,38 @@ def send_spotify_link_reply(bot, update):
 
 mmg_replier = OnMatchPatternPickAndSendTextMessageReplier(r"(mmg)|(mamague(b|v))", mmg)
 
-salute_hola_replier = OnMatchPatternSendTextMessageReplier(
-    r"(hol[ai]).*(giru)", "Hola!"
+salute_hola_replier = OnMatchPatternPickAndSendTextMessageReplier(
+    r"(hol[ai]).*(giru)", ["Hola!"]
 )
 
-salute_klk_replier = OnMatchPatternSendTextMessageReplier(
-    r"(klk).*(giru)", "Dime buen barrial."
+salute_klk_replier = OnMatchPatternPickAndSendTextMessageReplier(
+    r"(klk).*(giru)", ["Dime buen barrial."]
 )
-salute_klk_post_replier = OnMatchPatternSendTextMessageReplier(
-    r"(giru).*(klk)", "Dime buen barrial."
+salute_klk_post_replier = OnMatchPatternPickAndSendTextMessageReplier(
+    r"(giru).*(klk)", ["Dime buen barrial."]
 )
 
-salute_gay_replier = OnMatchPatternSendTextMessageReplier(
-    r"(^|\s)la giru", "Hermana, cuente todo"
+salute_gay_replier = OnMatchPatternPickAndSendTextMessageReplier(
+    r"(^|\s)la giru", ["Hermana, cuente todo"]
 )
 
 cposp_replier = OnMatchPatternPickAndSendTextMessageReplier(
     r"certified piece of shit person", cposp
 )
 
-wtf_replier = OnMatchPatternSendDocumentMessageReplier(
+wtf_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
     r"(wtf)|(what the fuck)|(dafuq)",
-    "https://media.giphy.com/media/aZ3LDBs1ExsE8/giphy.gif",
+    ["https://media.giphy.com/media/aZ3LDBs1ExsE8/giphy.gif"],
 )
 
-mentira_replier = OnMatchPatternSendDocumentMessageReplier(
+mentira_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
     r"((^|\s)liar)|(jablador)|(mentiroso)|(mentira)|((^|\s)lies)",
-    "http://78.media.tumblr.com/tumblr_m3zgenZn7S1r3tlbto1_400.gif",
+    ["http://78.media.tumblr.com/tumblr_m3zgenZn7S1r3tlbto1_400.gif"],
 )
 
-hbd_replier = OnMatchPatternSendDocumentMessageReplier(
+hbd_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
     r"(feliz cumpleaños)|(feliz cumpleanos)|(happy birthday)|(hbd)",
-    "https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif",
+    ["https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif"],
 )
 
 # Voicenotes Repliers
@@ -225,23 +223,25 @@ droga_replier = OnMatchPatternSendPictureMessageReplier(
 )
 
 built_in_repliers = [
-    mmg_replier,
-    cposp_replier,
-    wtf_replier,
-    mentira_replier,
-    hbd_replier,
-    salute_gay_replier,
-    salute_hola_replier,
-    salute_klk_replier,
-    salute_klk_post_replier,
-    diablo_replier,
-    calmate_filter,
-    felicidades_filter,
-    haters_replier,
-    ok_gracia_replier,
-    todo_bien_replier,
-    menor_replier,
-    alcohol_replier,
-    familia_replier,
-    droga_replier,
+    mmg_replier.to_message_handler(),
+    cposp_replier.to_message_handler(),
+    wtf_replier.to_message_handler(),
+    mentira_replier.to_message_handler(),
+    hbd_replier.to_message_handler(),
+    salute_gay_replier.to_message_handler(),
+    salute_hola_replier.to_message_handler(),
+    salute_klk_replier.to_message_handler(),
+    salute_klk_post_replier.to_message_handler(),
+    diablo_replier.to_message_handler(),
+    calmate_filter.to_message_handler(),
+    felicidades_filter.to_message_handler(),
+    haters_replier.to_message_handler(),
+    ok_gracia_replier.to_message_handler(),
+    todo_bien_replier.to_message_handler(),
+    menor_replier.to_message_handler(),
+    alcohol_replier.to_message_handler(),
+    familia_replier.to_message_handler(),
+    droga_replier.to_message_handler(),
+    MessageHandler(FilterRecon(), recon),
+    MessageHandler(FilterReplyToGiru(), send_reply_to_user),
 ]

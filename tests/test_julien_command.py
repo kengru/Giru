@@ -1,7 +1,8 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from giru.core.commands import Julien, julien as JULIEN_PICTURES
+from giru.core.commands import Julien
+from giru.core.commands import julien as JULIEN_PICTURES
 from tests.mixins import CommandTestCaseMixin
 
 
