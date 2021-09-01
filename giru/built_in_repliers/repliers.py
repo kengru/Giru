@@ -141,18 +141,18 @@ def send_spotify_link_reply(bot, update):
 
 
 mmg_replier = OnMatchPatternPickAndSendTextMessageReplier(
-    r"(mmg)|(mamague(b|v))", mmg, "mmg_replier"
+    r"(^|\s)(mmg)|(mamague(b|v))($|\s)", mmg, "mmg_replier"
 )
 
 salute_hola_replier = OnMatchPatternPickAndSendTextMessageReplier(
-    r"(hol[ai]).*(giru)", ["Hola!"], "salute_hola_replier"
+    r"(^|\s)(hol[ai]).*(giru)($|\s)", ["Hola!"], "salute_hola_replier"
 )
 
 salute_klk_replier = OnMatchPatternPickAndSendTextMessageReplier(
-    r"(klk).*(giru)", ["Dime buen barrial."], "salute_klk_replier"
+    r"(^|\s)(klk).*(giru)($|\s)", ["Dime buen barrial."], "salute_klk_replier"
 )
 salute_klk_post_replier = OnMatchPatternPickAndSendTextMessageReplier(
-    r"(giru).*(klk)", ["Dime buen barrial."], "salute_klk_post_replier"
+    r"(^|\s)(giru).*(klk)($|\s)", ["Dime buen barrial."], "salute_klk_post_replier"
 )
 
 salute_gay_replier = OnMatchPatternPickAndSendTextMessageReplier(
@@ -164,59 +164,59 @@ cposp_replier = OnMatchPatternPickAndSendTextMessageReplier(
 )
 
 wtf_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
-    r"(wtf)|(what the fuck)|(dafuq)",
+    r"(^|\s)(wtf)|(what the fuck)|(dafuq)($|\s)",
     ["https://media.giphy.com/media/aZ3LDBs1ExsE8/giphy.gif"],
     "wtf_replier",
 )
 
 mentira_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
-    r"((^|\s)liar)|(jablador)|(mentiroso)|(mentira)|((^|\s)lies)",
+    r"(^|\s)(liar)|(jablador)|(mentiroso)|(mentira)|(lies)($|\s)",
     ["http://78.media.tumblr.com/tumblr_m3zgenZn7S1r3tlbto1_400.gif"],
     "mentira_replier",
 )
 
 hbd_replier = OnMatchPatternPickAndSendDocumentMessageReplier(
-    r"(feliz cumpleaños)|(feliz cumpleanos)|(happy birthday)|(hbd)",
+    r"(^|\s)(feliz cumpleaños)|(feliz cumpleanos)|(happy birthday)|(hbd)($|\s)",
     ["https://media.giphy.com/media/xThtaqQYLPSIzd682A/giphy.gif"],
     "hbd_replier",
 )
 
 # Voicenotes Repliers
 diablo_replier = OnMatchPatternSendAudioMessageReplier(
-    r"(y esa basura)|(y esa mielda)|(diablo arsenio)", giru_res("res/audio/basura.ogg")
+    r"(^|\s)(y esa basura)|(y esa mielda)|(diablo arsenio)($|\s)", giru_res("res/audio/basura.ogg")
 )
 
 calmate_filter = OnMatchPatternSendAudioMessageReplier(
-    r"(ca[lr]mate)", giru_res("res/audio/carmate.ogg")
+    r"(^|\s)(ca[lr]mate)($|\s)", giru_res("res/audio/carmate.ogg")
 )
 
 felicidades_filter = OnMatchPatternSendAudioMessageReplier(
-    r"(ok felicidades)", giru_res("res/audio/felicidades.ogg")
+    r"(^|\s)(ok felicidades)($|\s)", giru_res("res/audio/felicidades.ogg")
 )
 
 haters_replier = OnMatchPatternSendAudioMessageReplier(
-    r"(haterz)", giru_res("res/audio/llegaronloshaterz.ogg")
+    r"(^|\s)(haterz)($|\s)", giru_res("res/audio/llegaronloshaterz.ogg")
 )
 
 ok_gracia_replier = OnMatchPatternSendAudioMessageReplier(
-    r"(okgracia)|(ok gracia)", giru_res("res/audio/okgracias.ogg")
+    r"(^|\s)(okgracia)|(ok gracia)($|\s)", giru_res("res/audio/okgracias.ogg")
 )
 
 todo_bien_replier = OnMatchPatternSendAudioMessageReplier(
-    r"(todobie)|(todo bie)", giru_res("res/audio/todobien.ogg")
+    r"(^|\s)(todobie)|(todo bie)($|\s)", giru_res("res/audio/todobien.ogg")
 )
 
 lave_el_carro_filter = OnMatchPatternSendAudioMessageReplier(
-    r"(lave el carro)", giru_res("res/audio/laveelcarro.ogg")
+    r"(^|\s)(lave el carro)($|\s)", giru_res("res/audio/laveelcarro.ogg")
 )
 
 # Stickers
 menor_replier = OnMatchPatternSendStickerReplier(
-    r"(meno[rl])", "CAADAQADFwADGp7vCBkeqa14LgcnAg", "Quien dijo menor? :D"
+    r"(^|\s)(meno[rl])($|\s)", "CAADAQADFwADGp7vCBkeqa14LgcnAg", "Quien dijo menor? :D"
 )
 
 alcohol_replier = OnMatchPatternPickAndSendDocumentMessageReplier(  # document?
-    r"(booze|romo|beer|birra|alcohol)",
+    r"(^|\s)(booze|romo|beer|birra|alcohol)($|\s)",
     [
         "https://media.giphy.com/media/Jp3sIkRR030uGYVGpX/giphy.gif",
         "https://media.giphy.com/media/cC9nMt8P3gsUVka1Ul/giphy.gif",
@@ -225,11 +225,11 @@ alcohol_replier = OnMatchPatternPickAndSendDocumentMessageReplier(  # document?
 )
 
 familia_replier = OnMatchPatternSendPictureMessageReplier(
-    r"(familia|family)", giru_res("res/images/familia.jpg")
+    r"(^|\s)(familia|family)($|\s)", giru_res("res/images/familia.jpg")
 )
 
 droga_replier = OnMatchPatternSendPictureMessageReplier(
-    r"(droga|drugs)", giru_res("res/images/droga.jpg")
+    r"(^|\s)(droga|drugs)($|\s)", giru_res("res/images/droga.jpg")
 )
 
 built_in_repliers = [
