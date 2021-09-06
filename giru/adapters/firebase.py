@@ -103,6 +103,7 @@ def auto_update_dispatcher_from_firebase_repliers(db: Client, dp: Dispatcher) ->
     # Create a callback on_snapshot function to capture changes
     def on_snapshot(col_snapshot, changes, read_time):
         existing_handlers: list = dp.handlers[0]
+        existing_handlers.remove(UNKNOWN_COMMAND_ERROR_HANDLER)
         for change in changes:
             doc: dict = change.document.to_dict()
             id: str = change.document.id
@@ -120,7 +121,6 @@ def auto_update_dispatcher_from_firebase_repliers(db: Client, dp: Dispatcher) ->
                 pass
 
         # make sure the "unknown command" handler is the last in the list
-        existing_handlers.remove(UNKNOWN_COMMAND_ERROR_HANDLER)
         existing_handlers.append(UNKNOWN_COMMAND_ERROR_HANDLER)
 
     query_watch = db.collection(u"repliers").on_snapshot(on_snapshot)
