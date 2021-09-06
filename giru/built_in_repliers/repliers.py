@@ -7,10 +7,11 @@ import spotipy
 from emoji import emojize
 from pkg_resources import resource_stream
 from spotipy.oauth2 import SpotifyClientCredentials
-from telegram import Update
-from telegram.ext import BaseFilter, MessageHandler
+from telegram import ParseMode, Update
+from telegram.ext import BaseFilter, Filters, MessageHandler
+from zalgo_text.zalgo import zalgo
 
-from giru.built_in_repliers.data import cposp, mmg, replies
+from giru.built_in_repliers.data import BAD_CONFIG_SECRET_MESSAGE, cposp, mmg, replies
 from giru.config import settings
 from giru.core.ports import BaseScoreKeeper
 from giru.core.repliers import (
@@ -231,6 +232,19 @@ familia_replier = OnMatchPatternSendPictureMessageReplier(
 droga_replier = OnMatchPatternSendPictureMessageReplier(
     r"(^|\s)(droga|drugs)($|\s)", giru_res("res/images/droga.jpg")
 )
+
+
+def unknown(bot, update):
+    """What to do when the command is not recognizable."""
+    t = zalgo().zalgofy(random.choice(BAD_CONFIG_SECRET_MESSAGE))
+    bot.sendMessage(
+        chat_id=update.message.chat_id, text=t, parse_mode=ParseMode.MARKDOWN
+    )
+
+
+COMMAND_ERROR_HANDLER_NAME = "command_error_handler"
+UNKNOWN_COMMAND_ERROR_HANDLER = MessageHandler(Filters.command, unknown)
+setattr(UNKNOWN_COMMAND_ERROR_HANDLER, "name", COMMAND_ERROR_HANDLER_NAME)
 
 built_in_repliers = [
     mmg_replier.to_message_handler(),

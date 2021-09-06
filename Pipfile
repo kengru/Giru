@@ -14,6 +14,7 @@ zalgo-text = "*"
 firebase-admin = "*"
 fastapi-cloudauth = "*"
 pydantic = "*"
+typer = "*"
 
 [dev-packages]
 coverage = "*"

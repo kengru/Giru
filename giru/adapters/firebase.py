@@ -4,10 +4,10 @@ from typing import NoReturn
 from firebase_admin.exceptions import NotFoundError
 from google.api_core.exceptions import AlreadyExists, NotFound
 from google.cloud.firestore_v1 import Client, Increment, Watch
-from google.cloud.firestore_v1.types import Document
 from telegram import Message, User
 from telegram.ext import Dispatcher
 
+from giru.built_in_repliers.repliers import UNKNOWN_COMMAND_ERROR_HANDLER
 from giru.core.ports import BaseReplyStorageProvider, BaseScoreKeeper
 from giru.core.repliers import BaseReplier, create_replier
 
@@ -102,12 +102,12 @@ def get_firebase_repliers(db: Client) -> list[BaseReplier]:
 def auto_update_dispatcher_from_firebase_repliers(db: Client, dp: Dispatcher) -> Watch:
     # Create a callback on_snapshot function to capture changes
     def on_snapshot(col_snapshot, changes, read_time):
+        existing_handlers: list = dp.handlers[0]
         for change in changes:
             doc: dict = change.document.to_dict()
             id: str = change.document.id
             logging.info("%s replier %s - %r", change.type.name, id, doc)
 
-            existing_handlers: list = dp.handlers[0]
             for h in existing_handlers:
                 # delete the old handler regardless, because firebase sends "ADDED" events more than once
                 if getattr(h, "name", "") == id:
@@ -118,6 +118,10 @@ def auto_update_dispatcher_from_firebase_repliers(db: Client, dp: Dispatcher) ->
                 dp.add_handler(create_replier(name=id, **doc).to_message_handler())
             elif change.type.name == "REMOVED":
                 pass
+
+        # make sure the "unknown command" handler is the last in the list
+        existing_handlers.remove(UNKNOWN_COMMAND_ERROR_HANDLER)
+        existing_handlers.append(UNKNOWN_COMMAND_ERROR_HANDLER)
 
     query_watch = db.collection(u"repliers").on_snapshot(on_snapshot)
     return query_watch
