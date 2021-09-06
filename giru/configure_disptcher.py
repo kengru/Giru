@@ -1,10 +1,7 @@
 import logging
-import random
 from pathlib import Path
 
-from telegram import ParseMode
-from telegram.ext import CommandHandler, Dispatcher, Filters, MessageHandler
-from zalgo_text.zalgo import zalgo
+from telegram.ext import CommandHandler, Dispatcher, MessageHandler
 
 from giru.adapters.file_system import (
     FileSystemReplyStorageProvider,
@@ -14,6 +11,7 @@ from giru.adapters.file_system import (
 from giru.adapters.memory import InMemoryReplyStorageProvider, InMemoryScoreKeeper
 from giru.built_in_repliers import data
 from giru.built_in_repliers.repliers import (
+    UNKNOWN_COMMAND_ERROR_HANDLER,
     FilterSaveReply,
     FilterScores,
     built_in_repliers,
@@ -83,14 +81,6 @@ else:
         )
 
 
-def unknown(bot, update):
-    """What to do when the command is not recognizable."""
-    t = zalgo().zalgofy(random.choice(data.BAD_CONFIG_SECRET_MESSAGE))
-    bot.sendMessage(
-        chat_id=update.message.chat_id, text=t, parse_mode=ParseMode.MARKDOWN
-    )
-
-
 def configure_dispatcher(dp: Dispatcher):
     # Creating and adding handlers.
     commands = [
@@ -117,7 +107,7 @@ def configure_dispatcher(dp: Dispatcher):
     for r in handlers:
         dp.add_handler(r.to_message_handler())
 
-    dp.add_handler(MessageHandler(Filters.command, unknown))
-
     if settings.GIRU_STORAGE_LOCATION == StorageLocation.FIREBASE:
         auto_update_dispatcher_from_firebase_repliers(db, dp)
+
+    dp.add_handler(UNKNOWN_COMMAND_ERROR_HANDLER)
