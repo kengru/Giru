@@ -193,7 +193,7 @@ class OnMatchPatternPickAndSendCorruptedTextMessageReplier(
 
 def create_replier(pattern: str, type: ReplierType, data: list[str], name: str):
     if type == ReplierType.random_image_from_list:
-        return OnMatchPatternPickAndSendDocumentMessageReplier(pattern, data, name)
+        return OnMatchPatternPickAndSendImageMessageReplier(pattern, data, name)
     elif type == ReplierType.random_document_from_list:
         return OnMatchPatternPickAndSendDocumentMessageReplier(pattern, data, name)
     elif type == ReplierType.random_text_from_list:
