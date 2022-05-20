@@ -225,15 +225,6 @@ alcohol_replier = OnMatchPatternPickAndSendDocumentMessageReplier(  # document?
     "alcohol_replier",
 )
 
-familia_replier = OnMatchPatternSendPictureMessageReplier(
-    r"(^|\s)(familia|family)($|\s)", giru_res("res/images/familia.jpg")
-)
-
-droga_replier = OnMatchPatternSendPictureMessageReplier(
-    r"(^|\s)(droga|drugs)($|\s)", giru_res("res/images/droga.jpg")
-)
-
-
 def unknown(bot, update):
     """What to do when the command is not recognizable."""
     t = zalgo().zalgofy(random.choice(BAD_CONFIG_SECRET_MESSAGE))
