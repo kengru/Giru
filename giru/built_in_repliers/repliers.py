@@ -255,8 +255,6 @@ built_in_repliers = [
     todo_bien_replier.to_message_handler(),
     menor_replier.to_message_handler(),
     alcohol_replier.to_message_handler(),
-    familia_replier.to_message_handler(),
-    droga_replier.to_message_handler(),
     MessageHandler(FilterRecon(), recon),
     MessageHandler(FilterReplyToGiru(), send_reply_to_user),
 ]
