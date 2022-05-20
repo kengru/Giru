@@ -171,6 +171,17 @@ class OnMatchPatternPickAndSendDocumentMessageReplier(
     def document(self):
         return choice(self.document_options)
 
+class OnMatchPatternPickAndSendImageMessageReplier(
+    MatchPatternInTextMessageMixin, ReplyWithPictureMessageMixin, BaseReplier
+):
+    def __init__(self, pattern, image_options: List[str], name: str):
+        self.name = name
+        self.pattern = pattern
+        self.image_options = image_options
+
+    @property
+    def document(self):
+        return choice(self.image_options)
 
 class OnMatchPatternPickAndSendCorruptedTextMessageReplier(
     OnMatchPatternPickAndSendTextMessageReplier
@@ -181,7 +192,9 @@ class OnMatchPatternPickAndSendCorruptedTextMessageReplier(
 
 
 def create_replier(pattern: str, type: ReplierType, data: list[str], name: str):
-    if type == ReplierType.random_document_from_list:
+    if type == ReplierType.random_image_from_list:
+        return OnMatchPatternPickAndSendDocumentMessageReplier(pattern, data, name)
+    elif type == ReplierType.random_document_from_list:
         return OnMatchPatternPickAndSendDocumentMessageReplier(pattern, data, name)
     elif type == ReplierType.random_text_from_list:
         return OnMatchPatternPickAndSendTextMessageReplier(pattern, data, name)
