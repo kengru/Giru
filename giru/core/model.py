@@ -8,6 +8,7 @@ from pydantic import BaseModel
 class ReplierType(str, Enum):
     random_text_from_list = "text"
     random_document_from_list = "document"
+    random_image_from_list = "image"
     random_corrupted_text_from_list = "corrupted_text"
 
 
